@@ -26,6 +26,14 @@ s["ed"] = 4000;
 
 cout<<s["a"]<<endl;
 
+pair <string ,int> xz;
+xz.first = "aaa";
+xz.second = 5;
+
+
+s.insert(xz);
+cout<<s["aaa"]<<endl;
+
 /*
 queue<int> myQ;
 for(int i=0 ; i<10;i++){

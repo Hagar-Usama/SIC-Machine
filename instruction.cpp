@@ -29,6 +29,7 @@ class instruction{
 	    void partition();
 	    void check_error();
 	    void check_comment();
+	    int classify(int len);
 	};
 
 
@@ -38,6 +39,24 @@ void instruction::set_label(string l){
 
 	}
 
+int instruction::classify(int len){
+	if(len >10 && len <18) // 11:17  xxx  RSUB
+		{  
+			return 1;
+		}else if (len > 19 && len <36) // 18:35  xxx ADD   5
+		{
+			return 2;
+				
+				
+		
+		}else if (len > 35 && len <67) //36 :66	 xxx  ADD  2    .comment	
+		{
+			return 3;
+			
+		}else return 0;
+	
+	}
+	
 void instruction::check_comment(){
 	if(line[0] == '.'){
 		commented = true;
@@ -54,10 +73,27 @@ void instruction::check_error(){
 void instruction::partition(){
 	check_error();
 	check_comment();
-	if (!commented){
-		
+	if (!commented){	
 		string token = line;
 		int len = token.length();
+		switch(classify(len)){
+			case 1:
+			break;
+			case 2:
+			break;
+			case 3:
+			label = split(token , 8);
+			mnemonic = split(token , 9);
+			operand = split(token , 18);
+			comment = token;
+            
+            cout<<"bye"<<endl;
+            break;
+            
+            default:
+            cout<<"invalid type"<<endl;
+			}
+			
 		
 		if(len >10 && len <18) // 11:17
 		{  
@@ -69,18 +105,7 @@ void instruction::partition(){
 		}else if (len > 35 && len <67) //36 :66		
 		{
 			
-			label = split(token , 8);
-			//label = "fff";
-			//cout<<label<<endl;
-			mnemonic = split(token , 9);
-			//cout<<mnemonic<<endl;
-
-			operand = split(token , 18);
-			//cout<<operand<<endl;
-			//cout<<line<<endl;
 			
-			comment = token;
-            cout<<"bye"<<endl;
 			}
 	}
 	

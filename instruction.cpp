@@ -30,6 +30,7 @@ class instruction{
 	    void check_error();
 	    void check_comment();
 	    int classify(int len);
+	    void display_parts();
 	};
 
 
@@ -39,6 +40,20 @@ void instruction::set_label(string l){
 
 	}
 
+void instruction::display_parts(){
+	cout<<"<<Label>>\n";
+	cout<<label<<endl;
+	
+	cout<<"<<Mnemonic>>\n";
+	cout<<mnemonic<<endl;
+	
+	cout<<"<<Operand>>\n";
+	cout<<operand<<endl;
+	
+	cout<<"<<Comment>>\n";
+	cout<<comment<<endl;
+	
+	}
 int instruction::classify(int len){
 	if(len >10 && len <18) // 11:17  xxx  RSUB
 		{  
@@ -46,21 +61,17 @@ int instruction::classify(int len){
 		}else if (len > 19 && len <36) // 18:35  xxx ADD   5
 		{
 			return 2;
-				
-				
-		
+
 		}else if (len > 35 && len <67) //36 :66	 xxx  ADD  2    .comment	
 		{
-			return 3;
-			
+			return 3;			
 		}else return 0;
 	
 	}
 	
 void instruction::check_comment(){
-	if(line[0] == '.'){
+	if(line[0] == '.')
 		commented = true;
-		}
 		
 	}
 
@@ -75,41 +86,33 @@ void instruction::partition(){
 	check_comment();
 	if (!commented){	
 		string token = line;
-		int len = token.length();
+		int len = token.capacity();
+		operand.clear();
+		comment.clear();
 		switch(classify(len)){
 			case 1:
+		    label = split(token , 8);
+			mnemonic = token;
 			break;
 			case 2:
+			label = split(token , 8);
+			mnemonic = split(token , 9);
+			operand = token;
 			break;
 			case 3:
 			label = split(token , 8);
 			mnemonic = split(token , 9);
 			operand = split(token , 18);
 			comment = token;
-            
-            cout<<"bye"<<endl;
             break;
             
             default:
             cout<<"invalid type"<<endl;
 			}
 			
-		
-		if(len >10 && len <18) // 11:17
-		{  
-		}else if (len > 19 && len <36) // 18:35
-		{
-				
-				
-		
-		}else if (len > 35 && len <67) //36 :66		
-		{
-			
-			
-			}
 	}
 	
-	cout<<"Hi";
+
 }
 int main(){
 instruction obj;
@@ -120,11 +123,21 @@ obj.line = line;
 obj.partition();
 
 cout<<"*******"<<endl;
-cout<<obj.line<<endl;
-cout<<obj.label<<endl;
-cout<<obj.mnemonic<<endl;
-cout<<obj.operand<<endl;
-cout<<obj.comment<<endl;
+obj.display_parts();
 cout<<"*******"<<endl;
+
+line = "BGN     START    1000";
+obj.line = line;
+obj.partition();
+obj.display_parts();
+
+
+line = "BGN     START";
+obj.line = line;
+obj.partition();
+obj.display_parts();
+
+cout<<obj.mnemonic.capacity()<<endl;
+cout<<obj.mnemonic<<"ddd";
 return 0;
 }

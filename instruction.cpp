@@ -24,6 +24,9 @@ class instruction{
 	    void set_mnemonic(string m);
 	    void set_operand(string o);
 	    void set_comment(string c);
+	    void partition(string line);
+	    void check_error(string line);
+	    void check_comment(string line);
 	};
 
 
@@ -32,11 +35,29 @@ void instruction::set_label(string l){
 	label = l;
 	}
 
+void instruction::check_comment(string line){
+	if(line[0] == '.')
+		cout<<"it is a comment"<<endl;
+	}
+
+void instruction::check_error(string line){
+	
+	
+	}
+
+
+void instruction::partition(string line){
+	check_error(line);
+	check_comment(line);
+	
+	}
+
 int main(){
 instruction obj;
 string rr("ddd");
 obj.set_label(rr);
-
+string ll(".fhjjj");
+obj.check_comment(ll);
 string line("BGN     START    1000              .fcmnt");
 //123456789012345678901234567890123456789
 

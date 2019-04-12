@@ -15,63 +15,91 @@ string split(string &line ,int length){
 
 class instruction{
 	public:
+		string line;
 		string label;
 		string mnemonic;
 		string operand;
 		string comment;
+		bool commented;
 		instruction();
 	    void set_label(string l);
 	    void set_mnemonic(string m);
 	    void set_operand(string o);
 	    void set_comment(string c);
-	    void partition(string line);
-	    void check_error(string line);
-	    void check_comment(string line);
+	    void partition();
+	    void check_error();
+	    void check_comment();
 	};
 
 
 instruction::instruction(){}
 void instruction::set_label(string l){
 	label = l;
+
 	}
 
-void instruction::check_comment(string line){
-	if(line[0] == '.')
-		cout<<"it is a comment"<<endl;
+void instruction::check_comment(){
+	if(line[0] == '.'){
+		commented = true;
+		}
+		
 	}
 
-void instruction::check_error(string line){
+void instruction::check_error(){
 	
 	
 	}
 
 
-void instruction::partition(string line){
-	check_error(line);
-	check_comment(line);
-	
-	}
+void instruction::partition(){
+	check_error();
+	check_comment();
+	if (!commented){
+		
+		string token = line;
+		int len = token.length();
+		
+		if(len >10 && len <18) // 11:17
+		{  
+		}else if (len > 19 && len <36) // 18:35
+		{
+				
+				
+		
+		}else if (len > 35 && len <67) //36 :66		
+		{
+			
+			label = split(token , 8);
+			//label = "fff";
+			//cout<<label<<endl;
+			mnemonic = split(token , 9);
+			//cout<<mnemonic<<endl;
 
+			operand = split(token , 18);
+			//cout<<operand<<endl;
+			//cout<<line<<endl;
+			
+			comment = token;
+            cout<<"bye"<<endl;
+			}
+	}
+	
+	cout<<"Hi";
+}
 int main(){
 instruction obj;
-string rr("ddd");
-obj.set_label(rr);
-string ll(".fhjjj");
-obj.check_comment(ll);
-string line("BGN     START    1000              .fcmnt");
-//123456789012345678901234567890123456789
+//           123456789012345678901234567890123456789
+string line("BGN     START    1000              .FFF");
+obj.line = line;
 
-cout<<"<<<<<"<<endl;
-string label = split(line , 8);
-cout<<label<<endl;
+obj.partition();
 
-string mnemonic = split(line , 9);
-cout<<mnemonic<<endl;
-
-string operand = split(line , 18);
-cout<<operand<<endl;
-cout<<line<<endl;
-
-
+cout<<"*******"<<endl;
+cout<<obj.line<<endl;
+cout<<obj.label<<endl;
+cout<<obj.mnemonic<<endl;
+cout<<obj.operand<<endl;
+cout<<obj.comment<<endl;
+cout<<"*******"<<endl;
 return 0;
 }

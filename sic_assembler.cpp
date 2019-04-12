@@ -37,42 +37,36 @@ ss["ed"] = 4000;
 ///////////////////////////////////////////////
  read_file("src.txt");
  cout<<arr[2]<<endl;
+string line = arr[1];
+cout<<line<<endl;
+string label = split(line , 8);
+cout<<label<<endl;
+
+string mnemonic = split(line , 9);
+cout<<mnemonic<<endl;
+
+string operand = split(line , 18);
+cout<<operand<<endl;
+cout<<line<<endl;
 /////////////////// mapping and pair //////////
+/*
 pair <string ,int> xz;
 xz.first = "aaa";
 xz.second = 5;
 ss.insert(xz);
 cout<<ss["aaa"]<<endl;
+*/
 ////////////////////////////////////////////////
-
+/*
 string str("0123456789asdf");
 string str2("ss");
 str2 = split(str, 5);
 cout<<str2<<endl;
 cout<<str<<endl;
-
-/*
-for (unsigned i = 0; i < str.length(); i += 4) {
-    cout << str.substr(i, 4) << endl;
-}
 */
+///////////////////////////////////////////////
 
-/*
 
-std::string s = "scott>=tiger";
-    std::string delim = ">=";
-
-    auto start = 0U;
-    auto end = s.find(delim);
-    while (end != std::string::npos)
-    {
-        std::cout << s.substr(start, end - start) << std::endl;
-        start = end + delim.length();
-        end = s.find(delim, start);
-    }
-
-    std::cout << s.substr(start, end);
-*/
 
 /*
 queue<int> myQ;
@@ -100,7 +94,7 @@ string split(string &line ,int length){
 	
 	string token = line.substr(0,length);
 	line = line.substr(length , line.capacity());
-	cout <<line.substr(0,length)<<endl;
+	//cout <<line.substr(0,length)<<endl;
 	
 	return token;	
 }

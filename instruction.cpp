@@ -7,7 +7,7 @@ string split(string &line ,int length){
 	
 	string token = line.substr(0,length);
 	line = line.substr(length , line.capacity());
-	cout <<line.substr(0,length)<<endl;
+	//cout <<line.substr(0,length)<<endl;
 	
 	return token;	
 }
@@ -37,20 +37,20 @@ instruction obj;
 string rr("ddd");
 obj.set_label(rr);
 
-string line("prog     start   0100");
-string token = split(line , 9);
-obj.label = token;
-token = split(line , 8);
-obj.mnemonic = token;
-//token = split(line , 8);
-obj.mnemonic = line;
+string line("BGN     START    1000              .fcmnt");
+//123456789012345678901234567890123456789
 
-cout<<"****"<<endl;
-cout<<obj.label<<endl;
-cout<<obj.mnemonic<<endl;
-//cout<<obj.operand<<endl;
-//cout<<obj.comment<<endl;
-cout<<"****"<<endl;
+cout<<"<<<<<"<<endl;
+string label = split(line , 8);
+cout<<label<<endl;
+
+string mnemonic = split(line , 9);
+cout<<mnemonic<<endl;
+
+string operand = split(line , 18);
+cout<<operand<<endl;
+cout<<line<<endl;
+
 
 return 0;
 }

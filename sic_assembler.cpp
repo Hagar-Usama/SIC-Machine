@@ -2,6 +2,10 @@
 #include <queue>
 #include <map>
 #include <string>
+//#include <iomanip>
+#include <fstream>
+//#include <sstream>
+
 //#include <bits/stsc++.h>
 using namespace std;
 
@@ -13,11 +17,12 @@ using namespace std;
 //std::multiset<T>
 //std::multimap<T>
 
-string sub_line(string line ,int length);
+string arr[100];
+int index = 0;
+
+
 string split(string &line ,int length);
-void edit(string& s) {
-    s[1] = 'A';
-}
+void read_file(string filename);
 
 
 int main(){
@@ -30,7 +35,8 @@ ss["dd"] = 3000;
 ss["ed"] = 4000;
 
 ///////////////////////////////////////////////
-
+ read_file("src.txt");
+ cout<<arr[2]<<endl;
 /////////////////// mapping and pair //////////
 pair <string ,int> xz;
 xz.first = "aaa";
@@ -89,15 +95,6 @@ for(int i=0 ; i<10;i++){
 return 0;
 }
 
-string sub_line(string line ,int length){
-	
-	cout <<line.substr(0,length)<<endl;
-	
-	line = line.substr(length , line.capacity());
-	return line;	
-}
-	
-	
 	
 string split(string &line ,int length){
 	
@@ -106,4 +103,21 @@ string split(string &line ,int length){
 	cout <<line.substr(0,length)<<endl;
 	
 	return token;	
+}
+
+
+
+void read_file(string filename){
+	
+	std::ifstream file(filename);
+	if (file.is_open()) {
+    std::string line;
+    while (getline(file, line)) {
+        //cout<<line<<endl;
+        arr[index++] = line;    
+    }
+    
+    file.close();
+	
+	}
 }

@@ -14,16 +14,38 @@
 #include <string>
 
  using namespace std;
+ struct statement{
+	 string label;
+	 string operation;
+	 string operand;
+	 string commnet;
+	 int formattype;	 
+	 };
  
  int check_dir_lab( string exp);
  int check_dir_unlab( string exp);
  void partition_dir(bool label , string exp);
  int get_matched(string s , regex reg , string &mat);
+ void trim(string &str);
+/* 
+ std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
+{
+    str.erase(0, str.find_first_not_of(chars));
+    return str;
+}
  
-std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r "); 
-std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
-std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
+std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
+{
+    str.erase(str.find_last_not_of(chars) + 1);
+    return str;
+}
+ 
+std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
+{
+    return ltrim(rtrim(str, chars), chars);
+}
 
+*/
 int main(){
 	bool labeled;
 	
@@ -34,13 +56,16 @@ int main(){
  		getline (cin, input);
  		if(check_dir_lab( input)){
 			labeled = true;
-			string reg = "^(\\s*(\\b(){1}\\w{1,7})\\s+)";
+			//string reg = "^(\\s*(\\b(){1}\\w{1,7})\\s+)";
+			
+			string reg("^(\\w)+");
 			regex re (reg);
 			string pmatch;
-			get_matched(input, re , pmatch);
-			pmatch = trim(pmatch);
-			cout<<endl<<"**"<<pmatch<<"**\n";
-			//partition_dir(labeled , input);
+			//get_matched(input, re , pmatch);
+			//pmatch = trim(pmatch);
+			//cout<<endl<<"**"<<pmatch<<"**\n";
+			partition_dir(labeled , input);
+			
 		}else if(check_dir_unlab( input)){
 			labeled = false;
 			}
@@ -126,44 +151,70 @@ int get_matched(string s , regex reg, string &mat){
 	
 	smatch match;
 	if(regex_search(s,match,reg) == true){
-		cout<<"Match Size = "<<match.size()<<endl;
-		cout<<match.str(0)<<endl;
-		cout<<match.str(1)<<endl;
-		mat = match.str(1);
+		//cout<<"Match Size = "<<match.size()<<endl;
+		mat = match.str(0);
 		return 1;
 		}
 	return 0;
 	
 	}
+	
 void partition_dir(bool label , string exp){
 	
-
+	string matched;
 	if(label){
-		    
-    regex reg("[^\\w]+");
-    exp = regex_replace(exp, reg, " ");
-    cout << exp << endl;
+	//target : label - operation - operand - comment
+	
+	//extract label	    
+    regex reg1("^\\s*[\\w]+\\s*");
+    get_matched(exp, reg1 , matched);
     
-		
+    
+    //trimming label using regex:
+    trim(matched);
+    cout<<"label :"<<"<"<<matched<<">"<<endl;
+   
+	matched.erase();
+    //erasing extracted part
+    exp = regex_replace(exp,reg1, "");
+    cout <<"after replacing: "<<exp << endl;
+    
+    //search for another part
+    regex reg2("^\\s*[\\w]+\\s*");
+    get_matched(exp, reg2 , matched);
+    trim(matched);
+    cout<<"operation: ""<"<<matched<<">"<<endl;
+    matched.erase();
+    
+    exp = regex_replace(exp,reg2, "");
+    cout <<"after replacing: "<<exp << endl;
+    
+    //search for another part
+    get_matched(exp, reg2 , matched);
+    trim(matched);
+    cout<<"operand: ""<"<<matched<<">"<<endl;
+    matched.erase();
+    
+    exp = regex_replace(exp,reg2, "");
+    cout <<"after replacing: "<<exp << endl;
+    
+    //search for another part
+    get_matched(exp, reg2 , matched);
+    trim(matched);
+    cout<<"comment: ""<"<<matched<<">"<<endl;
+    
+    exp = regex_replace(exp,reg2, "");
+    cout <<"after replacing: "<<exp << endl;
+    
 		}else{}
 	
 	
 	}
 
-
- std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
-{
-    str.erase(0, str.find_first_not_of(chars));
-    return str;
-}
- 
-std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
-{
-    str.erase(str.find_last_not_of(chars) + 1);
-    return str;
-}
- 
-std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
-{
-    return ltrim(rtrim(str, chars), chars);
-}
+void trim(string &str){
+		if(str.size()){
+			regex ret("\\w+");
+		get_matched(str,ret,str);
+			}
+		
+		}

@@ -8,7 +8,6 @@
  	 * 		then the next part is now the first one, we extract it as if it was the first
  	 * 		regular expression suggested is "^[ |\t]*\\b('exact expression we search for without quotation mark')([^ ]*)"
  	 * */
-// >>trim>> http://www.martinbroadhurst.com/how-to-trim-a-stdstring.html
 #include <iostream>
 #include <regex>
 #include <string>
@@ -18,37 +17,20 @@
 	 string label;
 	 string operation;
 	 string operand;
-	 string commnet;
+	 string comment;
 	 int formattype;	 
 	 };
  
  int check_dir_lab( string exp);
  int check_dir_unlab( string exp);
- void partition_dir(bool label , string exp);
+ void partition_dir(bool label , string exp , statement *st );
  int get_matched(string s , regex reg , string &mat);
  void trim(string &str);
-/* 
- std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
-{
-    str.erase(0, str.find_first_not_of(chars));
-    return str;
-}
- 
-std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
-{
-    str.erase(str.find_last_not_of(chars) + 1);
-    return str;
-}
- 
-std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
-{
-    return ltrim(rtrim(str, chars), chars);
-}
+ string extract(string &exp , regex reg );
 
-*/
 int main(){
 	bool labeled;
-	
+	statement st;
 	string input;
  	while(true)
  	{
@@ -56,18 +38,20 @@ int main(){
  		getline (cin, input);
  		if(check_dir_lab( input)){
 			labeled = true;
-			//string reg = "^(\\s*(\\b(){1}\\w{1,7})\\s+)";
-			
-			string reg("^(\\w)+");
-			regex re (reg);
-			string pmatch;
-			//get_matched(input, re , pmatch);
-			//pmatch = trim(pmatch);
-			//cout<<endl<<"**"<<pmatch<<"**\n";
-			partition_dir(labeled , input);
+			partition_dir(labeled , input,&st);
+			cout<<st.label<<endl;
+			cout<<st.operation<<endl;
+			cout<<st.operand<<endl;
+			cout<<st.comment<<endl;
 			
 		}else if(check_dir_unlab( input)){
 			labeled = false;
+			partition_dir(labeled , input,&st);
+			cout<<st.label<<endl;
+			cout<<st.operation<<endl;
+			cout<<st.operand<<endl;
+			cout<<st.comment<<endl;
+			
 			}
 			
  		 	}
@@ -91,7 +75,6 @@ return 0;
 			}
  		else
  		{
- 			cout<<"Invalid input"<<endl;
  			return 0;
  		}
 
@@ -151,7 +134,6 @@ int get_matched(string s , regex reg, string &mat){
 	
 	smatch match;
 	if(regex_search(s,match,reg) == true){
-		//cout<<"Match Size = "<<match.size()<<endl;
 		mat = match.str(0);
 		return 1;
 		}
@@ -159,54 +141,37 @@ int get_matched(string s , regex reg, string &mat){
 	
 	}
 	
-void partition_dir(bool label , string exp){
+void partition_dir(bool label , string exp , statement *st ){
 	
 	string matched;
 	if(label){
 	//target : label - operation - operand - comment
-	
-	//extract label	    
-    regex reg1("^\\s*[\\w]+\\s*");
-    get_matched(exp, reg1 , matched);
-    
-    
-    //trimming label using regex:
-    trim(matched);
-    cout<<"label :"<<"<"<<matched<<">"<<endl;
-   
-	matched.erase();
-    //erasing extracted part
-    exp = regex_replace(exp,reg1, "");
-    cout <<"after replacing: "<<exp << endl;
-    
-    //search for another part
-    regex reg2("^\\s*[\\w]+\\s*");
-    get_matched(exp, reg2 , matched);
-    trim(matched);
-    cout<<"operation: ""<"<<matched<<">"<<endl;
-    matched.erase();
-    
-    exp = regex_replace(exp,reg2, "");
-    cout <<"after replacing: "<<exp << endl;
-    
-    //search for another part
-    get_matched(exp, reg2 , matched);
-    trim(matched);
-    cout<<"operand: ""<"<<matched<<">"<<endl;
-    matched.erase();
-    
-    exp = regex_replace(exp,reg2, "");
-    cout <<"after replacing: "<<exp << endl;
-    
-    //search for another part
-    get_matched(exp, reg2 , matched);
-    trim(matched);
-    cout<<"comment: ""<"<<matched<<">"<<endl;
-    
-    exp = regex_replace(exp,reg2, "");
-    cout <<"after replacing: "<<exp << endl;
-    
-		}else{}
+   regex reg("^\\s*[\\w]+\\s*");
+   matched = extract(exp,reg);
+   st->label = matched;
+   matched.erase();
+   matched = extract(exp,reg);
+   st->operation = matched;
+   matched.erase();
+   matched = extract(exp,reg);
+   st->operand = matched;
+   matched.erase();
+   st->comment = exp;
+		}else{
+			
+			//target : operation - operand - comment
+			regex reg("^\\s*[\\w]+\\s*");
+			st->label = "";
+			matched = extract(exp,reg);
+		    st->operation = matched;
+		    matched.erase();
+		    matched = extract(exp,reg);
+		    st->operand = matched;
+		    matched.erase();
+		    st->comment = exp;
+					
+			
+			}
 	
 	
 	}
@@ -217,4 +182,13 @@ void trim(string &str){
 		get_matched(str,ret,str);
 			}
 		
+		}
+
+ 
+string extract(string &exp , regex reg ){
+		string matched;
+		get_matched(exp, reg , matched);
+		trim(matched);
+		exp = regex_replace(exp,reg, "");
+		return matched;
 		}

@@ -18,7 +18,7 @@
 	 string operation;
 	 string operand;
 	 string comment;
-	 int formattype;	 
+	 int formattype; //directive = 0 , format2 = 2 , format3=3 ,format4=4	 
 	 };
  
  int check_dir_lab( string exp);
@@ -26,8 +26,9 @@
  void partition_dir(bool label , string exp , statement *st );
  int get_matched(string s , regex reg , string &mat);
  void trim(string &str);
- string extract(string &exp , regex reg );
-
+ string extract(string &exp , string re);
+ void ltrim(string &exp);
+ void rtrim(string &exp);
 int main(){
 	bool labeled;
 	statement st;
@@ -38,21 +39,17 @@ int main(){
  		getline (cin, input);
  		if(check_dir_lab( input)){
 			labeled = true;
-			partition_dir(labeled , input,&st);
-			cout<<st.label<<endl;
-			cout<<st.operation<<endl;
-			cout<<st.operand<<endl;
-			cout<<st.comment<<endl;
 			
 		}else if(check_dir_unlab( input)){
 			labeled = false;
 			partition_dir(labeled , input,&st);
-			cout<<st.label<<endl;
-			cout<<st.operation<<endl;
-			cout<<st.operand<<endl;
-			cout<<st.comment<<endl;
 			
 			}
+			partition_dir(labeled , input,&st);
+			cout<<"<"<<st.label<<">"<<endl;
+			cout<<"<"<<st.operation<<">"<<endl;
+			cout<<"<"<<st.operand<<">"<<endl;
+			cout<<"<"<<st.comment<<">"<<endl;
 			
  		 	}
 
@@ -60,15 +57,36 @@ return 0;
 
 	}
 
+/*
+
+(\\b(resw|resb)\\s+\\d{1,4})
+RMO :
+	(\\b(rmo|addr|subr|compr)\\s+\\b(a,x,l,b,s,t,f),\\b(a,x,l,b,s,t,f))
+ADDR :
 
 
- int check_dir_lab( string exp){
-	 
+SUBR:
+
+TIXR:
+
+*/
+int check_format2_lab( string exp){
 	 string input;
-	 string reg = "\\s*(\\b([a-z]){1}\\w{1,7})\\s+((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-f0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(equ)\\s+\\b([a-z]){1}\\w{1,7}(\\+\\d{1,4})?))\\s*(;.*)?";
-	 
+	 string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s+((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-f0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(equ)\\s+\\b([a-z]){1}\\w{1,7}(\\+\\d{1,4})?))\\s*(;.*)?";
 	 regex re(reg);
-		
+ 		if(regex_match(exp,re)){
+			cout<<"Valid"<<endl;
+			return 1;		
+			}
+ 		else
+ 		{
+ 			return 0;
+ 		}
+}
+ int check_dir_lab( string exp){
+	 string input;
+	 string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s+((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-f0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(equ)\\s+\\b([a-z]){1}\\w{1,7}(\\+\\d{1,4})?))\\s*(;.*)?";
+	 regex re(reg);
  		if(regex_match(exp,re)){
 			cout<<"Valid"<<endl;
 			return 1;		
@@ -80,7 +98,7 @@ return 0;
 
 		
 /*
-label :
+label : \\s*(\\b([a-z]){1}\\w{0,7})
 		\\s*(\\b(){1}\\w{1,7})\\s+
 START :
 		(\\b(start)\\s+\\[a-f0-9]{4})
@@ -144,51 +162,69 @@ int get_matched(string s , regex reg, string &mat){
 void partition_dir(bool label , string exp , statement *st ){
 	
 	string matched;
+	regex reg("^\\s*[\\w]+\\s*");
+	
+	//extracting comment
+	matched = extract(exp,";.*");
+	st->comment = matched;
+	matched.erase();
+			
+	//trimming :
+	ltrim(exp);
+	//extract(exp,"^\\s*");
+	//matched.erase();
+	
 	if(label){
 	//target : label - operation - operand - comment
-   regex reg("^\\s*[\\w]+\\s*");
-   matched = extract(exp,reg);
-   st->label = matched;
-   matched.erase();
-   matched = extract(exp,reg);
-   st->operation = matched;
-   matched.erase();
-   matched = extract(exp,reg);
-   st->operand = matched;
-   matched.erase();
-   st->comment = exp;
-		}else{
 			
-			//target : operation - operand - comment
-			regex reg("^\\s*[\\w]+\\s*");
-			st->label = "";
-			matched = extract(exp,reg);
+			matched = extract(exp,"^\\s*[\\w]+\\s*"); //label
+			st->label = matched;
+			matched.erase();
+		}	
+			ltrim(exp);
+			matched = extract(exp,"^\\s*[\\w]+\\s*"); //operation
+		    rtrim(matched);
 		    st->operation = matched;
-		    matched.erase();
-		    matched = extract(exp,reg);
-		    st->operand = matched;
-		    matched.erase();
-		    st->comment = exp;
-					
-			
-			}
-	
-	
+		    
+		    matched.erase(); 
+		    rtrim(exp);
+		    ltrim(exp);
+		    st->operand = exp;
+			st->formattype = 0;	
 	}
 
 void trim(string &str){
 		if(str.size()){
-			regex ret("\\w+");
+			//		label
+			// 		-dd
+			regex ret(".[^\\s]+");
 		get_matched(str,ret,str);
 			}
 		
 		}
 
  
-string extract(string &exp , regex reg ){
+string extract(string &exp , string re ){
+		regex reg(re);
 		string matched;
 		get_matched(exp, reg , matched);
-		trim(matched);
+		//trim(matched);
 		exp = regex_replace(exp,reg, "");
+		cout<<"<"<<exp<<"<"<<endl;
 		return matched;
 		}
+
+void ltrim(string &exp){
+	regex reg("^\\s*");
+	string mat;
+	get_matched(exp , reg,mat);
+	exp = exp = regex_replace(exp,reg,"");
+	}
+
+
+void rtrim(string &exp){
+	regex reg("(\\s*)$");
+	string mat;
+	get_matched(exp , reg,mat);
+	exp = exp = regex_replace(exp,reg,"");
+	}

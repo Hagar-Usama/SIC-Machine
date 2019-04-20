@@ -16,20 +16,27 @@
  using namespace std;
  
  int check_dir_lab( string exp);
-
+ int check_dir_unlab( string exp);
+ 
 int main(){
 	
 	string input;
  	while(true)
  	{
- 		cout<<"Enter an expression!"<<endl;
+
+ 		//cout<<"labeled mode\n";
+ 		//getline (cin, input);
+ 		//check_dir_lab( input);
+ 		cout<<"unlabeled mode\n";
  		getline (cin, input);
- 		check_dir_lab( input); 		
+ 		check_dir_unlab( input); 		
  		 	}
 
 return 0;
 
 	}
+
+
 
  int check_dir_lab( string exp){
 	 
@@ -67,8 +74,34 @@ EQU :
 comment:
 		(;.*)?
 
+END : 	(\\b(end)(\\s+\\b(){1}\\w{1,7})?)
 
+ORG :
+		(\\b(org)(\\s+\\b(){1}\\w{1,7}))
+BASE:
+		(\\b(base)\\s+((\\b(){1}\\w{1,7})|\\*))
  */
 
 
 	 }
+
+
+int check_dir_unlab( string exp){
+	 
+	 //(\\b(base)\\s+((\\b(){1}\\w{1,7})|\\*))
+	 //(\\b(org)(\\s+\\b(){1}\\w{1,7}))
+	 string input;
+	 string reg = "\\s*((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-f0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(equ)\\s+\\b([a-z]){1}\\w{1,7}(\\+\\d{1,4})?))\\s*(;.*)?";
+	 
+	 regex re(reg);
+		
+ 		if(regex_match(exp,re)){
+			cout<<"Valid"<<endl;
+			return 1;		
+			}
+ 		else
+ 		{
+ 			cout<<"Invalid input"<<endl;
+ 			return 0;
+ 		}
+}

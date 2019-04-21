@@ -20,8 +20,12 @@
 	 string comment;
 	 int formattype; //directive = 0 , format2 = 2 , format3=3 ,format4=4	 
 	 };
-	 
- int check_format3_lab( string exp);	 
+
+ int check_statment(string exp);	 
+ int check_format4_lab( string exp);
+ int check_format4_unlab( string exp);	 
+ int check_format3_lab( string exp);
+ int check_format3_unlab( string exp);	 
  int check_format2_lab( string exp);
  int check_format2_unlab( string exp);
  int check_dir_lab( string exp);
@@ -37,28 +41,42 @@ int main(){
 	bool labeled;
 	statement st;
 	string input;
+	int flag;
  	while(true)
  	{
  		cout<<"labeled mode\n";
  		getline (cin, input);
- 		if(check_dir_lab( input)){
-			labeled = true;
-			partition_dir(labeled , input,&st);
-		}else if(check_dir_unlab( input)){
-			labeled = false;
-			partition_dir(labeled , input,&st);
-			
-			}else if(check_format2_lab(input)){
-				labeled = true;
-				}else if(check_format2_unlab(input)){
-					labeled = false;
-				
-					}else if(check_format3_lab(input)){
-						labeled = true;
-						}else {
-					cout<<"Invalid input\n";
-					}
-			
+ 		
+ 			flag = check_statment(input);
+ 			switch(flag){
+				case 10:
+				cout<<"dir unlabled"<<endl;
+				break;
+				case 11:
+				cout<<"dir labled"<<endl;
+				break;
+				case 20:
+				cout<<"format 2 unlabled"<<endl;
+				break;
+				case 21:
+				cout<<"format 2 labled"<<endl;
+				break;
+				case 30:
+				cout<<"format 3 unlabled"<<endl;
+				break;
+				case 31:
+				cout<<"format 3 labled"<<endl;
+				break;
+				case 40:
+				cout<<"format 4 unlabled"<<endl;
+				break;
+				case 41:
+				cout<<"format 4 labled"<<endl;
+				break;
+				default:
+				cout<<"invalid input"<<endl;
+				break;
+				}
 			cout<<"<"<<st.label<<">"<<endl;
 			cout<<"<"<<st.operation<<">"<<endl;
 			cout<<"<"<<st.operand<<">"<<endl;
@@ -83,9 +101,63 @@ TIXR:
 	(\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|j|jeq|jlt|jgt|tix)\\s+(@|#)?\\s+(((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s+(,\\s*x))
 
 */
+
+int check_statment(string exp){
+	
+	/**
+	 * return 0 if error
+	 * return 10 if dir 	 unlabeled
+	 * return 11 if dir 	 labeled
+	 * return 20 if format 2 unlabeled
+	 * return 21 if format 2 labeled
+	 * return 30 if format 3 unlabeled
+	 * return 31 if format 3 labeled
+	 * return 40 if format 4 unlabeled
+	 * return 41 if format 4 labeled
+	 * 
+	 * */
+	if(check_dir_unlab(exp))return 10;
+	if(check_dir_lab(exp))return 11;
+	if(check_format2_unlab(exp))return 20;
+	if(check_format2_lab(exp))return 21;
+	if(check_format3_unlab(exp))return 30;
+	if(check_format3_lab(exp))return 31;
+	if(check_format4_unlab(exp))return 40;
+	if(check_format4_lab(exp))return 41;
+	return 0;
+	
+	
+	}
+int check_format4_lab( string exp){
+	 string input;
+	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)\\+\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\s*\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
+	 regex re(reg);
+ 		if(regex_match(exp,re)){
+			cout<<"Valid format 4"<<endl;
+			return 1;		
+			}
+ 		else
+ 		{
+ 			return 0;
+ 		}
+}
+
+int check_format4_unlab( string exp){
+	 string input;
+	 string reg = "\\s*\\+\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\s*\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
+	 regex re(reg);
+ 		if(regex_match(exp,re)){
+			cout<<"Valid format 4"<<endl;
+			return 1;		
+			}
+ 		else
+ 		{
+ 			return 0;
+ 		}
+}
 int check_format3_lab( string exp){
 	 string input;
-	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
+	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\s*\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
 			cout<<"Valid format 3"<<endl;
@@ -99,7 +171,7 @@ int check_format3_lab( string exp){
 
 int check_format3_unlab( string exp){
 	 string input;
-	 string reg = "\\s*\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
+	 string reg = "\\s*\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\s*\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
 			cout<<"Valid format 3"<<endl;

@@ -20,7 +20,10 @@
 	 string comment;
 	 int formattype; //directive = 0 , format2 = 2 , format3=3 ,format4=4	 
 	 };
- 
+	 
+ int check_format3_lab( string exp);	 
+ int check_format2_lab( string exp);
+ int check_format2_unlab( string exp);
  int check_dir_lab( string exp);
  int check_dir_unlab( string exp);
  void partition_dir(bool label , string exp , statement *st );
@@ -29,6 +32,7 @@
  string extract(string &exp , string re);
  void ltrim(string &exp);
  void rtrim(string &exp);
+
 int main(){
 	bool labeled;
 	statement st;
@@ -39,13 +43,22 @@ int main(){
  		getline (cin, input);
  		if(check_dir_lab( input)){
 			labeled = true;
-			
+			partition_dir(labeled , input,&st);
 		}else if(check_dir_unlab( input)){
 			labeled = false;
 			partition_dir(labeled , input,&st);
 			
-			}
-			partition_dir(labeled , input,&st);
+			}else if(check_format2_lab(input)){
+				labeled = true;
+				}else if(check_format2_unlab(input)){
+					labeled = false;
+				
+					}else if(check_format3_lab(input)){
+						labeled = true;
+						}else {
+					cout<<"Invalid input\n";
+					}
+			
 			cout<<"<"<<st.label<<">"<<endl;
 			cout<<"<"<<st.operation<<">"<<endl;
 			cout<<"<"<<st.operand<<">"<<endl;
@@ -60,22 +73,22 @@ return 0;
 /*
 
 (\\b(resw|resb)\\s+\\d{1,4})
-RMO :
+RMO :ADDER ,SUBR,COMPR
 	(\\b(rmo|addr|subr|compr)\\s+\\b(a,x,l,b,s,t,f),\\b(a,x,l,b,s,t,f))
-ADDR :
-
-
-SUBR:
-
 TIXR:
+	(\\b(tixr)\\s+\\b(a,x,l,b,s,t,f))
+*/
+
+/*
+	(\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|j|jeq|jlt|jgt|tix)\\s+(@|#)?\\s+(((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s+(,\\s*x))
 
 */
-int check_format2_lab( string exp){
+int check_format3_lab( string exp){
 	 string input;
-	 string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s+((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-f0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(equ)\\s+\\b([a-z]){1}\\w{1,7}(\\+\\d{1,4})?))\\s*(;.*)?";
+	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			cout<<"Valid"<<endl;
+			cout<<"Valid format 3"<<endl;
 			return 1;		
 			}
  		else
@@ -83,12 +96,55 @@ int check_format2_lab( string exp){
  			return 0;
  		}
 }
+
+int check_format3_unlab( string exp){
+	 string input;
+	 string reg = "\\s*\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
+	 regex re(reg);
+ 		if(regex_match(exp,re)){
+			cout<<"Valid format 3"<<endl;
+			return 1;		
+			}
+ 		else
+ 		{
+ 			return 0;
+ 		}
+}
+
+int check_format2_lab( string exp){
+	 string input;
+	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)((\\b(rmo|addr|subr|compr)\\s+\\b(a|x|l|b|s|t|f)\\s*,\\s*)|(\\b(tixr)\\s+))\\b(a|x|l|b|s|t|f)\\s*(;.*)?"; 
+	 regex re(reg);
+ 		if(regex_match(exp,re)){
+			cout<<"Valid format 2"<<endl;
+			return 1;		
+			}
+ 		else
+ 		{
+ 			return 0;
+ 		}
+}
+
+int check_format2_unlab( string exp){
+	 string input;
+	 string reg = "\\s*((\\b(rmo|addr|subr|compr)\\s+\\b(a|x|l|b|s|t|f)\\s*,\\s*)|(\\b(tixr)\\s+))\\b(a|x|l|b|s|t|f)\\s*(;.*)?"; 
+	 regex re(reg);
+ 		if(regex_match(exp,re)){
+			cout<<"Valid format 2"<<endl;
+			return 1;		
+			}
+ 		else
+ 		{
+ 			return 0;
+ 		}
+}
+
  int check_dir_lab( string exp){
 	 string input;
 	 string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s+((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-f0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(equ)\\s+\\b([a-z]){1}\\w{1,7}(\\+\\d{1,4})?))\\s*(;.*)?";
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			cout<<"Valid"<<endl;
+			//cout<<"Valid"<<endl;
 			return 1;		
 			}
  		else
@@ -137,12 +193,12 @@ int check_dir_unlab( string exp){
 	 regex re(reg);
 		
  		if(regex_match(exp,re)){
-			cout<<"Valid"<<endl;
+			//cout<<"Valid"<<endl;
 			return 1;		
 			}
  		else
  		{
- 			cout<<"Invalid input"<<endl;
+ 			//cout<<"Invalid input"<<endl;
  			return 0;
  		}
 }
@@ -195,15 +251,12 @@ void partition_dir(bool label , string exp , statement *st ){
 
 void trim(string &str){
 		if(str.size()){
-			//		label
-			// 		-dd
 			regex ret(".[^\\s]+");
 		get_matched(str,ret,str);
 			}
 		
 		}
 
- 
 string extract(string &exp , string re ){
 		regex reg(re);
 		string matched;

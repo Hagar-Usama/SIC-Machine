@@ -3,22 +3,89 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <fstream>
+#include <sstream>
+
 using namespace std;
+
+void read_file(string filename){
+	
+	FILE * fp;
+	char fil[] = filename;
+	fp = fopen (fil,"w");
+	string s;
+	int opcode , format;
+	char operation[6];
+	fprintf (fp, "%s,%x,%d",operation , &opcode ,&format );
+	
+	
+	/*
+	std::ifstream file(filename);
+	if (file.is_open()) {
+    
+    string line;
+    while (getline(file, line,',')) {
+        
+        cout<<line<<endl;
+        cout<<"*"<<endl;
+        //arr[index++] = line;    
+    }
+    
+    file.close();
+	
+	}*/
+}
+
+
 
 class Ophash{
 	string operation;
 	int op_num;
 	int format;
+	int operand;
 	Ophash();
 	};
 
+struct piece{
+	string operation;
+	int op_num;
+	int format;
+	int operand;
+	};
 
-Ophash::Ophash(){}
-
+class info{
+	public:
+	vector<string> ops;
+	vector<piece> bunch;
+	map <string ,piece> st_map;
+	
+	info(vector<string> s , vector<piece> t){
+		this->ops = s;
+		this->bunch = t;
+		}
+	
+	info(vector<string> s){
+		this->ops = s;
+		
+		}
+		
+	info(){
+		
+		}
+	void print_ops(){
+		for(int i =0 ; i<ops.size() ; i++)
+		cout<<ops[i];
+		}
+	};
+	
 int main(){
-vector< pair <int,int> > operation; // #operands , formatSum 2,3,4
+vector<pair <int,int> > operation; // #operands , formatSum 2,3,4
 vector<string> statement;  //operation or directive
 
+string fil = "info.txt";
+read_file(fil);
+
+// pair : # of operands and format 
 operation.push_back(make_pair(2,2)); //RMO 
 operation.push_back(make_pair(1,7)); //LDA
 operation.push_back(make_pair(1,7)); //LDB
@@ -102,6 +169,8 @@ statement.push_back("org");
 statement.push_back("base");
 
 
+info information(statement);
+information.print_ops();
 map <string ,pair<int,int>> st_map;
 for (int i=0 ; i<26 ; i++){
 		st_map[statement[i]] = operation[i];

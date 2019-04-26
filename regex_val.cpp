@@ -27,6 +27,8 @@
 	 int formattype; //directive = 0 , format2 = 2 , format3=3 ,format4=4	 
 	 };
 
+
+ int check_indexed(statement &st);
  int check_statment(string exp);	 
  int check_comment( string exp);
  int check_format4_lab( string exp);
@@ -37,8 +39,12 @@
  int check_format2_unlab( string exp);
  int check_dir_lab( string exp);
  int check_dir_unlab( string exp);
+ 
+ void divide_operands(statement &st);
  void partition_dir(bool label , string exp , statement &st );
  void parition_all(bool label , string exp , statement &st);
+ void get_partitioned(string exp , statement &st);
+ void partition_format4(bool label , string exp , statement &st);
  
  int get_matched(string s , regex reg , string &mat);
  void trim(string &str);
@@ -47,51 +53,52 @@
  void rtrim(string &exp);
 
 int main(){
-	bool labeled;
+	//bool labeled;
 	statement st;
 	string input;
 	int flag;
  	while(true)
  	{
- 		cout<<"labeled mode\n";
+ 		cout<<"free format mode\n";
  		getline (cin, input);
  		
  			flag = check_statment(input);
+ 			
  			switch(flag){
 				case 0:
-				labeled = false;
+				//labeled = false;
 				cout<<"comment"<<endl;
 				break;
 				case 10:
-				labeled = false;
+				//labeled = false;
 				cout<<"dir unlabled"<<endl;
 				break;
 				case 11:
-				labeled = true;
+				//labeled = true;
 				cout<<"dir labled"<<endl;
 				break;
 				case 20:
-				labeled = false;
+				//labeled = false;
 				cout<<"format 2 unlabled"<<endl;
 				break;
 				case 21:
-				labeled = true;
+				//labeled = true;
 				cout<<"format 2 labled"<<endl;
 				break;
 				case 30:
-				labeled = false;
+				//labeled = false;
 				cout<<"format 3 unlabled"<<endl;
 				break;
 				case 31:
-				labeled = true;
+				//labeled = true;
 				cout<<"format 3 labled"<<endl;
 				break;
 				case 40:
-				labeled = false;
+				//labeled = false;
 				cout<<"format 4 unlabled"<<endl;
 				break;
 				case 41:
-				labeled = true;
+				//labeled = true;
 				cout<<"format 4 labled"<<endl;
 				break;
 				default:
@@ -103,13 +110,15 @@ int main(){
 				st.operation.erase();
 				st.operand.erase();
 				st.comment.erase();
-				if(flag!=-1)partition_dir(labeled,input , st);	
+				get_partitioned(input , st);
+				
+			if(flag>21){check_indexed(st);}		
 			cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
 			cout<<"<"<<st.label<<">"<<endl;
 			cout<<"<"<<st.operation<<">"<<endl;
 			cout<<"<"<<st.operand<<">"<<endl;
 			cout<<"<"<<st.comment<<">"<<endl;
-			
+			cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
  		 	}
 
 return 0;
@@ -130,6 +139,20 @@ TIXR:
 
 */
 
+int check_indexed(statement &st){
+	/** we're gonna check operand filed **/
+	
+	string reg = "((\\w+)|\\d|\\*)\\s*((\\+|-)\\s*\\d)?\\s*(,\\s*x)";
+	regex re(reg);
+ 		if(regex_match(st.operand,re)){
+			//cout<<"indexed"<<endl;
+			st.indexed = true;
+			return 1;
+		}	
+			st.indexed = false;
+ 			return 0;
+	}
+	
 int check_statment(string exp){
 	
 	/**
@@ -159,11 +182,9 @@ int check_statment(string exp){
 	
 	}
 int check_comment( string exp){
-	 string input;
 	 string reg = "\\s*\\..*"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			//cout<<"comment"<<endl;
 			return 1;		
 			}
  		else
@@ -364,12 +385,9 @@ void partition_format2(bool label , string exp , statement *st ){
 			st->formattype = 0;	
 	}
 
-void parition_all(bool label , string exp , statement &st){
-	
-	
-	}
 
-void parition_format4(bool label , string exp , statement &st){
+void partition_format4(bool label , string exp , statement &st){
+	
 	string matched;
 	//extracting comment
 	matched = extract(exp,";.*");
@@ -378,7 +396,7 @@ void parition_format4(bool label , string exp , statement &st){
 			
 	//trimming :
 	ltrim(exp);
-	
+		
 	if(label){
 	//target : label - operation - operand - comment
 			
@@ -388,8 +406,9 @@ void parition_format4(bool label , string exp , statement &st){
 			matched.erase();
 		}	
 			ltrim(exp);
-			matched = extract(exp,"^\\s*\\+[\\w]+\\s*"); //operation
+			matched = extract(exp,"^\\s*\\+\\w+\\s*"); //operation
 		    rtrim(matched);
+		    
 		    st.operation = matched;
 		    
 		    matched.erase(); 
@@ -398,6 +417,24 @@ void parition_format4(bool label , string exp , statement &st){
 		    st.operand = exp;
 			st.formattype = 4;
 	}	
+
+void get_partitioned(string exp , statement &st){
+		bool label;
+		int format = check_statment(exp);
+		
+		st.formattype = format;
+		if(format!= -1){
+			if(format%2 == 0) label = false;
+			else label = true;
+			
+			if(format< 40){
+			partition_dir(label,exp,st);
+			}else {
+				partition_format4(label , exp ,st);}
+			
+			}
+			
+	}
 void partition_dir(bool label , string exp , statement &st ){
 	
 	string matched;
@@ -430,7 +467,7 @@ void partition_dir(bool label , string exp , statement &st ){
 		    rtrim(exp);
 		    ltrim(exp);
 		    st.operand = exp;
-			st.formattype = 0;	
+			//st.formattype = 0;	
 	}
 
 void trim(string &str){

@@ -13,15 +13,22 @@
 #include <string>
 
  using namespace std;
+ 
+//statement taken from txt file
  struct statement{
 	 string label;
 	 string operation;
 	 string operand;
+	 string operand1;
+	 string operand2;
+	 int indexed;
 	 string comment;
+	 bool right;
 	 int formattype; //directive = 0 , format2 = 2 , format3=3 ,format4=4	 
 	 };
 
  int check_statment(string exp);	 
+ int check_comment( string exp);
  int check_format4_lab( string exp);
  int check_format4_unlab( string exp);	 
  int check_format3_lab( string exp);
@@ -30,7 +37,9 @@
  int check_format2_unlab( string exp);
  int check_dir_lab( string exp);
  int check_dir_unlab( string exp);
- void partition_dir(bool label , string exp , statement *st );
+ void partition_dir(bool label , string exp , statement &st );
+ void parition_all(bool label , string exp , statement &st);
+ 
  int get_matched(string s , regex reg , string &mat);
  void trim(string &str);
  string extract(string &exp , string re);
@@ -49,34 +58,53 @@ int main(){
  		
  			flag = check_statment(input);
  			switch(flag){
+				case 0:
+				labeled = false;
+				cout<<"comment"<<endl;
+				break;
 				case 10:
+				labeled = false;
 				cout<<"dir unlabled"<<endl;
 				break;
 				case 11:
+				labeled = true;
 				cout<<"dir labled"<<endl;
 				break;
 				case 20:
+				labeled = false;
 				cout<<"format 2 unlabled"<<endl;
 				break;
 				case 21:
+				labeled = true;
 				cout<<"format 2 labled"<<endl;
 				break;
 				case 30:
+				labeled = false;
 				cout<<"format 3 unlabled"<<endl;
 				break;
 				case 31:
+				labeled = true;
 				cout<<"format 3 labled"<<endl;
 				break;
 				case 40:
+				labeled = false;
 				cout<<"format 4 unlabled"<<endl;
 				break;
 				case 41:
+				labeled = true;
 				cout<<"format 4 labled"<<endl;
 				break;
 				default:
 				cout<<"invalid input"<<endl;
 				break;
 				}
+				
+				st.label.erase();
+				st.operation.erase();
+				st.operand.erase();
+				st.comment.erase();
+				if(flag!=-1)partition_dir(labeled,input , st);	
+			cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
 			cout<<"<"<<st.label<<">"<<endl;
 			cout<<"<"<<st.operation<<">"<<endl;
 			cout<<"<"<<st.operand<<">"<<endl;
@@ -105,7 +133,8 @@ TIXR:
 int check_statment(string exp){
 	
 	/**
-	 * return 0 if error
+	 * return -1 if error
+	 * return  0 if comment
 	 * return 10 if dir 	 unlabeled
 	 * return 11 if dir 	 labeled
 	 * return 20 if format 2 unlabeled
@@ -116,6 +145,7 @@ int check_statment(string exp){
 	 * return 41 if format 4 labeled
 	 * 
 	 * */
+	if(check_comment(exp)) return 0;
 	if(check_dir_unlab(exp))return 10;
 	if(check_dir_lab(exp))return 11;
 	if(check_format2_unlab(exp))return 20;
@@ -124,16 +154,31 @@ int check_statment(string exp){
 	if(check_format3_lab(exp))return 31;
 	if(check_format4_unlab(exp))return 40;
 	if(check_format4_lab(exp))return 41;
-	return 0;
+	return -1;
 	
 	
 	}
+int check_comment( string exp){
+	 string input;
+	 string reg = "\\s*\\..*"; 
+	 regex re(reg);
+ 		if(regex_match(exp,re)){
+			//cout<<"comment"<<endl;
+			return 1;		
+			}
+ 		else
+ 		{
+ 			return 0;
+ 		}
+}
+
+
 int check_format4_lab( string exp){
 	 string input;
 	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)\\+\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\s*\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			cout<<"Valid format 4"<<endl;
+			//cout<<"Valid format 4"<<endl;
 			return 1;		
 			}
  		else
@@ -147,7 +192,7 @@ int check_format4_unlab( string exp){
 	 string reg = "\\s*\\+\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\s*\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			cout<<"Valid format 4"<<endl;
+			//cout<<"Valid format 4"<<endl;
 			return 1;		
 			}
  		else
@@ -160,7 +205,7 @@ int check_format3_lab( string exp){
 	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\s*\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			cout<<"Valid format 3"<<endl;
+			//cout<<"Valid format 3"<<endl;
 			return 1;		
 			}
  		else
@@ -174,7 +219,7 @@ int check_format3_unlab( string exp){
 	 string reg = "\\s*\\b(lda|ldb|ldf|ldl|lds|ldt|ldx|sta|stb|stf|stl|sts|stt|stx|ldch|stch|add|sub|comp|j|jeq|jlt|jgt|tix)\\s+((@|#)\\s*)?((\\b([a-z]){1}\\w{0,7})|\\d{1,4}|\\*)\\s*((\\+|-)\\s*\\d{1,4})?\\s*(,\\s*x)?\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			cout<<"Valid format 3"<<endl;
+			//cout<<"Valid format 3"<<endl;
 			return 1;		
 			}
  		else
@@ -188,7 +233,7 @@ int check_format2_lab( string exp){
 	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)((\\b(rmo|addr|subr|compr)\\s+\\b(a|x|l|b|s|t|f)\\s*,\\s*)|(\\b(tixr)\\s+))\\b(a|x|l|b|s|t|f)\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			cout<<"Valid format 2"<<endl;
+			//cout<<"Valid format 2"<<endl;
 			return 1;		
 			}
  		else
@@ -202,7 +247,7 @@ int check_format2_unlab( string exp){
 	 string reg = "\\s*((\\b(rmo|addr|subr|compr)\\s+\\b(a|x|l|b|s|t|f)\\s*,\\s*)|(\\b(tixr)\\s+))\\b(a|x|l|b|s|t|f)\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(exp,re)){
-			cout<<"Valid format 2"<<endl;
+			//cout<<"Valid format 2"<<endl;
 			return 1;		
 			}
  		else
@@ -286,21 +331,19 @@ int get_matched(string s , regex reg, string &mat){
 	return 0;
 	
 	}
-	
-void partition_dir(bool label , string exp , statement *st ){
+
+void partition_format2(bool label , string exp , statement *st ){
 	
 	string matched;
 	regex reg("^\\s*[\\w]+\\s*");
 	
 	//extracting comment
-	matched = extract(exp,";.*");
+	matched = extract(exp,"(;|\\.).*");
 	st->comment = matched;
 	matched.erase();
 			
 	//trimming :
 	ltrim(exp);
-	//extract(exp,"^\\s*");
-	//matched.erase();
 	
 	if(label){
 	//target : label - operation - operand - comment
@@ -321,6 +364,75 @@ void partition_dir(bool label , string exp , statement *st ){
 			st->formattype = 0;	
 	}
 
+void parition_all(bool label , string exp , statement &st){
+	
+	
+	}
+
+void parition_format4(bool label , string exp , statement &st){
+	string matched;
+	//extracting comment
+	matched = extract(exp,";.*");
+	st.comment = matched;
+	matched.erase();
+			
+	//trimming :
+	ltrim(exp);
+	
+	if(label){
+	//target : label - operation - operand - comment
+			
+			matched = extract(exp,"^\\s*[\\w]+\\s*"); //label
+			rtrim(matched);
+			st.label = matched;
+			matched.erase();
+		}	
+			ltrim(exp);
+			matched = extract(exp,"^\\s*\\+[\\w]+\\s*"); //operation
+		    rtrim(matched);
+		    st.operation = matched;
+		    
+		    matched.erase(); 
+		    rtrim(exp);
+		    ltrim(exp);
+		    st.operand = exp;
+			st.formattype = 4;
+	}	
+void partition_dir(bool label , string exp , statement &st ){
+	
+	string matched;
+	regex reg("^\\s*[\\w]+\\s*");
+	
+	//extracting comment
+	matched = extract(exp,";.*");
+	st.comment = matched;
+	matched.erase();
+			
+	//trimming :
+	ltrim(exp);
+	//extract(exp,"^\\s*");
+	//matched.erase();
+	
+	if(label){
+	//target : label - operation - operand - comment
+			
+			matched = extract(exp,"^\\s*[\\w]+\\s*"); //label
+			rtrim(matched);
+			st.label = matched;
+			matched.erase();
+		}	
+			ltrim(exp);
+			matched = extract(exp,"^\\s*[\\w]+\\s*"); //operation
+		    rtrim(matched);
+		    st.operation = matched;
+		    
+		    matched.erase(); 
+		    rtrim(exp);
+		    ltrim(exp);
+		    st.operand = exp;
+			st.formattype = 0;	
+	}
+
 void trim(string &str){
 		if(str.size()){
 			regex ret(".[^\\s]+");
@@ -335,7 +447,7 @@ string extract(string &exp , string re ){
 		get_matched(exp, reg , matched);
 		//trim(matched);
 		exp = regex_replace(exp,reg, "");
-		cout<<"<"<<exp<<"<"<<endl;
+		//cout<<"<"<<exp<<"<"<<endl;
 		return matched;
 		}
 

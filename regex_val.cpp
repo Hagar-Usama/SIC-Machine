@@ -11,8 +11,12 @@
 #include <iostream>
 #include <regex>
 #include <string>
+#include <vector>
+#include <fstream>
 
  using namespace std;
+
+vector<string> lines;
  
 //statement taken from txt file
  struct statement{
@@ -23,11 +27,41 @@
 	 string operand2;
 	 int indexed;
 	 string comment;
+	 int storage;
+	 int store_op;
 	 bool right;
 	 int formattype; //directive = 0 , format2 = 2 , format3=3 ,format4=4	 
 	 };
 
+int read_file(string filename){
+	
+	ifstream file(filename);
+	int i =0;
+	if (file.is_open()) {
+    string line;
+    while (getline(file, line)) {
+        lines.push_back(line);
+        cout<<lines[i++]<<endl;    
+    }
+    
+    file.close();
+	return i;
+	}
+	
+	return -1;
+}
 
+void write_file(string filename , string str){
+	
+  ofstream myfile (filename);
+  if (myfile.is_open())
+  {
+    myfile <<str;
+    myfile.close();
+  }
+  else cout << "Unable to open file";
+	
+	}
  int check_indexed(statement &st);
  int check_statment(string exp);	 
  int check_comment( string exp);
@@ -57,12 +91,14 @@ int main(){
 	statement st;
 	string input;
 	int flag;
- 	while(true)
- 	{
- 		cout<<"free format mode\n";
- 		getline (cin, input);
+	
+	int index = read_file("src.txt");
+ 	for(int i = 0 ; i<index ; i++){
+		cout<<"free format mode\n";
+ 		//getline (cin, input);
  		
- 			flag = check_statment(input);
+ 		
+ 			flag = check_statment(lines[i]);
  			
  			switch(flag){
 				case 0:
@@ -110,7 +146,7 @@ int main(){
 				st.operation.erase();
 				st.operand.erase();
 				st.comment.erase();
-				get_partitioned(input , st);
+				get_partitioned(lines[i] , st);
 				
 			if(flag>21){check_indexed(st);}		
 			cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
@@ -119,8 +155,16 @@ int main(){
 			cout<<"<"<<st.operand<<">"<<endl;
 			cout<<"<"<<st.comment<<">"<<endl;
 			cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
+		
+		
+		}
+ 	
+ 	/*
+ 	while(1)
+ 	{
+ 		
  		 	}
-
+   */
 return 0;
 
 	}
@@ -419,20 +463,35 @@ void partition_format4(bool label , string exp , statement &st){
 	}	
 
 void get_partitioned(string exp , statement &st){
-		bool label;
-		int format = check_statment(exp);
+		bool label = true;
 		
+		int format = check_statment(exp);
+		if(format%2 == 0) label = false;
 		st.formattype = format;
-		if(format!= -1){
-			if(format%2 == 0) label = false;
-			else label = true;
+		switch(format){
 			
-			if(format< 40){
+			case 0:
+			st.comment = exp;
+			break;
+			case 10:
+			case 11:
+			case 20:
+			case 21:
+			case 30:
+			case 31:
 			partition_dir(label,exp,st);
-			}else {
-				partition_format4(label , exp ,st);}
+			break;
+			case 40:
+			case 41:
+			partition_format4(label , exp ,st);
+			break;
+			
+			default:
+			
+			break;
 			
 			}
+		
 			
 	}
 void partition_dir(bool label , string exp , statement &st ){
@@ -502,3 +561,4 @@ void rtrim(string &exp){
 	get_matched(exp , reg,mat);
 	exp = exp = regex_replace(exp,reg,"");
 	}
+

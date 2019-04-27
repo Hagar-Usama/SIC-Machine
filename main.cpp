@@ -8,7 +8,7 @@
 using namespace std;
 
 // Global variables 
-vector<string> lines(0);
+vector<string> lines;
 string arr[100];
 int index = 0;
 
@@ -46,7 +46,7 @@ void read_file(string filename){
         lines.push_back(line);
         //lines[index] = line;
         arr[index++] = line;
-        cout<<"ananaa\n";    
+        cout<<arr[index-1]<<endl;;    
     }
     
     file.close();

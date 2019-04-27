@@ -363,19 +363,22 @@ int Statement::check_dir_unlab(){
 	//target : label - operation - operand - comment
 			
 			matched = extract(exp,"^\\s*[\\w]+\\s*"); //label
-			rtrim(matched);
+			//rtrim(matched);
+			trim_(matched);
 			this->label = matched;
 			matched.erase();
 		}	
 			ltrim(exp);
 			matched = extract(exp,"^\\s*\\+\\w+\\s*"); //operation
-		    rtrim(matched);
+		    //rtrim(matched);
+		    trim_(matched);
 		    
 		    this->operation = matched;
 		    
 		    matched.erase(); 
-		    rtrim(exp);
-		    ltrim(exp);
+		    //rtrim(exp);
+		    //ltrim(exp);
+		    trim_(exp);
 		    this->operand = exp;
 			this->formattype = 4;
 		 
@@ -440,7 +443,7 @@ int Statement::check_dir_unlab(){
 int main(){
 	Statement st;
 	//st.check_statement("start    1000   ;commenty");
-	st.line = "		rmo		a   ,	x ;fff";
+	st.line = "		+j	* + 5;fff";
 	//st.trim(st.line);
 	st.check_statement();
 	st.get_partitioned();

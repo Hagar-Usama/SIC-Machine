@@ -1,5 +1,5 @@
 
-
+/**
 #include <iostream>
 #include <regex>
 #include <string>
@@ -7,7 +7,7 @@
 #include <fstream>
 
 using namespace std;
-
+**/
 class Statement{
 	
 	public :
@@ -39,7 +39,7 @@ class Statement{
  int check_dir_unlab();
  
  void divide_operands();
-
+ void clear_statement();
 
  void partition_dir();
 
@@ -49,7 +49,9 @@ class Statement{
  
  
  int get_matched(string s , regex reg , string &mat);
- //void trim(string &str , string delim = "");
+ 
+ void check_part();
+
  void trim(string &str);
  string extract(string &exp , string re);
  void ltrim(string &exp);
@@ -59,8 +61,29 @@ class Statement{
 	};
 
 
-
-
+void Statement::clear_statement(){
+	line.erase();
+	label.erase();
+	operation.erase();
+	operand.erase();
+	//operand1.erase();
+	operand2.erase();
+	
+	 indexed=-1;
+	 comment.erase();
+	 storage=-1;
+	 store_op=-1;
+	 labeled=false;
+	 formattype=-1;
+	 error=-1;
+	
+	
+	}
+void Statement::check_part(){
+	check_statement();
+	get_partitioned();
+	}
+	
 int Statement:: check_indexed(){
 		string reg = "((\\w+)|\\d|\\*)\\s*((\\+|-)\\s*\\d)?\\s*(,\\s*x)";
 		regex re(reg);
@@ -440,6 +463,7 @@ int Statement::check_dir_unlab(){
 		
 //void trim_(string &s , string delim="");
 
+/**
 int main(){
 	Statement st;
 	//st.check_statement("start    1000   ;commenty");
@@ -465,3 +489,4 @@ int main(){
 	
 	}
 
+**/

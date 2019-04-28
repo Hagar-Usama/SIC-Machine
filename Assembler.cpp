@@ -38,7 +38,8 @@ class Assembler {
 	int calc_operand(const char op , string label , int address);
 	int check_complexity();
 	void print_error(int err);
-	bool check_error12();	
+	bool check_error12();
+	bool check_error10();	
 	//void get_instructions(vector<string> lines);	
 	};
 	
@@ -48,6 +49,19 @@ Assembler::Assembler(){
 	st.check_part();
 	}
 
+bool Assembler::check_error10(){
+	string mat;
+	regex reg("(c'.{1,14}')|(x'[a-f0-9]{1,15}')");
+	if(get_matched(st.operand , reg , mat)){
+		st.error = 10;
+		return false;
+		
+		}
+	 
+	
+	return true;
+	
+	}
 bool Assembler::check_error12(){
 	if(st.operand[0] != 'a' || st.operand[0] != 'b' || st.operand[0] != 'f' || st.operand[0] != 'l'|| st.operand[0] != 's'|| st.operand[0] != 't'|| st.operand[0] != 'x')
 	return true;
@@ -86,6 +100,7 @@ void Assembler::print_error(int err){
 		break;
 		
 		case 10:
+		write_ifile(" not a hexadecimal string\n");
 		break;
 		
 		case 11:
@@ -247,12 +262,16 @@ void Assembler::pass1_2(){
 				if(st.labeled){SYMTAB.insert({st.label , LOCCTR}); }
 				
 				if(st.operation.compare("word") == 0){L=3*calc_storage();} 
-				else if(st.operation.compare("byte") == 0) L=calc_storage();//length of
+				else if(st.operation.compare("byte") == 0){
+					  if(check_error10()){print_error(10);
+						  }else {L=calc_storage();}
+					
+					} 
 				else if(st.operation.compare("resw") == 0) L = 3*stoi(st.operand);
 				else if(st.operation.compare("resb") == 0) L = stoi(st.operand);
 				
 				prev_lctr = LOCCTR;
-				LOCCTR += L;
+				if(st.error !=0) LOCCTR += L;
 
 				write_line();
 			}

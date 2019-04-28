@@ -14,6 +14,7 @@ vector<string> lines;
 class Assembler {
 	public:
 	int LOCCTR;
+	int prev_lctr;
 	int line_no;
 	int start_address;
 	
@@ -35,7 +36,9 @@ class Assembler {
 	void read_next();
 	int get_length();
 	int calc_operand(const char op , string label , int address);
-	int check_complexity();	
+	int check_complexity();
+	void print_error(int err);
+	bool check_error12();	
 	//void get_instructions(vector<string> lines);	
 	};
 	
@@ -44,7 +47,65 @@ Assembler::Assembler(){
 	this->st.line = lines[0];
 	st.check_part();
 	}
+
+bool Assembler::check_error12(){
+	if(st.operand[0] != 'a' || st.operand[0] != 'b' || st.operand[0] != 'f' || st.operand[0] != 'l'|| st.operand[0] != 's'|| st.operand[0] != 't'|| st.operand[0] != 'x')
+	return true;
+	if(st.operand.back() != 'a' || st.operand.back() != 'b' || st.operand.back() != 'f' || st.operand.back() != 'l'|| st.operand.back() != 's'|| st.operand.back() != 't'|| st.operand.back() != 'x')
+	return true;
+	return false;
+	}	
+void Assembler::print_error(int err){
+	write_ifile("\t\t\t ***** Error : ");
+	switch (err){
+		case 1:
+		break;
+		
+		case 2:
+		break;
+		
+		case 3:
+		break;
+		
+		case 4:
+		break;
+		
+		case 5:
+		break;
+		
+		case 6:
+		break;
+		
+		case 7:
+		break;
+		
+		case 8:
+		break;
+		
+		case 9:
+		break;
+		
+		case 10:
+		break;
+		
+		case 11:
+		break;
+		
+		case 12:
+		write_ifile(" illegal address for a resiger\n");
+		break;
+		
+		case 13:
+		write_ifile(" missing end statement\n");
+		break;
+		
+		default:
+		return;
+		
+		
+		}
 	
+	}
 int Assembler::calc_operand(const char op, string label , int address){
 	
 	int found = find_key(SYMTAB , label);
@@ -81,20 +142,11 @@ int Assembler::check_complexity(){
 		
 		op = part.c_str(); //get operation // now op points to part (what we need)
 		opp = *op;
-		//cout<<"operation : " <<op<<endl;
-		//cout<<"opperation : " <<opp<<endl;
 		
 		re = "^.*\\s";
 		part = extract(str,re); //get label/variable
 		
-		//cout<<"Label : " <<part<<endl;
-		//cout<<"operation : " <<opp<<endl;
-		//cout<<"address : " <<str<<endl;
-		
-								//str is hex address
-		//int address = stoi(str, 0, 16);						
-	    
-	    int address = calc_operand(opp , part ,stoi(str, 0, 16));
+	    int address = calc_operand(opp , part ,stoi(str, 0, 10));
 		if(address !=-1) return address;
 		return -1;
 		
@@ -147,24 +199,42 @@ void Assembler::pass1_1(){
 void Assembler::pass1_2(){
 	read_next();
 	int L , V;
+	unsigned int count=1;
 	
-	while(st.operation.compare("end") != 0){
+	while((st.operation.compare("end") != 0)){
+		
 		//if instruction
 		if(st.formattype > 1 && st.formattype < 5){
 			if(st.labeled){
 				//mp.insert({ 2, 30 });
 				SYMTAB.insert({st.label , LOCCTR});
-								
 				}
-			L = get_length();
-			LOCCTR += L;
-			//if there is a literal in operand field then insert into LITTAB
 				
+			if(st.formattype == 2) {
+				
+				if(check_error12()) st.error = 12;
+				print_error(12);
+				;
+				}
+					
+			print_statement_part();
+			prev_lctr = LOCCTR;
+			
+			if(st.error == 0){
+				L = get_length();
+				//prev_lctr = LOCCTR;
+				LOCCTR += L;
+				//if there is a literal in operand field then insert into LITTAB
+				//write_line();
+				
+				}
+			write_line();	
 		}
 		
 		
 		else{
 			if(st.operation.compare("org") == 0){
+				prev_lctr = LOCCTR;
 				LOCCTR = stoi(st.operand);
 			}else if(st.operation.compare("equ") == 0){
 				
@@ -175,23 +245,29 @@ void Assembler::pass1_2(){
 				
 			}else{
 				if(st.labeled){SYMTAB.insert({st.label , LOCCTR}); }
-				if(st.operation.compare("word") == 0) L=3; // 3* #(,)-1
-				if(st.operation.compare("byte") == 0) L=calc_storage();//length of
-				if(st.operation.compare("resw") == 0) L = 3*stoi(st.operand);
-				if(st.operation.compare("resb") == 0) L = stoi(st.operand);
 				
+				if(st.operation.compare("word") == 0){L=3*calc_storage();} 
+				else if(st.operation.compare("byte") == 0) L=calc_storage();//length of
+				else if(st.operation.compare("resw") == 0) L = 3*stoi(st.operand);
+				else if(st.operation.compare("resb") == 0) L = stoi(st.operand);
+				
+				prev_lctr = LOCCTR;
 				LOCCTR += L;
-					
+
+				write_line();
 			}
 			
 			
 		} 
 		
-		write_line();
+		count++;
+		if(count > lines.size()) break;
+		
 		read_next();
 		}//end of while
 	
-	
+	if(st.operation.compare("end") == 0){write_line();}
+	else{print_error(13);}	
 	
 	}
 
@@ -199,7 +275,7 @@ void Assembler::write_line(){
 	
 		write_ifile(line_no);
 		write_ifile("\t\t");
-		write_ifile(LOCCTR);
+		write_ifile(prev_lctr);
 		write_ifile("\t\t");
 		write_ifile(st.label);
 		write_ifile("\t\t");
@@ -214,9 +290,21 @@ void Assembler::write_line(){
 	
 	}
 int Assembler::calc_storage(){
-	//returns the length of storage in bytes
-	//needs work
-	return 1;
+	
+	
+	int len;
+	if(st.operand[0] == 'x'){
+		len = (st.operand.size() - 3)/2;
+		return (len > 0) ? len : 1;
+	}else if(st.operand[0] == 'c'){
+		return st.operand.size()-3;
+	}else{
+		
+		return std::count(st.operand.begin(), st.operand.end(), ',')+1;
+		
+		}
+	
+	return -1;
 	}
 int Assembler::get_length(){
 	switch(st.formattype){

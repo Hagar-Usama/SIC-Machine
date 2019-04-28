@@ -81,7 +81,7 @@ int main(){
 	read_file("src.txt");
 	//write_dic("listfile.txt","Line no\t\tAddress\t\tLabel\t\tMnemonic\t\tOperands\t\tComments\n");
 	Assembler ass;
-	//ass.st.line = "label equ	ett + 5";
+	//ass.st.line = "label equ	1000";
 	//ass.SYMTAB.insert({"ett" , 1000});
 	//ass.st.check_part();
 	/*
@@ -90,6 +90,7 @@ int main(){
 	cout<<ass.check_complexity()<<endl;
 	cout<<"*.*.*.*.*."<<endl;
 	*/
+	
 	ass.pass1_1();
 	ass.pass1_2();
 	ass.print_statement_part();

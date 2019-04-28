@@ -13,8 +13,6 @@
 #define MAX 100
 using namespace std;
 
-
-
 string split(string &line ,int length);
 
 void write_dic(string filename , string str);
@@ -29,15 +27,49 @@ void try_write(string filename , string str);
 #include "Assembler.cpp"
 
 
-int main(){
-	//read_file("src.txt");
-	//cout<<lines.size();
-	//lines.push_back("ddd");
-	//cout<<lines.size()<<" "<<lines[0];
-	//try_write("ss.txt" , "\nhi");
+void check_it(string exp){
+	//string str(" label+");
+	string str = exp;
+	char op;
+	//string re("^\\s*\\b([a-z]){1}\\w{0,7}\\s*(\\+|-|\\*)");
+	string re("\\+|-|\\*|/");
+	string part;
 	
-	//write_dic("ss.txt","hello from dic");
-	//write_dic("ss.txt" , "Hello again");
+	//now string has no whitespaces
+	trim_(str);
+	part = extract(str,re," "); //operation
+	if(part.size()){
+		//trim_(part);
+		cout<<"mode 1 "<<endl;
+		cout<<"operation " << part<<endl;
+		re = "^.*\\s";
+		part = extract(str,re);
+		cout<<part<<endl;
+		cout<<str<<endl;
+		
+	}else{
+		/*
+		//check for just hex
+		re= "^\\s*+[a-f0-9]{1,4}";
+		string part = extract(str,re);
+		cout<<"mode 2 "<<endl;
+		cout<<part<<endl;
+		*/
+		}
+	
+	
+	}
+
+
+
+
+int main(){
+	
+	check_it("		label	/	15");
+	check_it("1ff5");
+	
+	
+	//cout<<str<<endl;
 	
 	read_file("src.txt");
 	//write_dic("listfile.txt","Line no\t\tAddress\t\tLabel\t\tMnemonic\t\tOperands\t\tComments\n");

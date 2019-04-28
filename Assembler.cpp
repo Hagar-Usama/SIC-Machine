@@ -21,15 +21,18 @@ class Assembler {
 	
 	Assembler();
 	void object_file();
+	
 	void pass1_1();
+	void pass1_2();
+
 	void print_statement_part();
 	void write_ifile(string str);
-	void write_ifile(int num);
+	void write_ifile(int num , int mode=1);
 	void write_line();
 	int calc_storage();
 	void read_next();
 	int get_length();
-	void pass1_2();
+	int check_complexity();	
 	//void get_instructions(vector<string> lines);	
 	};
 	
@@ -39,6 +42,11 @@ Assembler::Assembler(){
 	st.check_part();
 	}
 	
+int check_complexity(){
+	
+	
+	return 1;
+	}	
 void Assembler::pass1_1(){
 	
 	if( st.operation.compare("start") == 0){
@@ -200,7 +208,7 @@ void Assembler::write_ifile(string str){
 	
 	}
 
-void Assembler::write_ifile(int num){
+void Assembler::write_ifile(int num , int mode){
 	
 	FILE *fp;
 	

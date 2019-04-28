@@ -8,6 +8,15 @@
 
 using namespace std;
 **/
+
+
+
+ void trim(string &str);
+ string extract(string &exp , string re , string delim="");
+ void ltrim(string &exp);
+ void rtrim(string &exp);
+ void trim_(string &s , string delim="");
+ 
 class Statement{
 	
 	public :
@@ -51,13 +60,13 @@ class Statement{
  int get_matched(string s , regex reg , string &mat);
  
  void check_part();
-
+/**
  void trim(string &str);
  string extract(string &exp , string re);
  void ltrim(string &exp);
  void rtrim(string &exp);
  void trim_(string &s , string delim="");
- 
+ **/
 	};
 
 
@@ -407,8 +416,8 @@ int Statement::check_dir_unlab(){
 		 
 		 }
 	 
-	 int Statement::get_matched(string s , regex reg , string &mat){
-		 smatch match;
+	int get_matched(string s , regex reg , string &mat){
+	smatch match;
 	if(regex_search(s,match,reg) == true){
 		mat = match.str(0);
 		return 1;
@@ -418,7 +427,7 @@ int Statement::check_dir_unlab(){
 		 }
 		 
 		  
-	  void Statement::trim(string &str){
+	  void trim(string &str){
 		 
 		 if(str.size()){
 			regex ret(".[^\\s]+");
@@ -429,18 +438,18 @@ int Statement::check_dir_unlab(){
 		 }
 
 	
-	 string Statement::extract(string &exp , string re){
+	 string extract(string &exp , string re , string delim){
 		 
-		 regex reg(re);
+		regex reg(re);
 		string matched;
 		get_matched(exp, reg , matched);
 		trim(matched);
-		exp = regex_replace(exp,reg, "");
+		exp = regex_replace(exp,reg, delim);
 		//cout<<"<"<<exp<<"<"<<endl;
 		return matched;
 		 }
 	
-	 void Statement::ltrim(string &exp){
+	 void ltrim(string &exp){
 		 regex reg("^\\s*");
 		string mat;
 		get_matched(exp , reg,mat);
@@ -448,7 +457,7 @@ int Statement::check_dir_unlab(){
 	 }
 	 
 	 
-	 void Statement::rtrim(string &exp){
+	 void rtrim(string &exp){
 	regex reg("(\\s*)$");
 	string mat;
 	get_matched(exp ,reg,mat);
@@ -456,7 +465,7 @@ int Statement::check_dir_unlab(){
 		 
 		 }
 
-	void Statement::trim_(string &exp , string delim){
+	void trim_(string &exp , string delim){
 	regex reg("\\s+");
 	exp = regex_replace(exp,reg,delim);
 	}

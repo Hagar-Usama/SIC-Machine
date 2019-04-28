@@ -22,15 +22,15 @@ void write_file(string filename , string str);
 //void write_file(string filename , int num);
 void try_write(string filename , string str);
 
-
+int find_key(map<string,int> mp , string label);
 #include "Statement.cpp"
 #include "Assembler.cpp"
 
-
+/**
 void check_it(string exp){
 	//string str(" label+");
 	string str = exp;
-	char op;
+	const char* op;
 	//string re("^\\s*\\b([a-z]){1}\\w{0,7}\\s*(\\+|-|\\*)");
 	string re("\\+|-|\\*|/");
 	string part;
@@ -41,32 +41,39 @@ void check_it(string exp){
 	if(part.size()){
 		//trim_(part);
 		cout<<"mode 1 "<<endl;
+		op = part.c_str();
+		cout<<op<<endl;
 		cout<<"operation " << part<<endl;
+		
 		re = "^.*\\s";
 		part = extract(str,re);
 		cout<<part<<endl;
 		cout<<str<<endl;
 		
+		//call fun abc(mode , )
 	}else{
-		/*
+		
+		trim_(str);
+		cout<<"abs address "<<str<<endl;
+		
 		//check for just hex
 		re= "^\\s*+[a-f0-9]{1,4}";
 		string part = extract(str,re);
 		cout<<"mode 2 "<<endl;
 		cout<<part<<endl;
-		*/
+	
 		}
 	
 	
 	}
-
+**/
 
 
 
 int main(){
 	
-	check_it("		label	/	15");
-	check_it("1ff5");
+	//check_it("		label	/	15");
+	//check_it("1ff5");
 	
 	
 	//cout<<str<<endl;
@@ -74,6 +81,15 @@ int main(){
 	read_file("src.txt");
 	//write_dic("listfile.txt","Line no\t\tAddress\t\tLabel\t\tMnemonic\t\tOperands\t\tComments\n");
 	Assembler ass;
+	//ass.st.line = "label equ	ett + 5";
+	//ass.SYMTAB.insert({"ett" , 1000});
+	//ass.st.check_part();
+	/*
+	cout<<"*.*.*.*.*."<<endl;
+	cout<<find_key(ass.SYMTAB , "ett")<<endl;
+	cout<<ass.check_complexity()<<endl;
+	cout<<"*.*.*.*.*."<<endl;
+	*/
 	ass.pass1_1();
 	ass.pass1_2();
 	ass.print_statement_part();
@@ -86,6 +102,16 @@ int main(){
 return 0;	
 }
 
+int find_key(map<string,int> mp , string label){
+	map<string, int>::iterator it ;
+	it = mp.find(label); 
+    if(it == mp.end())
+		return -1;          
+	return it->second; 
+      
+	}
+	
+	
 void read_file(string filename){
 	
 	ifstream file(filename);
@@ -140,9 +166,6 @@ void write_dic(string filename , string str){
 				fprintf (fp, "%s", str.c_str() );
 			}
 		
-		
-
-
   fclose(fp);
 
 	}

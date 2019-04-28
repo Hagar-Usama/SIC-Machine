@@ -39,7 +39,10 @@ class Assembler {
 	int check_complexity();
 	void print_error(int err);
 	bool check_error12();
-	bool check_error10();	
+	bool check_error10();
+	bool check_error5();
+	bool check_error11();
+	bool have_error();	
 	//void get_instructions(vector<string> lines);	
 	};
 	
@@ -48,55 +51,119 @@ Assembler::Assembler(){
 	this->st.line = lines[0];
 	st.check_part();
 	}
+	
+bool Assembler::have_error(){
+	bool flag;
+	if(st.operation.compare("byte") == 0)
+	{	
+		cout<<"not a hexa"<<endl;
+		return check_error10();
+	}
+	if(st.operation.compare("org") == 0 || st.operation.compare("base") == 0 || st.operation.compare("end") == 0){
+		cout<<"can't have lab"<<endl;
+		return check_error5();
+	}
+	
+	if(st.formattype == 2){
+		cout<<"illegal"<<endl;
+		flag = check_error11();
+		if(flag) return flag;
+		return check_error12();
+	} 
+	
+	return false;
+	}
+	
+bool Assembler::check_error11(){
+	if(st.operation[0] == '+'){
+		st.error = 11;
+		print_error(11);
+		return true;
+		}
+	return false;
+	}
+	
+bool Assembler::check_error5(){
+	if(st.labeled){
+		
+		print_error(5);
+		return true;
+		} 
+	
+	if(st.error == 5){
+		print_error(5);
+		return true;
+	}
+	
+	return false;
+	}	
+
 
 bool Assembler::check_error10(){
 	string mat;
 	regex reg("(c'.{1,14}')|(x'[a-f0-9]{1,15}')");
 	if(get_matched(st.operand , reg , mat)){
-		st.error = 10;
-		return false;
 		
+		return false;
 		}
 	 
-	
+		st.error = 10;
+		//cout<<"entered error 10"<<endl;
+		print_error(10);
 	return true;
 	
 	}
 bool Assembler::check_error12(){
 	if(st.operand[0] != 'a' || st.operand[0] != 'b' || st.operand[0] != 'f' || st.operand[0] != 'l'|| st.operand[0] != 's'|| st.operand[0] != 't'|| st.operand[0] != 'x')
-	return true;
+	{
+		print_error(12);
+		return true;
+		}
 	if(st.operand.back() != 'a' || st.operand.back() != 'b' || st.operand.back() != 'f' || st.operand.back() != 'l'|| st.operand.back() != 's'|| st.operand.back() != 't'|| st.operand.back() != 'x')
-	return true;
+	{	print_error(12);
+		return true;
+		}
 	return false;
 	}	
+
+
 void Assembler::print_error(int err){
 	write_ifile("\t\t\t ***** Error : ");
 	switch (err){
 		case 1:
+		write_ifile(" misplaced label\n");
 		break;
 		
 		case 2:
+		write_ifile(" missing or misplaced operation mnemonic\n");
 		break;
 		
 		case 3:
+		write_ifile(" missing or misplace operand file\n");
 		break;
 		
 		case 4:
+		write_ifile(" duplicate label defition\n");
 		break;
 		
 		case 5:
+		write_ifile(" this statement can't have a label\n");
 		break;
 		
 		case 6:
+		write_ifile(" this statement can't have an operand\n");
 		break;
 		
 		case 7:
+		write_ifile(" wrong operation prefix\n");
 		break;
 		
 		case 8:
+		write_ifile(" unrecognized operation code\n");
 		break;
 		
 		case 9:
+		write_ifile(" undefined symbol in operand\n");
 		break;
 		
 		case 10:
@@ -104,6 +171,7 @@ void Assembler::print_error(int err){
 		break;
 		
 		case 11:
+		write_ifile(" can't be format 4 instruction\n");
 		break;
 		
 		case 12:
@@ -216,38 +284,38 @@ void Assembler::pass1_2(){
 	int L , V;
 	unsigned int count=1;
 	
+	
 	while((st.operation.compare("end") != 0)){
 		
-		//if instruction
+	if(!have_error()){
+			
+			//if instruction
 		if(st.formattype > 1 && st.formattype < 5){
 			if(st.labeled){
 				//mp.insert({ 2, 30 });
 				SYMTAB.insert({st.label , LOCCTR});
 				}
 				
-			if(st.formattype == 2) {
-				
-				if(check_error12()) st.error = 12;
-				print_error(12);
-				;
-				}
 					
-			print_statement_part();
+			
 			prev_lctr = LOCCTR;
 			
-			if(st.error == 0){
-				L = get_length();
-				//prev_lctr = LOCCTR;
-				LOCCTR += L;
-				//if there is a literal in operand field then insert into LITTAB
-				//write_line();
+			
+			L = get_length();
+			LOCCTR += L;
 				
-				}
-			write_line();	
+			//if there is a literal in operand field then insert into LITTAB
+				
+			
+				
+				
+				
 		}
 		
-		
+		// if directive
 		else{
+			
+			
 			if(st.operation.compare("org") == 0){
 				prev_lctr = LOCCTR;
 				LOCCTR = stoi(st.operand);
@@ -263,25 +331,31 @@ void Assembler::pass1_2(){
 				
 				if(st.operation.compare("word") == 0){L=3*calc_storage();} 
 				else if(st.operation.compare("byte") == 0){
-					  if(check_error10()){print_error(10);
-						  }else {L=calc_storage();}
-					
-					} 
+					if(!check_error10()) L=calc_storage();
+				} 
 				else if(st.operation.compare("resw") == 0) L = 3*stoi(st.operand);
 				else if(st.operation.compare("resb") == 0) L = stoi(st.operand);
 				
 				prev_lctr = LOCCTR;
-				if(st.error !=0) LOCCTR += L;
+				LOCCTR += L;
 
-				write_line();
+				
 			}
 			
 			
 		} 
 		
+		print_statement_part();
 		count++;
+		//needs handling
 		if(count > lines.size()) break;
 		
+			
+			
+	}else{
+			 prev_lctr = LOCCTR;
+		}
+		write_line();
 		read_next();
 		}//end of while
 	

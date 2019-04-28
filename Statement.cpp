@@ -46,7 +46,7 @@ class Statement{
  int check_format2_unlab();
  int check_dir_lab();
  int check_dir_unlab();
- 
+ int check_dir_not(); 
  void divide_operands();
  void clear_statement();
 
@@ -123,6 +123,7 @@ int Statement::check_statement(){
 	 * 
 	 * */
 	if(check_comment()) return 1;
+	if(check_dir_not()) return 1;
 	if(check_dir_unlab())return 1;
 	if(check_dir_lab())return 1;
 	if(check_format2_unlab())return 1;
@@ -224,7 +225,7 @@ int Statement::check_format3_unlab(){
 int Statement::check_format2_lab(){
 		 
 		 string input;
-	 string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)((\\b(rmo|addr|subr|compr)\\s+[a-z]\\s*,\\s*)|(\\b(tixr)\\s+))[a-z]\\s*(;.*)?"; 
+	 string reg = "\\s*\\+?((\\b([a-z]){1}\\w{0,7})\\s+)((\\b(rmo|addr|subr|compr)\\s+[a-z]\\s*,\\s*)|(\\b(tixr)\\s+))[a-z]\\s*(;.*)?"; 
 	 //string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)((\\b(rmo|addr|subr|compr)\\s+\\b(a|x|l|b|s|t|f)\\s*,\\s*)|(\\b(tixr)\\s+))\\b(a|x|l|b|s|t|f)\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(this->line,re)){
@@ -244,7 +245,7 @@ int Statement::check_format2_lab(){
 int Statement::check_format2_unlab(){
 		
 	 string input;
-	 string reg = "\\s*((\\b(rmo|addr|subr|compr)\\s+[a-z]\\s*,\\s*)|(\\b(tixr)\\s+))[a-z]\\s*(;.*)?"; 
+	 string reg = "\\s*\\+?((\\b(rmo|addr|subr|compr)\\s+[a-z]\\s*,\\s*)|(\\b(tixr)\\s+))[a-z]\\s*(;.*)?"; 
 	 //string reg = "\\s*((\\b(rmo|addr|subr|compr)\\s+\\b(a|x|l|b|s|t|f)\\s*,\\s*)|(\\b(tixr)\\s+))\\b(a|x|l|b|s|t|f)\\s*(;.*)?"; 
 	 regex re(reg);
  		if(regex_match(this->line,re)){
@@ -260,7 +261,19 @@ int Statement::check_format2_unlab(){
 		
 		}
 		
-	 
+int Statement::check_dir_not(){
+		
+	string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s+((\\b(end)(\\s+\\b(){1}\\w{1,7})?)|(\\b(org)(\\s+\\b(){1}\\w{1,7}))|(\\b(base)\\s+((\\b(){1}\\w{1,7})|\\*)))\\s*(;.*)?";
+	 regex re(reg);
+ 		if(regex_match(this->line,re)){
+			this->labeled = true;
+			this->formattype = 1; 
+			return 1;		
+			}
+ 		
+	return 0;
+ 		
+	}	 
 int Statement::check_dir_lab(){
 	 string input;
 	 //"(\\b(equ)\\s+(\\b([a-z]){1}\\w{0,7}\\s*(\\+\\s*\\d{1,4})?)|\\d{1,4})"
@@ -281,13 +294,14 @@ int Statement::check_dir_lab(){
 
 int Statement::check_dir_unlab(){
 	string input;
+	
 	 string reg = "\\s*((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-z0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(end)(\\s+\\b(){1}\\w{1,7})?)|(\\b(org)(\\s+\\b(){1}\\w{1,7}))|(\\b(base)\\s+((\\b(){1}\\w{1,7})|\\*)))\\s*(;.*)?";
 	 
 	 regex re(reg);
 		
  		if(regex_match(this->line,re)){
 			this->labeled = false;
-			this->formattype = 2;
+			this->formattype = 1;
 			return 1;		
 			}
  		else
@@ -334,7 +348,7 @@ int Statement::check_dir_unlab(){
 			matched.erase();
 		}	
 			ltrim(exp);
-			matched = extract(exp,"^\\s*[\\w]+\\s*"); //operation
+			matched = extract(exp,"^\\s*\\+?[\\w]+\\s*"); //operation
 		    //rtrim(matched);
 		    trim_(matched);
 		    this->operation = matched;

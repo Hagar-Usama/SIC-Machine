@@ -81,9 +81,12 @@ int main(){
 	read_file("src.txt");
 	//write_dic("listfile.txt","Line no\t\tAddress\t\tLabel\t\tMnemonic\t\tOperands\t\tComments\n");
 	Assembler ass;
-	//ass.st.line = "label equ	1000";
+	//ass.st.line = "byte x'ddreff'";
 	//ass.SYMTAB.insert({"ett" , 1000});
 	//ass.st.check_part();
+	//ass.print_statement_part();
+	//cout<<"***"<<ass.st.formattype<<"***\n";
+	//ass.have_error();
 	/*
 	cout<<"*.*.*.*.*."<<endl;
 	cout<<find_key(ass.SYMTAB , "ett")<<endl;

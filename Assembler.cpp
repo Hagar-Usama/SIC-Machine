@@ -42,8 +42,9 @@ class Assembler {
 	bool check_error9();
 	bool check_error10();
 	bool check_error5();
-	bool check_error11();
+	bool check_error7();
 	bool check_error4();
+	bool check_error8();
 	bool have_error();	
 	
 	
@@ -62,14 +63,22 @@ int Assembler::check_symbol(){
 	oper = st.operand;
 	extract(oper , ",x");
 	extract(oper,"\\+");
-	
-	//return find_key(SYMTAB , oper);
+	extract(oper,"#");
+	extract(oper,"@");
+	//extract(oper,"\\*");
+	if(oper[0] == '*') return 1;
+	oper = extract(oper,"^\\d+");
+	if(oper.size() >0){return 1;}
+	else{
+		return find_key(SYMTAB , oper);
+		}
+
 	return -1;
 	
 	}	
 bool Assembler::have_error(){
 	bool flag;
-	
+	if(st.check_statement() == -1) return check_error8();
 	if(st.labeled) return check_error4();
 	
 	if(st.operation.compare("byte") == 0)
@@ -84,7 +93,7 @@ bool Assembler::have_error(){
 	
 	if(st.formattype == 2){
 		cout<<"illegal"<<endl;
-		flag = check_error11();
+		flag = check_error7();
 		if(flag) return flag;
 		return check_error12();
 	} 
@@ -95,6 +104,11 @@ bool Assembler::have_error(){
 	return false;
 	}
 
+bool Assembler::check_error8(){
+		print_error(8);
+		st.operation = st.line;
+		return true;
+	}
 bool Assembler::check_error9(){
 		cout<<"enter check error9 \n";
 		int k = check_symbol();
@@ -117,10 +131,10 @@ bool Assembler::check_error4(){
 	return false;	
 	}
 	
-bool Assembler::check_error11(){
+bool Assembler::check_error7(){
 	if(st.operation[0] == '+'){
-		st.error = 11;
-		print_error(11);
+		st.error = 7;
+		print_error(7);
 		return true;
 		}
 	return false;
@@ -218,7 +232,7 @@ void Assembler::print_error(int err){
 		break;
 		
 		case 12:
-		write_ifile(" illegal address for a resiger\n");
+		write_ifile(" illegal address for a register\n");
 		break;
 		
 		case 13:

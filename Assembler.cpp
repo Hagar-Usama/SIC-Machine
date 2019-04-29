@@ -17,6 +17,7 @@ class Assembler {
 	int LOCCTR;
 	int prev_lctr;
 	unsigned int line_no;
+	bool mode;
 	int start_address;
 	Statement st;
 	map<string,int> SYMTAB;
@@ -195,16 +196,39 @@ bool Assembler::check_error10(){
 	
 	}
 bool Assembler::check_error12(){
-	if(st.operand[0] != 'a' || st.operand[0] != 'b' || st.operand[0] != 'f' || st.operand[0] != 'l'|| st.operand[0] != 's'|| st.operand[0] != 't'|| st.operand[0] != 'x')
-	{
-		print_error(12);
+	char top = st.operand[0];
+	char back = st.operand.back();
+	
+	cout<<"**top**"<<top<<endl;
+	cout<<"**back**"<<back<<endl;
+	switch (top){
+		case 'a':
+		case 'b':
+		case 'f':
+		case 'l':
+		case 's':
+		case 't':
+		case 'x':
+		break;
+		default:
 		return true;
 		}
-	if(st.operand.back() != 'a' || st.operand.back() != 'b' || st.operand.back() != 'f' || st.operand.back() != 'l'|| st.operand.back() != 's'|| st.operand.back() != 't'|| st.operand.back() != 'x')
-	{	print_error(12);
+		
+	switch (back){
+		case 'a':
+		case 'b':
+		case 'f':
+		case 'l':
+		case 's':
+		case 't':
+		case 'x':
+		break;
+		default:
 		return true;
 		}
-	return false;
+		
+		return false;
+	
 	}	
 
 

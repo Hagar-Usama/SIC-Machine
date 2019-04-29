@@ -33,10 +33,11 @@ class Statement{
 	 bool labeled;
 	 int formattype;
 	 int error;
-	Statement(){ error = 0;};
+	Statement(){ error = -1;};
 	 
  int check_indexed();
  int check_statement();	 
+ int check_not_implemented();
  int check_comment();
  int check_format4_lab();
  int check_format4_unlab();	 
@@ -84,12 +85,13 @@ void Statement::clear_statement(){
 	 store_op=-1;
 	 labeled=false;
 	 formattype=-1;
-	 error=0;
+	 error=-1;
 	
 	
 	}
 void Statement::check_part(){
-	check_statement();
+	
+	if(check_statement() == 1)
 	get_partitioned();
 	}
 	
@@ -110,18 +112,9 @@ int Statement:: check_indexed(){
 int Statement::check_statement(){
 		 /**
 		  * modified : now label and format included in each check
-	 * return -1 if error
-	 * return  0 if comment
-	 * return 10 if dir 	 unlabeled
-	 * return 11 if dir 	 labeled
-	 * return 20 if format 2 unlabeled
-	 * return 21 if format 2 labeled
-	 * return 30 if format 3 unlabeled
-	 * return 31 if format 3 labeled
-	 * return 40 if format 4 unlabeled
-	 * return 41 if format 4 labeled
-	 * 
+	  
 	 * */
+	if(check_not_implemented()) return -1;
 	if(check_comment()) return 1;
 	if(check_dir_not()) return 1;
 	if(check_dir_unlab())return 1;
@@ -136,7 +129,23 @@ int Statement::check_statement(){
 	return -1;	 
 		 }
 		 	 
-	 
+int Statement::check_not_implemented(){
+	
+	//LTORG to be remove if to be used later
+	string reg ="\\s*(.+\\s+)?\\b(nobase|extdef|extref|use|csect|ltorg|td|rsub)\\s*(\\s+.+)?";
+	regex re(reg);
+ 		if(regex_match(this->line,re)){
+			this->labeled = false;
+			this->formattype = -2;
+			this->error = 0;
+			cout<<"this is not implemented"<<endl;
+			return 1;		
+			
+			}
+ 	
+		return 0;
+ 		 
+	}
 int Statement::check_comment(){
 	string reg = "\\s*\\..*"; 
 	 regex re(reg);
@@ -225,6 +234,7 @@ int Statement::check_format3_unlab(){
 int Statement::check_format2_lab(){
 		 
 		 string input;
+		 //format 2 doesn't have prefix + but this just for check error 7
 	 string reg = "\\s*\\+?((\\b([a-z]){1}\\w{0,7})\\s+)((\\b(rmo|addr|subr|compr)\\s+[a-z]\\s*,\\s*)|(\\b(tixr)\\s+))[a-z]\\s*(;.*)?"; 
 	 //string reg = "\\s*((\\b([a-z]){1}\\w{0,7})\\s+)((\\b(rmo|addr|subr|compr)\\s+\\b(a|x|l|b|s|t|f)\\s*,\\s*)|(\\b(tixr)\\s+))\\b(a|x|l|b|s|t|f)\\s*(;.*)?"; 
 	 regex re(reg);

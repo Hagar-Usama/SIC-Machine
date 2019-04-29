@@ -7,7 +7,7 @@ vector<string> lines;
  * Replace STOI whith another function that handle any format //done
  * Mind ORG 
  * check error if label is a register 
- * directives not implemented should be ignored with a warning
+ * directives not implemented should be ignored with a warning //done
  * 
  **/
  
@@ -16,10 +16,8 @@ class Assembler {
 	public:
 	int LOCCTR;
 	int prev_lctr;
-	int line_no;
+	unsigned int line_no;
 	int start_address;
-	
-	//vector<Instruction> inst;
 	Statement st;
 	map<string,int> SYMTAB;
 	
@@ -46,11 +44,11 @@ class Assembler {
 	bool check_error7();
 	bool check_error4();
 	bool check_error8();
+	bool check_warning();
 	bool have_error();	
 	
 	void print_map();
 	int check_symbol();
-	//void get_instructions(vector<string> lines);	
 	};
 	
 Assembler::Assembler(){
@@ -60,12 +58,12 @@ Assembler::Assembler(){
 	}
 
 void Assembler::print_map(){
-	write_ifile("\t\t\t*.*.*.*.*SYMBOL TABLE*.*.*.*.*\n");
+	write_ifile("\n\n\t\t\t*.*.*.*.*SYMBOL TABLE*.*.*.*.*\n");
 	write_ifile("\t\t\tSYMBOL\t\t\tADDRESS\n");
 	for(map<string, int >::const_iterator it = SYMTAB.begin();
     it != SYMTAB.end(); ++it)
 {
-    std::cout << it->first << " " << it->second<< "\n";
+    //std::cout << it->first << " " << it->second<< "\n";
     write_ifile("\t\t\t");
     write_ifile(it->first);
     write_ifile("\t\t\t");
@@ -77,7 +75,7 @@ write_ifile("\t\t\t*.*.*.*.*.*.*.*.*.*.*.*.*.*.*\n");
 	
 }
 int Assembler::check_symbol(){
-	string oper;
+	string oper , temp;
 	oper = st.operand;
 	extract(oper , ",x");
 	extract(oper,"\\+");
@@ -85,17 +83,20 @@ int Assembler::check_symbol(){
 	extract(oper,"@");
 	//extract(oper,"\\*");
 	if(oper[0] == '*') return 1;
-	oper = extract(oper,"^\\d+");
-	if(oper.size() >0){return 1;}
-	else{
+	
+	temp = extract(oper,"^\\d+");
+	cout<<"oper size : "<<oper.size()<<endl;
+	cout<<"oper here is " <<oper<<endl;
+	//after extracting numbers and symbol if there is a label?
+	if(oper.size() >0){
 		return find_key(SYMTAB , oper);
 		}
-
-	return -1;
+		return 1;
 	
 	}	
 bool Assembler::have_error(){
 	bool flag;
+	if(st.error == 0) {return check_warning();}
 	if(st.check_statement() == -1) return check_error8();
 	if(st.labeled) return check_error4();
 	
@@ -122,13 +123,18 @@ bool Assembler::have_error(){
 	return false;
 	}
 
+bool Assembler::check_warning(){
+	print_error(0);
+	st.operation = st.line;
+	return true;
+	}
 bool Assembler::check_error8(){
 		print_error(8);
 		st.operation = st.line;
 		return true;
 	}
 bool Assembler::check_error9(){
-		cout<<"enter check error9 \n";
+		//cout<<"enter check error9 \n";
 		int k = check_symbol();
 	//if key is found >> defined
 	if(k !=-1)	
@@ -203,58 +209,61 @@ bool Assembler::check_error12(){
 
 
 void Assembler::print_error(int err){
-	write_ifile("\t\t\t ***** Error : ");
+	
 	switch (err){
+		case 0:
+		write_ifile("\t\t\t ***** Warning : Not implemented (ignored)\n");
+		break;
 		case 1:
-		write_ifile(" misplaced label\n");
+		write_ifile("\t\t\t ***** Error :  misplaced label\n");
 		break;
 		
 		case 2:
-		write_ifile(" missing or misplaced operation mnemonic\n");
+		write_ifile("\t\t\t ***** Error :  missing or misplaced operation mnemonic\n");
 		break;
 		
 		case 3:
-		write_ifile(" missing or misplace operand file\n");
+		write_ifile("\t\t\t ***** Error :  missing or misplace operand file\n");
 		break;
 		
 		case 4:
-		write_ifile(" duplicate label defition\n");
+		write_ifile("\t\t\t ***** Error :  duplicate label defition\n");
 		break;
 		
 		case 5:
-		write_ifile(" this statement can't have a label\n");
+		write_ifile("\t\t\t ***** Error :  this statement can't have a label\n");
 		break;
 		
 		case 6:
-		write_ifile(" this statement can't have an operand\n");
+		write_ifile("\t\t\t ***** Error :  this statement can't have an operand\n");
 		break;
 		
 		case 7:
-		write_ifile(" wrong operation prefix\n");
+		write_ifile("\t\t\t ***** Error :  wrong operation prefix\n");
 		break;
 		
 		case 8:
-		write_ifile(" unrecognized operation code\n");
+		write_ifile("\t\t\t ***** Error :  unrecognized operation code\n");
 		break;
 		
 		case 9:
-		write_ifile(" undefined symbol in operand\n");
+		write_ifile("\t\t\t ***** Error :  undefined symbol in operand\n");
 		break;
 		
 		case 10:
-		write_ifile(" not a hexadecimal string\n");
+		write_ifile("\t\t\t ***** Error :  not a hexadecimal string\n");
 		break;
 		
 		case 11:
-		write_ifile(" can't be format 4 instruction\n");
+		write_ifile("\t\t\t ***** Error :  can't be format 4 instruction\n");
 		break;
 		
 		case 12:
-		write_ifile(" illegal address for a register\n");
+		write_ifile("\t\t\t ***** Error :  illegal address for a register\n");
 		break;
 		
 		case 13:
-		write_ifile(" missing end statement\n");
+		write_ifile("\t\t\t ***** Error :  missing end statement\n");
 		break;
 		
 		default:
@@ -337,7 +346,6 @@ void Assembler::pass1_1(){
 		write_ifile("\t\t");
 		write_ifile(st.label);
 		write_ifile("\t\t");
-		//assuming operand in start is converted to decimal
 		write_ifile(st.operation);
 		write_ifile("\t\t");
 		write_ifile(stoi(st.operand, 0, 16));
@@ -364,8 +372,10 @@ void Assembler::pass1_2(){
 	unsigned int count=1;
 	
 	
-	while((st.operation.compare("end") != 0)){
-		
+	while((st.operation.compare("end") != 0) ){
+	
+			if(line_no >= lines.size()) break;
+			
 	if(!have_error()){
 			
 			//if instruction
@@ -438,8 +448,10 @@ void Assembler::pass1_2(){
 		read_next();
 		}//end of while
 	
-	if(st.operation.compare("end") == 0){write_line();}
-	else{print_error(13);}	
+	if(st.operation.compare("end") == 0){
+		prev_lctr = LOCCTR;
+		write_line();}
+	else{print_error(13); write_line();}	
 	
 	print_map();
 	

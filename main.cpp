@@ -77,7 +77,7 @@ int main(){
 	
 	
 	//cout<<str<<endl;
-	
+	write_dic("listfile.txt" , "");
 	read_file("src.txt");
 	//write_dic("listfile.txt","Line no\t\tAddress\t\tLabel\t\tMnemonic\t\tOperands\t\tComments\n");
 	Assembler ass;
@@ -162,7 +162,7 @@ void write_dic(string filename , string str){
 
 	  FILE *fp;
 	
-		fp = fopen(filename.c_str(),"a");
+		fp = fopen(filename.c_str(),"w");
 		if(fp == NULL) {
 		perror("Error");
 		exit(1);

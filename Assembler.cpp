@@ -39,6 +39,7 @@ class Assembler {
 	int check_complexity();
 	void print_error(int err);
 	bool check_error12();
+	bool check_error15();
 	bool check_error11();
 	bool check_error9();
 	bool check_error10();
@@ -51,13 +52,14 @@ class Assembler {
 	bool check_fixed();
 	void print_map();
 	int check_symbol();
+	void sub_pass1();
 	};
 	
 Assembler::Assembler(){
 	line_no = 1;
 	this->st.line = lines[0];
 	st.check_part();
-	mode = false; //fixed , free
+	mode = true; //fixed , free
 	}
 
 bool Assembler::check_fixed(){
@@ -173,33 +175,52 @@ int Assembler::check_symbol(){
 	
 	}	
 bool Assembler::have_error(){
-	bool flag;
+	
+	//if fixed mode check tabs and displacement
 	if(!mode){if(check_fixed()) return true;}
 	
+	//if found unimplemented instruction display warning
 	if(st.error == 0) {return check_warning();}
-	if(st.check_statement() == -1) return check_error8();
-	if(st.labeled) return check_error4();
 	
+	//if statement unrecognized 
+	if(st.check_statement() == -1) return check_error8();
+	
+	// if statement is labled
+	if(st.labeled){
+		//if label is register name or j
+		if(check_error15()) return true;
+		//if label is already defined
+		if(check_error4())	return true;
+		} 
+	
+	//if the hex string in byte isn't hex
 	if(st.operation.compare("byte") == 0)
 	{	
-		cout<<"not a hexa"<<endl;
-		return check_error10();
-	}
-	if(st.operation.compare("org") == 0 || st.operation.compare("base") == 0 || st.operation.compare("end") == 0){
-		cout<<"can't have lab"<<endl;
-		return check_error5();
+		if(check_error10())	return true ;
 	}
 	
+	//if statement can't have a label
+	if(st.operation.compare("org") == 0 || st.operation.compare("base") == 0 || st.operation.compare("end") == 0){
+		if(check_error5()) return true;
+		
+	}
+	
+	/** provide one here for a statement that must have a label >> equ **/
+	
+	
 	if(st.formattype == 2){
-		cout<<"illegal"<<endl;
-		flag = check_error11();
-		if(flag) return flag;
-		return check_error12();
+	// if can't be format 4
+	if(check_error11()) return true;
+	//if illegal address for a register
+	if(check_error12()) return true;
+	
 	} 
 	
 	if(st.formattype == 3 || st.formattype == 4){
-	  return check_error9();	
+	  //if symbol undefined
+	  if(check_error9()) return true;
 	}
+	
 	return false;
 	}
 
@@ -208,6 +229,32 @@ bool Assembler::check_warning(){
 	st.operation = st.line;
 	return true;
 	}
+
+bool Assembler::check_error15(){
+		if(st.label.size() == 1){
+			char lab = st.label[0];
+			
+			switch (lab){
+				
+				case 'a':
+				case 'b':
+				case 'f':
+				case 'l':
+				case 's':
+				case 't':
+				case 'x':
+				case 'j':
+				print_error(15);
+				return true;
+						
+				}
+			
+			
+			}
+		
+		return false;
+	}
+
 bool Assembler::check_error8(){
 		print_error(8);
 		st.operation = st.line;
@@ -383,6 +430,10 @@ void Assembler::print_error(int err){
 		write_ifile("\t\t\t ***** Error :  tabs not allowed\n");
 		break;
 		
+		case 15:
+		write_ifile("\t\t\t ***** Error :  invalid name for a label\n");
+		break;
+		
 		default:
 		return;
 		
@@ -447,12 +498,8 @@ int Assembler::check_complexity(){
 	//return -1 for error
 	return -1;
 	}
-
-void Assembler::pass1_1(){
-	
-	if( st.operation.compare("start") == 0){
-		
-		
+void Assembler::sub_pass1(){
+			
 		start_address = stoi(st.operand, 0, 16);
 		LOCCTR = start_address;
 		if(st.labeled) SYMTAB.insert({st.label , LOCCTR});
@@ -469,19 +516,36 @@ void Assembler::pass1_1(){
 		write_ifile("\t\t");
 		write_ifile(st.comment);
 		write_ifile("\n");
+			
+			}
 		
-		}else{
+void Assembler::pass1_1(){
+	
+	if( st.operation.compare("start") == 0){
+			sub_pass1();
+			pass1_2();
+			// else not start :
+	}else{
 			if(st.formattype == 0){
 				write_ifile(line_no);
 				write_ifile("\t\t");
 				write_ifile(st.comment);
 				write_ifile("\n");
+			}else{
+				write_ifile("\t\t\t***Error: program must start with 'start' mnemonic\n");
+				write_ifile("\t\t");
+				write_ifile(st.line);
+				write_ifile("\n");
+				
+				
 				}
 			read_next();
 			pass1_1();
 			
-			}
 	}
+}
+
+
 	
 void Assembler::pass1_2(){
 	read_next();

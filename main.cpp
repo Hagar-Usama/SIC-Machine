@@ -97,7 +97,7 @@ int main(){
 	//ass.get_operand();
 	//cout<<"\n****";
 	ass.pass1_1();
-	ass.pass1_2();
+	//ass.pass1_2();
 	//ass.print_statement_part();
 	//cout<<ass.LOCCTR<<endl;
 	//cout<<sizeof(ass)<<endl;

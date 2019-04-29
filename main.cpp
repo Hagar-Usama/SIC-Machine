@@ -81,7 +81,8 @@ int main(){
 	read_file("src.txt");
 	//write_dic("listfile.txt","Line no\t\tAddress\t\tLabel\t\tMnemonic\t\tOperands\t\tComments\n");
 	Assembler ass;
-	//ass.st.line = "byte x'ddreff'";
+	//ass.st.line = "sta rerr";
+	//ass.operand
 	//ass.SYMTAB.insert({"ett" , 1000});
 	//ass.st.check_part();
 	//ass.print_statement_part();
@@ -93,12 +94,13 @@ int main(){
 	cout<<ass.check_complexity()<<endl;
 	cout<<"*.*.*.*.*."<<endl;
 	*/
-	
+	//ass.get_operand();
+	//cout<<"\n****";
 	ass.pass1_1();
 	ass.pass1_2();
-	ass.print_statement_part();
-	cout<<ass.LOCCTR<<endl;
-	cout<<sizeof(ass)<<endl;
+	//ass.print_statement_part();
+	//cout<<ass.LOCCTR<<endl;
+	//cout<<sizeof(ass)<<endl;
 	Statement s;
 	s.operand = "a";
 	s.check_indexed();

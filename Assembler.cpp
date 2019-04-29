@@ -4,9 +4,9 @@ vector<string> lines;
 
 /*******
  * 
- * Replace STOI whith another function that handle any format
- * 
- * 
+ * Replace STOI whith another function that handle any format //done
+ * Mind ORG 
+ * check error if label is a register 
  * 
  **/
  
@@ -39,10 +39,15 @@ class Assembler {
 	int check_complexity();
 	void print_error(int err);
 	bool check_error12();
+	bool check_error9();
 	bool check_error10();
 	bool check_error5();
 	bool check_error11();
+	bool check_error4();
 	bool have_error();	
+	
+	
+	int check_symbol();
 	//void get_instructions(vector<string> lines);	
 	};
 	
@@ -51,9 +56,22 @@ Assembler::Assembler(){
 	this->st.line = lines[0];
 	st.check_part();
 	}
+
+int Assembler::check_symbol(){
+	string oper;
+	oper = st.operand;
+	extract(oper , ",x");
+	extract(oper,"\\+");
 	
+	//return find_key(SYMTAB , oper);
+	return -1;
+	
+	}	
 bool Assembler::have_error(){
 	bool flag;
+	
+	if(st.labeled) return check_error4();
+	
 	if(st.operation.compare("byte") == 0)
 	{	
 		cout<<"not a hexa"<<endl;
@@ -71,7 +89,32 @@ bool Assembler::have_error(){
 		return check_error12();
 	} 
 	
+	if(st.formattype == 3 || st.formattype == 4){
+	  return check_error9();	
+	}
 	return false;
+	}
+
+bool Assembler::check_error9(){
+		cout<<"enter check error9 \n";
+		int k = check_symbol();
+	//if key is found >> defined
+	if(k !=-1)	
+		return false;
+	
+	print_error(9); 
+	return true;	
+	
+	
+	}
+		
+bool Assembler::check_error4(){
+	int k = find_key(SYMTAB , st.label);
+	if(k !=-1){
+		print_error(4);
+		return true;
+		} 
+	return false;	
 	}
 	
 bool Assembler::check_error11(){
@@ -250,8 +293,12 @@ int Assembler::check_complexity(){
 void Assembler::pass1_1(){
 	
 	if( st.operation.compare("start") == 0){
+		
+		
 		start_address = stoi(st.operand, 0, 16);
 		LOCCTR = start_address;
+		if(st.labeled) SYMTAB.insert({st.label , LOCCTR});
+		
 		write_ifile(line_no);
 		write_ifile("\t\t");
 		write_ifile(LOCCTR);
@@ -470,7 +517,7 @@ void Assembler::write_ifile(int num , int mode){
 		}
 		else{
 			
-				fprintf (fp, "%x", num );
+				fprintf (fp, "%5x", num );
 			}
 		
 		

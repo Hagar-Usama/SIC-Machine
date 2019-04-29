@@ -1,0 +1,43 @@
+    1		.23456789012345678901234567890123456789
+    2		 1000		bgn		start		 1000		;fcmnt
+    3		 1000		mem		word		-2		
+    4		 1003		fff		lda		#10		
+			 ***** Error :  duplicate label defition
+    5		 1006		bgn		add		#5		
+			 ***** Error :  wrong operation prefix
+    6		 1006				+rmo		a,x		
+    7		 1006				sub		#3		
+    8		 1009				add		#22		
+			 ***** Error :  undefined symbol in operand
+    9		 100c				add		wn,x		
+    a		 100c		gg		addr		a,x		
+			 ***** Warning : Not implemented (ignored)
+    b		 100e					nobase	 gg				
+    c		 100e		lab		org		1000		
+    d		  3e8				sta		mem		
+			 ***** Error :  unrecognized operation code
+    e		  3eb					sse	 ffj				
+			 ***** Error :  illegal address for a register
+    f		  3eb				rmo		a,z		
+   10		  3eb				j		*		
+   11		  3ee		qw		resw		5		
+   12		  3fd		ad		resb		3		
+			 ***** Error :  not a hexadecimal string
+   13		  400		av		byte		x'gafdf'		
+   14		  403		ww		word		-1,2,5,4		
+			 ***** Error :  unrecognized operation code
+   15		  40f					equ	 1000				
+			 ***** Error :  missing end statement
+
+
+			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
+			SYMBOL			ADDRESS
+			ad			  3fd
+			av			  400
+			bgn			 1000
+			fff			 1003
+			gg			 100c
+			mem			 1000
+			qw			  3ee
+			ww			  403
+			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*

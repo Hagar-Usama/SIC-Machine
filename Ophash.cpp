@@ -8,18 +8,20 @@
 
 using namespace std;
 
-void read_file(string filename){
+
+/*
+void read_file(char* filename){
 	
 	FILE * fp;
-	char fil[] = filename;
-	fp = fopen (fil,"w");
+	
+	fp = fopen (filename,"w");
 	string s;
 	int opcode , format;
 	char operation[6];
 	fprintf (fp, "%s,%x,%d",operation , &opcode ,&format );
 	
 	
-	/*
+	
 	std::ifstream file(filename);
 	if (file.is_open()) {
     
@@ -33,10 +35,10 @@ void read_file(string filename){
     
     file.close();
 	
-	}*/
+	}
 }
 
-
+*/
 
 class Ophash{
 	string operation;
@@ -81,9 +83,25 @@ class info{
 int main(){
 vector<pair <int,int> > operation; // #operands , formatSum 2,3,4
 vector<string> statement;  //operation or directive
+cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
+std::string s = "3e8";
+int num = std::stoi(s, 0, 16);
+cout<<num<<endl;
+printf("%x\n",num);
+
+int n = 5;
+std::string binary = std::bitset<4>(n).to_string();
+std::cout<<binary<<"\n";
+
+cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
+std::string your_string_rep{"10FD7F04"};
+    int int_rep = stoi(your_string_rep, 0, 16);
+    std::cout << int_rep << '\n';
+    std::cout << std::hex << std::showbase << int_rep << '\n';
+
 
 string fil = "info.txt";
-read_file(fil);
+//read_file("info.txt");
 
 // pair : # of operands and format 
 operation.push_back(make_pair(2,2)); //RMO 
@@ -172,12 +190,23 @@ statement.push_back("base");
 info information(statement);
 information.print_ops();
 map <string ,pair<int,int>> st_map;
+map <string ,pair<int,int>>::iterator it;
+
 for (int i=0 ; i<26 ; i++){
+		//st_map.insert({ statement[i], operation[i] }); 
 		st_map[statement[i]] = operation[i];
 	}
 
+it = st_map.find("tix"); 
+      
+    if(it == st_map.end()) 
+        cout << "Key-value pair not present in map" ; 
+    else
+        cout << "Key-value pair present : " 
+          << it->first << "->" << it->second.second ; 
+      
+    cout << endl ; 
 
-cout<<st_map["start"].first<<endl;
 
 /*
 map<string , pair<int,int>>::iterator p;

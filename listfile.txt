@@ -1,43 +1,45 @@
     1		.23456789012345678901234567890123456789
-    2		 1000		bgn		start		 1000		;fcmnt
-    3		 1000		mem		word		-2		
-    4		 1003		fff		lda		#10		
+			***Error: program must start with 'start' mnemonic
+		dskjdskjsj
+    3		 1000		bgn		start		 1000		;fcmnt
+    4		 1000		mem		word		-2		
+    5		 1003		fff		lda		#10		
 			 ***** Error :  duplicate label defition
-    5		 1006		bgn		add		#5		
-			 ***** Error :  wrong operation prefix
-    6		 1006				+rmo		a,x		
-    7		 1006				sub		#3		
-    8		 1009				add		#22		
+    6		 1006		bgn		add		#5		
+			 ***** Error :  can't be format 4 instruction
+    7		 1006				+rmo		a,x		
+    8		 1006				sub		#3		
+    9		 1009				add		#22		
 			 ***** Error :  undefined symbol in operand
-    9		 100c				add		wn,x		
-    a		 100c		gg		addr		a,x		
+    a		 100c				add		wn,x		
+    b		 100c		gg		addr		a,x		
 			 ***** Warning : Not implemented (ignored)
-    b		 100e					nobase	 gg				
-    c		 100e		lab		org		1000		
-    d		  3e8				sta		mem		
+    c		 100e					nobase	 gg				
+			 ***** Error :  this statement can't have a label
+    d		 100e		lab		org		1000		
+    e		 100e				sta		mem		
 			 ***** Error :  unrecognized operation code
-    e		  3eb					sse	 ffj				
-			 ***** Error :  illegal address for a register
-    f		  3eb				rmo		a,z		
-   10		  3eb				j		*		
-   11		  3ee		qw		resw		5		
-   12		  3fd		ad		resb		3		
+    f		 1011					sse	 ffj				
+   10		 1011				rmo		a,z		
+   11		 1011				j		*		
+   12		 1014		qw		resw		5		
+   13		 1023		ad		resb		3		
 			 ***** Error :  not a hexadecimal string
-   13		  400		av		byte		x'gafdf'		
-   14		  403		ww		word		-1,2,5,4		
+   14		 1026		av		byte		x'gafdf'		
+   15		 1026		ww		word		-1,2,5,4		
 			 ***** Error :  unrecognized operation code
-   15		  40f					equ	 1000				
+   16		 1032					equ	 1000				
 			 ***** Error :  missing end statement
+   17		 1032		wn		word		-1,2,5,4		
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
-			ad			  3fd
-			av			  400
+			ad			 1023
 			bgn			 1000
 			fff			 1003
 			gg			 100c
 			mem			 1000
-			qw			  3ee
-			ww			  403
+			qw			 1014
+			ww			 1026
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*

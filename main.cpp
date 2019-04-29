@@ -92,7 +92,7 @@ int main(){
 	cout<<"*.*.*.*.*."<<endl;
 	cout<<find_key(ass.SYMTAB , "ett")<<endl;
 	cout<<ass.check_complexity()<<endl;
-	cout<<"*.*.*.*.*."<<endl;
+	cout<<"*.*.*.*.*."<<endl8;
 	*/
 	//ass.get_operand();
 	//cout<<"\n****";

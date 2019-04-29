@@ -16,6 +16,7 @@ using namespace std;
  void ltrim(string &exp);
  void rtrim(string &exp);
  void trim_(string &s , string delim="");
+ string split(string line ,int length,int start=0);
  
 class Statement{
 	
@@ -497,6 +498,15 @@ int Statement::check_dir_unlab(){
 	exp = regex_replace(exp,reg,delim);
 	}
 		
+	
+		
+	string split(string line ,int length,int start){
+	string token = line.substr(start,length);
+	//line = line.substr(length , line.capacity());
+	//cout <<line.substr(0,length)<<endl;
+	return token;	
+}
+
 //void trim_(string &s , string delim="");
 
 /**

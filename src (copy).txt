@@ -1,5 +1,4 @@
 .23456789012345678901234567890123456789
-dskjdskjsj
 bgn     start    1000              ;fcmnt
 mem	word	 -2
 fff     lda      #10

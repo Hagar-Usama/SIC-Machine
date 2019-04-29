@@ -60,13 +60,20 @@ Assembler::Assembler(){
 	}
 
 void Assembler::print_map(){
-	
+	write_ifile("\t\t\t*.*.*.*.*SYMBOL TABLE*.*.*.*.*\n");
+	write_ifile("\t\t\tSYMBOL\t\t\tADDRESS\n");
 	for(map<string, int >::const_iterator it = SYMTAB.begin();
     it != SYMTAB.end(); ++it)
 {
     std::cout << it->first << " " << it->second<< "\n";
+    write_ifile("\t\t\t");
+    write_ifile(it->first);
+    write_ifile("\t\t\t");
+    write_ifile(it->second);
+    write_ifile("\n");
 }
 	
+write_ifile("\t\t\t*.*.*.*.*.*.*.*.*.*.*.*.*.*.*\n");
 	
 }
 int Assembler::check_symbol(){

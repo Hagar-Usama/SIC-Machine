@@ -7,6 +7,7 @@ vector<string> lines;
  * Replace STOI whith another function that handle any format //done
  * Mind ORG 
  * check error if label is a register 
+ * directives not implemented should be ignored with a warning
  * 
  **/
  
@@ -47,7 +48,7 @@ class Assembler {
 	bool check_error8();
 	bool have_error();	
 	
-	
+	void print_map();
 	int check_symbol();
 	//void get_instructions(vector<string> lines);	
 	};
@@ -58,6 +59,16 @@ Assembler::Assembler(){
 	st.check_part();
 	}
 
+void Assembler::print_map(){
+	
+	for(map<string, int >::const_iterator it = SYMTAB.begin();
+    it != SYMTAB.end(); ++it)
+{
+    std::cout << it->first << " " << it->second<< "\n";
+}
+	
+	
+}
 int Assembler::check_symbol(){
 	string oper;
 	oper = st.operand;
@@ -422,6 +433,8 @@ void Assembler::pass1_2(){
 	
 	if(st.operation.compare("end") == 0){write_line();}
 	else{print_error(13);}	
+	
+	print_map();
 	
 	}
 

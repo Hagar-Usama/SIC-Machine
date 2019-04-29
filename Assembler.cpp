@@ -39,6 +39,7 @@ class Assembler {
 	int check_complexity();
 	void print_error(int err);
 	bool check_error12();
+	bool check_error11();
 	bool check_error9();
 	bool check_error10();
 	bool check_error5();
@@ -47,7 +48,7 @@ class Assembler {
 	bool check_error8();
 	bool check_warning();
 	bool have_error();	
-	
+	bool check_fixed();
 	void print_map();
 	int check_symbol();
 	};
@@ -56,8 +57,84 @@ Assembler::Assembler(){
 	line_no = 1;
 	this->st.line = lines[0];
 	st.check_part();
+	mode = false; //fixed , free
 	}
 
+bool Assembler::check_fixed(){
+	/**
+	 * how it works :
+	 * 1) we search for tabs >> 'tabs not allowed' error 14
+	 * 2) we split into 4 sections (label - operation - operand - comment)
+	 * 3) if label.size() != 0 & label[0] == ' ' >>  'misplaced label' error 1
+	 * 4) if operation[0] == ' ' >> 'missing or missplaced operation nmemonic' error 2
+	 * 5) if operand.size()!=0 && operand[0] == ' ' >> missing or misplaced operand field error 3
+	 * 
+	 * hadles comment 
+	 * 
+	 * returns true is error exists
+	 * **/
+	
+	
+	string temp = st.line;
+	string token;
+	unsigned int tab =0;
+	unsigned int count;
+	extract(temp , "\\t","%");
+	
+	cout<<"temp replace tabs by %**"<<temp<<endl;
+	
+	// we can count tabs '\t' directly
+	tab = std::count(temp.begin(), temp.end(), '%');
+	//1)
+	if(tab){ print_error(14); return true;}
+		
+		//make sure length is 35 to split without throwing error
+		while(temp.size() < 35){
+			temp.push_back(' ');
+			}
+		
+		cout<<"**"<<"temp"<<temp<<"**"<<endl;
+		cout<<"**"<<temp.size()<<"**"<<endl;
+		
+		//label
+		token = split(temp,8,0);
+		count = std::count(token.begin(), token.end(), ' ');
+		cout<<"# of spaces "<<count<<endl;
+		if(count > 8){
+		 if (token[0] == ' '){ print_error(1); return true;}	
+		}
+		
+		token = split(temp,7,8);
+		if(token[0] != ' '){print_error(7); return true;}
+		if(token[1] == ' '){print_error(2); return true;}
+		
+		token = split(temp,20,15);
+		if(token[2] == ' '){print_error(3); return true;}
+		
+/*	
+	
+	// 1:8 >> 0:7 length 8 and start = 0;
+cout<<"*"<<split(str,8,0)<<"*"<<endl;
+//cout<<"*"<<str<<"*"<<endl;
+
+// 9:15 >> 8:14 length 7 and start = 8
+cout<<"*"<<split(str,7,8)<<"*"<<endl;
+
+// 16:35 >> 15:34 length 20 and start = 15
+cout<<"*"<<split(str,20,15)<<"*"<<endl;
+
+	//label
+	token = split(st.line ,8,0); 
+	//operation
+	token = split(st.line ,7,8); 
+	//operand
+	token = split(st.line ,20,15); 
+*/
+	
+	return false;
+	
+	}
+	
 void Assembler::print_map(){
 	write_ifile("\n\n\t\t\t*.*.*.*.*SYMBOL TABLE*.*.*.*.*\n");
 	write_ifile("\t\t\tSYMBOL\t\t\tADDRESS\n");
@@ -97,6 +174,8 @@ int Assembler::check_symbol(){
 	}	
 bool Assembler::have_error(){
 	bool flag;
+	if(!mode){if(check_fixed()) return true;}
+	
 	if(st.error == 0) {return check_warning();}
 	if(st.check_statement() == -1) return check_error8();
 	if(st.labeled) return check_error4();
@@ -113,7 +192,7 @@ bool Assembler::have_error(){
 	
 	if(st.formattype == 2){
 		cout<<"illegal"<<endl;
-		flag = check_error7();
+		flag = check_error11();
 		if(flag) return flag;
 		return check_error12();
 	} 
@@ -164,6 +243,16 @@ bool Assembler::check_error7(){
 		}
 	return false;
 	}
+
+bool Assembler::check_error11(){
+	if(st.operation[0] == '+'){
+		st.error = 11;
+		print_error(11);
+		return true;
+		}
+	return false;
+	}
+
 	
 bool Assembler::check_error5(){
 	if(st.labeled){
@@ -288,6 +377,10 @@ void Assembler::print_error(int err){
 		
 		case 13:
 		write_ifile("\t\t\t ***** Error :  missing end statement\n");
+		break;
+		
+		case 14:
+		write_ifile("\t\t\t ***** Error :  tabs not allowed\n");
 		break;
 		
 		default:

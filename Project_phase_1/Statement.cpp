@@ -40,6 +40,7 @@ class Statement{
  int check_statement();	 
  int check_not_implemented();
  int check_comment();
+
  int check_format4_lab();
  int check_format4_unlab();	 
  int check_format3_lab();
@@ -117,6 +118,7 @@ int Statement::check_statement(){
 	 * */
 	if(check_not_implemented()) return -1;
 	if(check_comment()) return 1;
+	
 	if(check_dir_not()) return 1;
 	if(check_dir_unlab())return 1;
 	if(check_dir_lab())return 1;
@@ -304,10 +306,11 @@ int Statement::check_dir_lab(){
 		
 		}
 
+
 int Statement::check_dir_unlab(){
 	string input;
 	
-	 string reg = "\\s*((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-z0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(end)(\\s+\\b(){1}\\w{1,7})?)|(\\b(org)(\\s+\\b(){1}\\w{1,7}))|(\\b(base)\\s+((\\b(){1}\\w{1,7})|\\*)))\\s*(;.*)?";
+	 string reg = "\\s*(((\\b(equ)\\s+((\\b([a-z]){1}\\w{0,7}\\s*(\\+\\s*\\d{1,4})?)|\\d{1,4})))|(\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-z0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(end)(\\s+\\b(){1}\\w{1,7})?)|(\\b(org)(\\s+\\b(){1}\\w{1,7}))|(\\b(base)\\s+((\\b(){1}\\w{1,7})|\\*)))\\s*(;.*)?";
 	 
 	 regex re(reg);
 		

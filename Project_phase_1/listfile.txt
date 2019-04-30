@@ -15,20 +15,22 @@
 			 ***** Error :  undefined symbol in operand
     c		 1027				add		wn,x		
     d		 1027		gg		addr		a,x		
+			 ***** Error :  this statement requires a label
+    e		 1029				equ		qw		
 			 ***** Warning : Not implemented (ignored)
-    e		 1029					nobase	 gg				
+    f		 1029					nobase	 gg				
 			 ***** Error :  this statement can't have a label
-    f		 1029		lab		org		1000		
+   10		 1029		lab		org		1000		
 			 ***** Error :  undefined symbol in operand
-   10		 1029				sta		mem		
+   11		 1029				sta		mem		
 			 ***** Error :  unrecognized operation code
-   11		 1029					sse	 ffj				
-   12		 1029				rmo		a,z		
-   13		 1029				j		*		
-   14		 1029		sw		equ		av		
-   15		 102c		wn		word		-1,2,5,4		
+   12		 1029					sse	 ffj				
+   13		 1029				rmo		a,z		
+   14		 1029				j		*		
+   15		 1029		sw		equ		av		
+   16		 102c		wn		word		-1,2,5,4		
 			 ***** Error :  missing end statement
-   16		 1038								
+   17		 1038								
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*

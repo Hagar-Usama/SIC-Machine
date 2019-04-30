@@ -1,6 +1,9 @@
 .23456789012345678901234567890123456789
 bgn     start    1000              ;fcmnt
-mem	word	 -2
+qw	resw	 5
+ad	resb	 3
+av	byte	 x'gafdf'
+ww	word	 -1,2,5,4
 fff     lda      #10
 bgn	add	 #5
         +rmo     a ,x
@@ -14,9 +17,5 @@ lab	org	 1000
 	sse	 ffj
 	rmo	 a , z
 	j	 *
-qw	resw	 5
-ad	resb	 3
-av	byte	 x'gafdf'
-ww	word	 -1,2,5,4
-	equ	 1000
+sw	equ	 av
 wn	word	 -1,2,5,4

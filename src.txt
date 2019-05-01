@@ -1,22 +1,9 @@
 .23456789012345678901234567890123456789
-bgn     start    1000              ;fcmnt
-qw	resw	 5
-ad	resb	 3
-av	byTe	 C'aFf'
-ww	word	 -1,2,5,4
-fff     lda      #10
-bgn	add	 #5
-        +rmo     a ,x
-	sub	 #3
-        add      #22
-	add	 wn , x
-	rmo	 z,a
-gg	addr	 a , x
-    equ      qw
-	nobase	 gg
-	org	 0aff
-	sta	 mem
-qwl	equ	 1000
-	sse	 ffj
-	j	 *
-sw	equ	 av
+bgn      start   1000
+         lda    #10
+pr       word    -1
+         add     @pr
+         ldx     #5
+         subr    a,x
+         j       *
+         end

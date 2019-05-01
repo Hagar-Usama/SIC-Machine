@@ -89,7 +89,7 @@ bool Assembler::check_fixed(){
 	// we can count tabs '\t' directly
 	tab = std::count(temp.begin(), temp.end(), '%');
 	//1)
-	if(tab){ print_error(14); return true;}
+	if(tab){ errors++; print_error(14); return true;}
 		
 		//make sure length is 35 to split without throwing error
 		while(temp.size() < 35){
@@ -105,15 +105,15 @@ bool Assembler::check_fixed(){
 		
 		//cout<<"# of spaces "<<count<<endl;
 		if(count > 8){
-		 if (token[0] == ' '){ print_error(1); return true;}	
+		 if (token[0] == ' '){ errors++; print_error(1); return true;}	
 		}
 		
 		token = split(temp,7,8);
-		if(token[0] != ' '){print_error(7); return true;}
-		if(token[1] == ' '){print_error(2); return true;}
+		if(token[0] != ' '){errors++; print_error(7); return true;}
+		if(token[1] == ' '){errors++; print_error(2); return true;}
 		
 		token = split(temp,20,15);
-		if(token[2] == ' '){print_error(3); return true;}
+		if(token[2] == ' '){errors++; print_error(3); return true;}
 		
 /*	
 	
@@ -562,7 +562,7 @@ void Assembler::pass1_1(){
 			sub_pass1();
 			
 		}else{
-			write_ifile(line_no);
+			write_ifile(line_no,2);
 			write_ifile("\t\t\t\t");
 			write_ifile(st.line);
 			write_ifile("\n");
@@ -579,8 +579,9 @@ void Assembler::pass1_1(){
 				write_ifile(st.comment);
 				write_ifile("\n");
 			}else{
+				errors++;
 				write_ifile("\t\t\t ***** Error :  program must start with 'start' mnemonic\n");
-				write_ifile(line_no);
+				write_ifile(line_no,2);
 				write_ifile("\t\t");
 				write_ifile(st.line);
 				write_ifile("\n");

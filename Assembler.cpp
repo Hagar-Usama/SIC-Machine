@@ -21,7 +21,7 @@ class Assembler {
 	int start_address;
 	Statement st;
 	map<string,int> SYMTAB;
-	
+	unsigned int errors;
 	Assembler();
 	void object_file();
 	
@@ -184,7 +184,7 @@ int Assembler::check_symbol(){
 bool Assembler::have_error(){
 	
 	//if fixed mode check tabs and displacement
-	if(!mode){if(check_fixed()) return true;}
+	if(!mode){if(check_fixed())return true;}
 	
 	//if found unimplemented instruction display warning
 	if(st.error == 0) {return check_warning();}
@@ -246,6 +246,7 @@ bool Assembler::check_warning(){
 	}
 bool Assembler::check_error16(){
 	print_error(16);
+	errors++;
 	return true;
 	
 	}
@@ -264,6 +265,7 @@ bool Assembler::check_error15(){
 				case 'x':
 				case 'j':
 				print_error(15);
+				errors++;
 				return true;
 						
 				}
@@ -276,6 +278,7 @@ bool Assembler::check_error15(){
 
 bool Assembler::check_error8(){
 		print_error(8);
+		errors++;
 		st.operation = st.line;
 		return true;
 	}
@@ -286,7 +289,8 @@ bool Assembler::check_error9(){
 	if(k !=-1)	
 		return false;
 	
-	print_error(9); 
+	print_error(9);
+	errors++; 
 	return true;	
 	
 	
@@ -296,6 +300,7 @@ bool Assembler::check_error4(){
 	int k = find_key(SYMTAB , st.label);
 	if(k !=-1){
 		print_error(4);
+		errors++;
 		return true;
 		} 
 	return false;	
@@ -305,6 +310,7 @@ bool Assembler::check_error7(){
 	if(st.operation[0] == '+'){
 		st.error = 7;
 		print_error(7);
+		errors++;
 		return true;
 		}
 	return false;
@@ -314,6 +320,7 @@ bool Assembler::check_error11(){
 	if(st.operation[0] == '+'){
 		st.error = 11;
 		print_error(11);
+		errors++;
 		return true;
 		}
 	return false;
@@ -324,11 +331,13 @@ bool Assembler::check_error5(){
 	if(st.labeled){
 		
 		print_error(5);
+		errors++;
 		return true;
 		} 
 	
 	if(st.error == 5){
 		print_error(5);
+		errors++;
 		return true;
 	}
 	
@@ -347,6 +356,7 @@ bool Assembler::check_error10(){
 		st.error = 10;
 		//cout<<"entered error 10"<<endl;
 		print_error(10);
+		errors++;
 	return true;
 	
 	}
@@ -365,6 +375,7 @@ bool Assembler::check_error12(){
 		break;
 		default:
 		print_error(12);
+		errors++;
 		return true;
 		}
 		
@@ -379,6 +390,7 @@ bool Assembler::check_error12(){
 		break;
 		default:
 		print_error(12);
+		errors++;
 		return true;
 		}
 		
@@ -527,7 +539,7 @@ void Assembler::sub_pass1(){
 		LOCCTR = start_address;
 		if(st.labeled) SYMTAB.insert({st.label , LOCCTR});
 		
-		write_ifile(line_no);
+		write_ifile(line_no , 2);
 		write_ifile("\t\t");
 		write_ifile(LOCCTR);
 		write_ifile("\t\t");
@@ -562,7 +574,7 @@ void Assembler::pass1_1(){
 			// else not start :
 	}else{
 			if(st.formattype == 0){
-				write_ifile(line_no);
+				write_ifile(line_no,2);
 				write_ifile("\t\t");
 				write_ifile(st.comment);
 				write_ifile("\n");
@@ -666,15 +678,27 @@ void Assembler::pass1_2(){
 	if(st.operation.compare("end") == 0){
 		
 		write_line();}
-	else{print_error(13); write_line();}	
+	else{print_error(13);errors++; write_line();}	
 	
 	print_map();
+	
+	if(errors){ 
+		write_ifile("\n errors :");
+		write_ifile(errors , 2);
+		write_ifile("\n *** INCOMPLETE ASSEMBLING ***\n");
+		}else{
+			
+			write_ifile("\n *** SUCCESSFUL ASSEMBLING ***\n");
+			
+			}
+	
+		
 	
 	}
 
 void Assembler::write_line(){
 	
-		write_ifile(line_no);
+		write_ifile(line_no ,2);
 		write_ifile("\t\t");
 		write_ifile(prev_lctr);
 		write_ifile("\t\t");
@@ -777,8 +801,8 @@ void Assembler::write_ifile(int num , int mode){
 		exit(1);
 		}
 		else{
-			
-				fprintf (fp, "%5x", num );
+			if(mode == 1){fprintf (fp, "%5x", num );}
+			else {fprintf (fp, "%d", num );}	
 			}
 		
 		

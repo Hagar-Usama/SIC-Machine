@@ -3,10 +3,12 @@
 3		 1000				lda		#10		
 4		 1003		pr		word		-1		
 5		 1006				add		@pr		
-6		 1009				ldx		#5		
-7		 100c				subr		a,x		
-8		 100e				j		*		
-9		 1011				end				
+			 ***** Error :  unrecognized operation code or invalid statement
+6		 1009				         jsub    dd				
+7		 1009				ldx		#5		
+8		 100c				subr		a,x		
+9		 100e				j		*		
+10		 1011				end				
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
@@ -15,4 +17,5 @@
 			pr			 1003
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- *** SUCCESSFUL ASSEMBLING ***
+ errors :1
+ *** INCOMPLETE ASSEMBLING ***

@@ -135,7 +135,7 @@ int Statement::check_statement(){
 int Statement::check_not_implemented(){
 	
 	//LTORG to be remove if to be used later
-	string reg ="\\s*(.+\\s+)?\\b(nobase|extdef|extref|use|csect|ltorg|td|rsub)\\s*(\\s+.+)?";
+	string reg ="\\s*(.+\\s+)?\\b(jsub|nobase|extdef|extref|use|csect|ltorg|td|rsub)\\s*(\\s+.+)?";
 	regex re(reg);
  		if(regex_match(this->line,re)){
 			this->labeled = false;

@@ -3,6 +3,7 @@ bgn      start   1000
          lda    #10
 pr       word    -1
          add     @pr
+         jsub    dd
          ldx     #5
          subr    a,x
          j       *

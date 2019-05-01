@@ -214,8 +214,6 @@ bool Assembler::have_error(){
 	
 	
 	
-	/** provide one here for a statement that must have a label >> equ **/
-	
 	
 	if(st.formattype == 2){
 	// if can't be format 4
@@ -348,7 +346,6 @@ bool Assembler::check_error12(){
 	char top = st.operand[0];
 	char back = st.operand.back();
 	
-	
 	switch (top){
 		case 'a':
 		case 'b':
@@ -359,6 +356,7 @@ bool Assembler::check_error12(){
 		case 'x':
 		break;
 		default:
+		print_error(12);
 		return true;
 		}
 		
@@ -372,6 +370,7 @@ bool Assembler::check_error12(){
 		case 'x':
 		break;
 		default:
+		print_error(12);
 		return true;
 		}
 		
@@ -415,7 +414,7 @@ void Assembler::print_error(int err){
 		break;
 		
 		case 8:
-		write_ifile("\t\t\t ***** Error :  unrecognized operation code\n");
+		write_ifile("\t\t\t ***** Error :  unrecognized operation code or invalid statement\n");
 		break;
 		
 		case 9:

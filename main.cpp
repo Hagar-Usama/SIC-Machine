@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <ctype.h>
 
 #include <regex>
 #include <string>
@@ -15,7 +16,7 @@ using namespace std;
 string split(string &line ,int length);
 
 void write_dic(string filename , string str);
-
+void lower_it(string &str);
 void read_file(string filename);
 void write_file(string filename , string str);
 //void write_file(string filename , int num);
@@ -29,6 +30,11 @@ int find_key(map<string,int> mp , string label);
 
 
 int main(){
+	
+	Statement zzz;
+	zzz.line = "	byte 	c' ass ff' 	;jjj	";
+	lower_it(zzz.line);
+	
 	
 	write_dic("listfile.txt" , "");
 	read_file("src.txt");
@@ -76,13 +82,38 @@ int find_key(map<string,int> mp , string label){
       
 	}
 	
-	
+	void lower_it(string &str){
+		string temp;
+		
+		//saving case of strings
+		temp = extract(str,"[C|c]'.+'" ,"%");
+		if(temp.size() >0) temp[0] = tolower(temp[0]);
+		
+		
+		for(unsigned int i=0; i< str.size() ; i++){
+			
+						str[i] = tolower(str[i]);
+			
+		}
+		extract(str,"%" ,temp);
+		
+		}
 void read_file(string filename){
 	
 	ifstream file(filename);
 	if (file.is_open()) {
     string line;
     while (getline(file, line)) {
+        /**
+         * before pushing call a function that convert statement to
+         * lowercase and
+         * check if contains the regex [c|C]\\s*'\.+'
+         * and extract what's inside the quotation and store it in temp string
+         * convert to lower
+         * then extract regex \\s*'\.+' and replace with temp
+         * lower_it(&line)
+         * **/
+        lower_it(line);
         lines.push_back(line);
           
     }

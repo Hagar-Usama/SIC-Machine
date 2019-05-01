@@ -14,10 +14,9 @@ bgn	add	 #5
 gg	addr	 a , x
     equ      qw
 	nobase	 gg
-lab	org	 1000
+	org	 0aff
 	sta	 mem
 qwl	equ	 1000
 	sse	 ffj
 	j	 *
 sw	equ	 av
-wn	word	 -1,2,5,4

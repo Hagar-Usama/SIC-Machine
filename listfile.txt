@@ -20,18 +20,16 @@
     f		 102c				equ		qw		
 			 ***** Warning : Not implemented (ignored)
    10		 102c					nobase	 gg				
-			 ***** Error :  this statement can't have a label
-   11		 102c		lab		org		1000		
+   11		 102c				org		0aff		
 			 ***** Error :  undefined symbol in operand
-   12		 102c				sta		mem		
-   13		 102c		qwl		equ		1000		
+   12		  aff				sta		mem		
+   13		  aff		qwl		equ		1000		
 			 ***** Error :  unrecognized operation code or invalid statement
-   14		 102c					sse	 ffj				
-   15		 102c				j		*		
-   16		 102c		sw		equ		av		
-   17		 102f		wn		word		-1,2,5,4		
+   14		  aff					sse	 ffj				
+   15		  aff				j		*		
+   16		  aff		sw		equ		av		
 			 ***** Error :  missing end statement
-   18		 103b								
+   17		  b02								
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
@@ -44,6 +42,5 @@
 			qw			 1000
 			qwl			 1000
 			sw			    a
-			wn			 102f
 			ww			 1015
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*

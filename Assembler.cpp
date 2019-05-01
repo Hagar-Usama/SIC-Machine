@@ -166,16 +166,19 @@ int Assembler::check_symbol(){
 	//extract(oper,"\\*");
 	if(oper[0] == '*') return 1;
 	
-	temp = extract(oper,"^\\d+");
+	//cout<<"oper after trimming ,x ,+,# "<<oper<<endl;
+	temp = extract(oper,"^((0[0-9a-f]+)|(\\d+))");
 	
-	//cout<<"oper size : "<<oper.size()<<endl;
-	//cout<<"oper here is " <<oper<<endl;
+	//cout<<"line_no"<< line_no<<"temp in check symbol :"<<temp<<endl;
+	//cout<<"temp is "<<temp<<endl;
+	//cout<<"size is "<<temp.size()<<endl;
 	
-	//after extracting numbers and symbol if there is a label?
+	if(temp.size() > 0) return stoi(temp, 0, 16); 
+	
 	if(oper.size() >0){
 		return find_key(SYMTAB , oper);
 		}
-		return 1;
+		return -1;
 	
 	}	
 bool Assembler::have_error(){
@@ -213,6 +216,11 @@ bool Assembler::have_error(){
 	}
 	
 	
+	//if undefined label
+	if(st.operation.compare("org") == 0 || st.operation.compare("equ") == 0 ){
+		if(check_error9()) return true;
+		
+	}
 	
 	
 	if(st.formattype == 2){
@@ -613,7 +621,10 @@ void Assembler::pass1_2(){
 			
 			if(st.operation.compare("org") == 0){
 				prev_lctr = LOCCTR;
-				LOCCTR = stoi(st.operand);
+				
+				//LOCCTR = stoi(st.operand);
+				LOCCTR = check_symbol();
+				
 			}else if(st.operation.compare("equ") == 0){
 				
 				V = check_complexity(); // check complexity of operand and returns the address

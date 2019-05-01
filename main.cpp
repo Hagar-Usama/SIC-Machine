@@ -31,26 +31,10 @@ int find_key(map<string,int> mp , string label);
 
 int main(){
 	
-	Statement zzz;
-	zzz.line = "	byte 	c' ass ff' 	;jjj	";
-	lower_it(zzz.line);
 	
 	
 	write_dic("listfile.txt" , "");
 	read_file("src.txt");
-	
-	/*
-	Statement statement;
-	statement.line = " equ label";
-	cout<<statement.check_dir_unlab()<<endl;	
-	statement.check_part();
-	
-	cout<<"<"<<statement.line<<">"<<endl;
-	cout<<"<"<<statement.label<<">"<<endl;
-	cout<<"<"<<statement.operation<<">"<<endl;
-	cout<<"<"<<statement.operand<<">"<<endl;
-	cout<<"<"<<statement.comment<<">"<<endl;
-	*/
 	
 	cout<<" *.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*" <<endl;
 	cout<<" Welcome to my SIC Assembler "<<endl;

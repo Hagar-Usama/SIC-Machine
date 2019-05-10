@@ -32,6 +32,10 @@ int find_key(map<string,int> mp , string label);
 int main(){
 	
 	
+	string exp = "label / 9ddd";
+
+	
+	
 	
 	write_dic("listfile.txt" , "");
 	read_file("src.txt");
@@ -65,6 +69,7 @@ int find_key(map<string,int> mp , string label){
 	return it->second; 
       
 	}
+	
 	
 	void lower_it(string &str){
 		string temp;

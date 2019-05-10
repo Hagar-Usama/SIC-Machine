@@ -9,6 +9,12 @@ vector<string> lines;
  * check error if label is a register 
  * directives not implemented should be ignored with a warning //done
  * 
+ * 
+ * check spaces in list file
+ * org and equ check
+ * make a fun : eval_exp <takes an operand and partition it to 3 parts:
+ *  label , op and address and eval it
+ * 
  **/
  
 
@@ -37,6 +43,8 @@ class Assembler {
 	int get_length();
 	int calc_operand(const char op , string label , int address);
 	int check_complexity();
+	int extract_label(string &exp);
+	int eval_exp(string exp);
 	void print_error(int err);
 	bool check_error12();
 	bool check_error15();
@@ -115,25 +123,6 @@ bool Assembler::check_fixed(){
 		token = split(temp,20,15);
 		if(token[2] == ' '){errors++; print_error(3); return true;}
 		
-/*	
-	
-	// 1:8 >> 0:7 length 8 and start = 0;
-cout<<"*"<<split(str,8,0)<<"*"<<endl;
-//cout<<"*"<<str<<"*"<<endl;
-
-// 9:15 >> 8:14 length 7 and start = 8
-cout<<"*"<<split(str,7,8)<<"*"<<endl;
-
-// 16:35 >> 15:34 length 20 and start = 15
-cout<<"*"<<split(str,20,15)<<"*"<<endl;
-
-	//label
-	token = split(st.line ,8,0); 
-	//operation
-	token = split(st.line ,7,8); 
-	//operand
-	token = split(st.line ,20,15); 
-*/
 	
 	return false;
 	
@@ -163,15 +152,14 @@ int Assembler::check_symbol(){
 	extract(oper,"\\+");
 	extract(oper,"#");
 	extract(oper,"@");
+	
+	
 	//extract(oper,"\\*");
+	
 	if(oper[0] == '*') return 1;
 	
 	//cout<<"oper after trimming ,x ,+,# "<<oper<<endl;
 	temp = extract(oper,"^((0[0-9a-f]+)|(\\d+))");
-	
-	//cout<<"line_no"<< line_no<<"temp in check symbol :"<<temp<<endl;
-	//cout<<"temp is "<<temp<<endl;
-	//cout<<"size is "<<temp.size()<<endl;
 	
 	if(temp.size() > 0) return stoi(temp, 0, 16); 
 	
@@ -180,7 +168,9 @@ int Assembler::check_symbol(){
 		}
 		return -1;
 	
-	}	
+	}
+	
+		
 bool Assembler::have_error(){
 	
 	if(st.check_comment()){cout<<"check_comment in have error >>"<<st.line<<endl; return false;}
@@ -217,9 +207,26 @@ bool Assembler::have_error(){
 	}
 	
 	
-	//if undefined label
+	//if undefined label << symbol
 	if(st.operation.compare("org") == 0 || st.operation.compare("equ") == 0 ){
-		if(check_error9()) return true;
+		int type = check_exp_type(st.operand);
+		string exp = st.operand;
+		
+		//if contains a label 
+		if(type == 1 || type == 2 ){
+		
+			//get the label and search for it in symtab
+			int ch = extract_label(exp);
+			//if not exist
+			if(ch == -1) {
+				cout<<"ch is equal to -2"<<endl;
+				print_error(9);
+				//notify error
+				return true;
+			}	
+		}
+		
+		//if(check_error9()) return true;
 		
 	}
 	
@@ -575,6 +582,7 @@ void Assembler::pass1_1(){
 			// else not start :
 	}else{
 			if(st.formattype == 0){
+			
 				write_ifile(line_no,2);
 				write_ifile("\t\t");
 				write_ifile(st.comment);
@@ -599,7 +607,6 @@ void Assembler::pass1_1(){
 void Assembler::pass1_2(){
 	read_next();
 	int L , V;
-	
 	
 	while((st.operation.compare("end") != 0) ){
 	
@@ -639,17 +646,38 @@ void Assembler::pass1_2(){
 			if(st.operation.compare("org") == 0){
 				prev_lctr = LOCCTR;
 				
+				eval_exp(st.operand);
+				
 				//LOCCTR = stoi(st.operand);
-				LOCCTR = check_symbol();
+				//LOCCTR = check_symbol();
+				LOCCTR = 1000;
 				
 			}else if(st.operation.compare("equ") == 0){
 				
-				V = check_complexity(); // check complexity of operand and returns the address
-				if(V !=-1){SYMTAB.insert({st.label , V});}
-				else { /*return error 9*/}
+				
+				eval_exp(st.operand);
+				
+				int typ = check_exp_type(st.operand);
+				if(typ == 1 || typ ==2){
+					
+					string exp = st.operand;
+					
+					//get the address of the label:	
+					V= extract_label(exp);
+					//cout<<"V is " <<V<<endl;
+					printf("V is %x",V);
+					//cout<<"exp is " <<exp<<endl;
+					
+					SYMTAB.insert({st.label , V});
+					}
+				
+				//V = check_complexity(); // check complexity of operand and returns the address
+				//if(V !=-1){SYMTAB.insert({st.label , V});}
+				//else { /*return error 9*/}
 					
 				
 			}else{
+				
 				if(st.labeled){SYMTAB.insert({st.label , LOCCTR}); }
 				
 				if(st.operation.compare("word") == 0){L=3*calc_storage();} 
@@ -785,8 +813,9 @@ void Assembler::write_ifile(string str){
 		exit(1);
 		}
 		else{
-			
+			 // adding random spaces
 				fprintf (fp, "%s", str.c_str() );
+				//fprintf (fp, "      ");
 			}
 		
 		
@@ -808,7 +837,7 @@ void Assembler::write_ifile(int num , int mode){
 		exit(1);
 		}
 		else{
-			if(mode == 1){fprintf (fp, "%5x", num );}
+			if(mode == 1){fprintf (fp, "%x", num );}
 			else {fprintf (fp, "%d", num );}	
 			}
 		
@@ -819,20 +848,121 @@ void Assembler::write_ifile(int num , int mode){
 
 	
 	
-	//
 	}
 
-/*
-void Assembler::get_instructions(vector<string> lines){
-	int size = lines.size();
-	for( int i=0; i< size ; i++){
-		Instruction temp;
-		temp.line = lines[i];
-		temp.partition();
-		inst.push_back(temp);
+int Assembler::eval_exp(string exp){
+	
+	/**
+	 * exp can be in ... cases :
+	 * label + op +  address
+	 * label only
+	 * address only
+	 * 
+	 * check_exp_type >> should validate *
+	 *  
+	 **/
+	 
+	 int type = check_exp_type(exp);
+	 cout<<"type is : " <<type <<endl;
+	 
+	 
+	 string label= "";
+	 char op;
+	 string oper;
+	 int address = 0;
+	 trim_(exp);
+	 int lab_add = 0;
+	 
+	 switch (type){
+		 case 1:
 		
-		//lines.push_back(line);
-		}
+		label = extract(exp,"^\\s*(\\b([a-z]){1}\\w{0,7})");
+		
+		trim_(label);
+		
+		//address of the label
+		lab_add = find_key(SYMTAB,label);
+		
+		trim_(exp);
+		cout<<label<<endl;
+		
+		//operation
+		
+		oper = exp;
+		op = oper[0];
+		cout<<op<<endl;
+		
+		extract(exp , "(\\+|-|\\*|/)");
+		cout<<exp<<endl;
+		
+		//address as a number
+		address = stoi(exp ,0,16);
+		cout<<address<<endl;
+		printf("address in hex is: %x\n",address);
+		
+		cout<<"*"<<op<<endl;
+		
+		 break;
+		
+		case 2:
+		 //label only
+		 //extract(exp , ",x");
+		//extract(exp,"\\+");
+		//extract(exp,"#");
+		//extract(exp,"@");
+		 
+		 label = exp;
+		 
+		 cout<<"Label Only : "<<label<<endl;
+		 //address of the label
+		lab_add = find_key(SYMTAB,label);
+		
+		
+		 break;
+		 
+		case 3:
+		 // address only
+		
+		//extract(exp , ",x");
+		//extract(exp,"\\+");
+		//extract(exp,"#");
+		//extract(exp,"@");
+		//address = stoi(exp,0,16);
+		printf("address in hex is: %x\n",address);
+		 
+		 break;
+		  
+		 }
+		 
+		
+		
+		
+return 0;
+	}
+
+int Assembler::extract_label(string &exp){
+	
+	
+	string label= "";
+	 
+		//we can replace this by : trim_ then extract ^\\+ , ^- ....
+		//extract(exp , ",x");
+		//extract(exp,"\\+");
+		//extract(exp,"#");
+		//extract(exp,"@");
+		
+		label = extract(exp,"^\\s*(\\b([a-z]){1}\\w([a-z0-9]){0,7})");
+		
+		trim_(label);
+		
+		exp = label;
+		
+		cout<<"label in extract label " <<label<<endl;
+		if(label.size() >0){
+			return find_key(SYMTAB,label);
+			}
+		return -2;
+		
 	
 	}
-*/
+	

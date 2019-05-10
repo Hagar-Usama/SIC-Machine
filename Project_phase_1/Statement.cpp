@@ -17,7 +17,11 @@ using namespace std;
  void rtrim(string &exp);
  void trim_(string &s , string delim="");
  string split(string line ,int length,int start=0);
- 
+ int eval_exp(string exp);
+ bool check_case_1(string exp);
+ bool check_case_2(string exp);
+ bool check_case_3(string exp);
+ int check_exp_type(string exp); 
 class Statement{
 	
 	public :
@@ -94,7 +98,7 @@ void Statement::clear_statement(){
 void Statement::check_part(){
 	
 	if(check_statement() == 1){
-		if(!check_comment())
+		//if(!check_comment())
 			get_partitioned();
 		}
 	
@@ -294,7 +298,7 @@ int Statement::check_dir_not(){
 int Statement::check_dir_lab(){
 	 string input;
 	 //"(\\b(equ)\\s+(\\b([a-z]){1}\\w{0,7}\\s*(\\+\\s*\\d{1,4})?)|\\d{1,4})"
-	 string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s+((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-z0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(equ)\\s+((\\b([a-z]){1}\\w{0,7}\\s*(\\+\\s*\\d{1,4})?)|\\d{1,4})))\\s*(;.*)?";
+	 string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s+((\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-z0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(equ)\\s+((\\b([a-z]){1}\\w{0,7}\\s*((\\+|-|\\*|/)\\s*\\d{1,4})?)|\\d{1,4})))\\s*(;.*)?";
 	 regex re(reg);
  		if(regex_match(this->line,re)){
 			this->labeled = true;
@@ -313,7 +317,7 @@ int Statement::check_dir_lab(){
 int Statement::check_dir_unlab(){
 	string input;
 	
-	 string reg = "\\s*(((\\b(equ)\\s+((\\b([a-z]){1}\\w{0,7}\\s*(\\+\\s*\\d{1,4})?)|\\d{1,4})))|(\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-z0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(end)(\\s+\\b(){1}\\w{1,7})?)|(\\b(org)(\\s+\\b(){1}\\w{1,7}))|(\\b(base)\\s+((\\b(){1}\\w{1,7})|\\*)))\\s*(;.*)?";
+	 string reg = "\\s*((\\b(equ)\\s+((\\b([a-z]){1}\\w{0,7}\\s*((\\+|-|\\*|/)\\s*\\d{1,4})?)|\\d{1,4}))|(\\b(start)\\s+[a-f0-9]{1,4})|(\\b(byte)\\s+((c'.{1,14}')|(x'[a-z0-9]{1,15}')))|(\\b(word)\\s+-?\\d{1,4}(,-?\\d{1,4})*)|(\\b(resw|resb)\\s+\\d{1,4})|(\\b(end)(\\s+\\b(){1}\\w{1,7})?)|(\\b(org)(\\s+\\b(){1}\\w{1,7}))|(\\b(base)\\s+((\\b(){1}\\w{1,7})|\\*)))\\s*(;.*)?";
 	 
 	 regex re(reg);
 		
@@ -516,30 +520,59 @@ int Statement::check_dir_unlab(){
 
 //void trim_(string &s , string delim="");
 
-/**
-int main(){
-	Statement st;
-	//st.check_statement("start    1000   ;commenty");
-	st.line = "		+j	* + 5;fff";
-	//st.trim(st.line);
-	st.check_statement();
-	st.get_partitioned();
+bool check_case_1(string exp){
 	
-	cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
-			cout<<"<"<<st.label<<">"<<endl;
-			cout<<"<"<<st.operation<<">"<<endl;
-			cout<<"<"<<st.operand<<">"<<endl;
-			cout<<"<"<<st.operand2<<">"<<endl;
-			cout<<"<"<<st.comment<<">"<<endl;
-			cout<<"<"<<st.line<<">"<<endl;
-	cout<<"*.*.*.*.*.*.*.*.***...**...**..**"<<endl;
-	
-	//string ss("Hello my beauty ");
-	//trim_(ss);
-	//cout<<ss;
-	cout<<sizeof(st);
-	return 0;
-	
-	}
+	/**
+	 * check if operand : label + op + address
+	 * */
+	 
+	string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s*(\\+|-|\\*|/)\\s*\\b([0-9])\\w([0-9a-f]){1,3}\\s*"; 
+	regex re(reg);
+ 		if(regex_match(exp , re)){
+			
+			return true;		
+			}
+ return false;		 
+}
 
-**/
+bool check_case_2(string exp){
+	
+	/**
+	 * check if operand : label only
+	 * */
+	 
+	string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s*"; 
+	regex re(reg);
+ 		if(regex_match(exp , re)){
+			
+			return true;		
+			}
+ return false;		 
+}
+
+bool check_case_3(string exp){
+	
+	/**
+	 * check if operand : address only
+	 * */
+	 
+	string reg = "\\s*\\b([0-9])\\w([0-9a-f]){1,3}\\s*"; 
+	regex re(reg);
+ 		if(regex_match(exp , re)){
+			
+			return true;		
+			}
+ return false;		 
+}
+
+int check_exp_type(string exp){
+	
+	int type;
+	if(check_case_1(exp)) type = 1;
+	else if(check_case_2(exp)) type = 2;
+	else if(check_case_3(exp)) type = 3;
+	else type = -1;
+	return type;
+}
+
+

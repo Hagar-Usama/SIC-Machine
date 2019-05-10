@@ -1,49 +1,50 @@
-1		
-2		 1000		bgn		start		 1000		;fcmnt
-3		 1000		qw		resw		5		
-4		 100f		ad		resb		3		
-5		 100f								.hjgjhj jhgjhjjh
+1		.23456789012345678901234567890123456789
+2		1000		bgn		start		1000		;fcmnt
+3		1000		qw		resw		5		
+4		100f		ad		resb		3		
+5		100f								.hjgjhj jhgjhjjh
 			 ***** Error :  not a hexadecimal string
-6		 1012		av		byte		x'gafdf'		
-7		 1012		ww		word		-1,2,5,4		
-8		 101e		fff		lda		#10		
+6		1012		av		byte		x'gafdf'		
+7		1012		ww		word		-1,2,5,4		
+8		101e		fff		lda		#10		
 			 ***** Error :  duplicate label defition
-9		 1021		bgn		add		#5		
+9		1021		bgn		add		#5		
 			 ***** Error :  can't be format 4 instruction
-10		 1021				+rmo		a,x		
-11		 1021				sub		#3		
-12		 1024				add		#22		
+10		1021				+rmo		a,x		
+11		1021				sub		#3		
+12		1024				add		#22		
 			 ***** Error :  undefined symbol in operand
-13		 1027				add		wn,x		
-14		 1027		gg		addr		a,x		
+13		1027				add		wn,x		
+14		1027		gg		addr		a,x		
 			 ***** Warning : Not implemented (ignored)
-15		 1029					nobase	 gg				
-			 ***** Error :  this statement can't have a label
-16		 1029		lab		org		1000		
+15		1029					    nobase	 gg				
+16		1029				org		ad		
+17		1029		hhh		equ		ad+3		
+18		1029		www		equ		qw		
 			 ***** Error :  undefined symbol in operand
-17		 1029				sta		mem		
+19		3e8				sta		mem		
 			 ***** Error :  unrecognized operation code or invalid statement
-18		 1029					sse	 ffj				
+20		3e8					    sse	     ffj				
 			 ***** Error :  illegal address for a register
-19		 1029				rmo		a,z		
-20		 1029				j		*		
-			 ***** Error :  undefined symbol in operand
-21		 102c		sw		equ		av		
-22		 102c		wn		word		-1,2,5,4		
+21		3e8				rmo		a,z		
+22		3e8				j		*		
+23		3e8								.sw	    equ	     av
+24		3eb		wn		word		-1,2,5,4		
 			 ***** Error :  missing end statement
-23		 1038								
+25		3f7								
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
-			ad			 100f
-			bgn			 1000
-			fff			 101e
-			gg			 1027
-			qw			 1000
-			wn			 102c
-			ww			 1012
+			ad			100f
+			bgn			1000
+			fff			101e
+			gg			1027
+			qw			1000
+			wn			3eb
+			ww			1012
+			www			1000
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- errors :10
+ errors :8
  *** INCOMPLETE ASSEMBLING ***

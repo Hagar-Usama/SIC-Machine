@@ -526,10 +526,15 @@ bool check_case_1(string exp){
 	 * check if operand : label + op + address
 	 * */
 	 
-	string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s*(\\+|-|\\*|/)\\s*\\b([0-9])\\w([0-9a-f]){1,3}\\s*"; 
+	cout<<"check case_1"<<endl;
+	//exp has no white spaces
+	trim_(exp);
+	cout<<"Exp in check_case_1 :  "<<"*"<<exp<<"*"<<endl;
+	
+	string reg = ".+(\\+|-|\\*|/)\\w([0-9a-f]){1,4}"; 
 	regex re(reg);
  		if(regex_match(exp , re)){
-			
+			cout<<"yes , cace_1"<<endl;	
 			return true;		
 			}
  return false;		 
@@ -568,8 +573,11 @@ bool check_case_3(string exp){
 int check_exp_type(string exp){
 	
 	int type;
+	//label + op + address
 	if(check_case_1(exp)) type = 1;
+	//label only
 	else if(check_case_2(exp)) type = 2;
+	//address only
 	else if(check_case_3(exp)) type = 3;
 	else type = -1;
 	return type;

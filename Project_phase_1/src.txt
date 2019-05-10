@@ -14,8 +14,8 @@ bgn	    add	     #5
 gg	    addr	 a , x
 	    nobase	 gg
    	    org	     ad
-hhh     equ      ad+3
-www     equ      qw
+hhh     equ      2000
+www     equ      qw+2
 	    sta	     mem
 	    sse	     ffj
 	    rmo	     a , z

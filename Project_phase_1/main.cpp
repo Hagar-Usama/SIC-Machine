@@ -8,7 +8,7 @@
 
 #include <regex>
 #include <string>
-#include <vector>
+
 
 
 using namespace std;
@@ -31,10 +31,12 @@ int find_key(map<string,int> mp , string label);
 
 int main(){
 	
-	
-	string exp = "label / 9ddd";
+	/*
+	string ex11 = "lab+1000";
 
-	
+	cout<<check_case_1(ex11)<<endl;
+	cout<<check_exp_type(ex11)<<endl;
+	*/
 	
 	
 	write_dic("listfile.txt" , "");

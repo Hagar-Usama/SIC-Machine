@@ -19,8 +19,8 @@
 			 ***** Warning : Not implemented (ignored)
 15		1029					    nobase	 gg				
 16		1029				org		ad		
-17		1029		hhh		equ		ad+3		
-18		1029		www		equ		qw		
+17		1029		hhh		equ		2000		
+18		1029		www		equ		qw+2		
 			 ***** Error :  undefined symbol in operand
 19		3e8				sta		mem		
 			 ***** Error :  unrecognized operation code or invalid statement
@@ -40,10 +40,10 @@
 			bgn			1000
 			fff			101e
 			gg			1027
+			hhh			2000
 			qw			1000
 			wn			3eb
 			ww			1012
-			www			1000
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
  errors :8

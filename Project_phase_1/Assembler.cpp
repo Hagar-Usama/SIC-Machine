@@ -654,19 +654,29 @@ void Assembler::pass1_2(){
 				
 			}else if(st.operation.compare("equ") == 0){
 				
-				
+				cout<<"check_type: "<< check_exp_type("label+10")<<"<<"<<endl;
+				cout<<"check_case_1: "<< check_case_1("label+10")<<"<<"<<endl;
 				eval_exp(st.operand);
 				
+				
 				int typ = check_exp_type(st.operand);
-				if(typ == 1 || typ ==2){
+				if(typ !=-1){
 					
-					string exp = st.operand;
+					if(typ == 1 || typ ==2){
+							string exp = st.operand;
 					
 					//get the address of the label:	
 					V= extract_label(exp);
 					//cout<<"V is " <<V<<endl;
 					printf("V is %x",V);
 					//cout<<"exp is " <<exp<<endl;
+						
+						
+						}else if(typ ==3){
+							V = stoi(st.operand,0,16);
+							
+							}
+					
 					
 					SYMTAB.insert({st.label , V});
 					}

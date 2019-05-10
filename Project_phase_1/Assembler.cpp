@@ -183,6 +183,7 @@ int Assembler::check_symbol(){
 	}	
 bool Assembler::have_error(){
 	
+	if(st.check_comment()){cout<<"check_comment in have error >>"<<st.line<<endl; return false;}
 	//if fixed mode check tabs and displacement
 	if(!mode){if(check_fixed())return true;}
 	
@@ -603,7 +604,10 @@ void Assembler::pass1_2(){
 	while((st.operation.compare("end") != 0) ){
 	
 			if(line_no >= lines.size() + 1) break;
-			
+	if(st.check_comment()){ st.comment = st.line;
+	}else {
+		
+	
 	if(!have_error()){
 			
 			//if instruction
@@ -670,8 +674,10 @@ void Assembler::pass1_2(){
 			
 	}else{
 			 prev_lctr = LOCCTR;
-		}
+		}//end of else have_error
+			
 		
+	}		
 		write_line();
 		read_next();
 		}//end of while

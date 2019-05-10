@@ -93,8 +93,11 @@ void Statement::clear_statement(){
 	}
 void Statement::check_part(){
 	
-	if(check_statement() == 1)
-	get_partitioned();
+	if(check_statement() == 1){
+		if(!check_comment())
+			get_partitioned();
+		}
+	
 	}
 	
 int Statement:: check_indexed(){

@@ -1,21 +1,49 @@
-1		.23456789012345678901234567890123456789
-2		 1000		bgn		start		 1000		
-3		 1000				lda		#10		
-4		 1003		pr		word		-1		
-5		 1006				add		@pr		
+1		
+2		 1000		bgn		start		 1000		;fcmnt
+3		 1000		qw		resw		5		
+4		 100f		ad		resb		3		
+5		 100f								.hjgjhj jhgjhjjh
+			 ***** Error :  not a hexadecimal string
+6		 1012		av		byte		x'gafdf'		
+7		 1012		ww		word		-1,2,5,4		
+8		 101e		fff		lda		#10		
+			 ***** Error :  duplicate label defition
+9		 1021		bgn		add		#5		
+			 ***** Error :  can't be format 4 instruction
+10		 1021				+rmo		a,x		
+11		 1021				sub		#3		
+12		 1024				add		#22		
+			 ***** Error :  undefined symbol in operand
+13		 1027				add		wn,x		
+14		 1027		gg		addr		a,x		
+			 ***** Warning : Not implemented (ignored)
+15		 1029					nobase	 gg				
+			 ***** Error :  this statement can't have a label
+16		 1029		lab		org		1000		
+			 ***** Error :  undefined symbol in operand
+17		 1029				sta		mem		
 			 ***** Error :  unrecognized operation code or invalid statement
-6		 1009				         jsub    dd				
-7		 1009				ldx		#5		
-8		 100c				subr		a,x		
-9		 100e				j		*		
-10		 1011				end				
+18		 1029					sse	 ffj				
+			 ***** Error :  illegal address for a register
+19		 1029				rmo		a,z		
+20		 1029				j		*		
+			 ***** Error :  undefined symbol in operand
+21		 102c		sw		equ		av		
+22		 102c		wn		word		-1,2,5,4		
+			 ***** Error :  missing end statement
+23		 1038								
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
+			ad			 100f
 			bgn			 1000
-			pr			 1003
+			fff			 101e
+			gg			 1027
+			qw			 1000
+			wn			 102c
+			ww			 1012
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- errors :1
+ errors :10
  *** INCOMPLETE ASSEMBLING ***

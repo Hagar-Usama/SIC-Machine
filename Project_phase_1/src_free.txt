@@ -19,3 +19,7 @@ lab	org	 1000
 	j	 *
 sw	equ	 av
 wn	word	 -1,2,5,4
+
+
+org & equ 
+end >> label

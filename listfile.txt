@@ -3,7 +3,7 @@
 3		 1000				lda		#10		
 4		 1003		pr		word		-1		
 5		 1006				add		@pr		
-			 ***** Error :  unrecognized operation code or invalid statement
+			 ***** Warning : Not implemented (ignored)
 6		 1009				         jsub    dd				
 7		 1009				ldx		#5		
 8		 100c				subr		a,x		
@@ -17,5 +17,4 @@
 			pr			 1003
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- errors :1
- *** INCOMPLETE ASSEMBLING ***
+ *** SUCCESSFUL ASSEMBLING ***

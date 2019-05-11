@@ -5,16 +5,18 @@ vector<string> lines;
 /*******
  * 
  * Replace STOI whith another function that handle any format //done
- * Mind ORG 
- * check error if label is a register 
+ * Mind ORG  //done
+ * check error if label is a register //done 
  * directives not implemented should be ignored with a warning //done
  * 
  * 
  * check spaces in list file
- * org and equ check
+ * org and equ check // done
+ * 
  * make a fun : eval_exp <takes an operand and partition it to 3 parts:
  *  label , op and address and eval it
  * 
+ * reconsider general expression evaluation
  **/
  
 
@@ -22,18 +24,20 @@ class Assembler {
 	public:
 	int LOCCTR;
 	int prev_lctr;
+	int obcode; //object code per line
 	unsigned int line_no;
 	bool mode;
 	int start_address;
 	Statement st;
 	map<string,int> SYMTAB;
+	map<string,int> OPTAB;
 	unsigned int errors;
 	Assembler();
 	void object_file();
 	
 	void pass1_1();
 	void pass1_2();
-
+	void init_optab();
 	void print_statement_part();
 	void write_ifile(string str);
 	void write_ifile(int num , int mode=1);
@@ -46,6 +50,10 @@ class Assembler {
 	int check_complexity();
 	int extract_label(string &exp);
 	int eval_exp(string exp);
+	bool check_indirect();
+	bool check_immediate();
+	bool check_indexed();
+	void objectize();
 	void print_error(int err);
 	bool check_error12();
 	bool check_error15();
@@ -66,6 +74,7 @@ class Assembler {
 	};
 	
 Assembler::Assembler(){
+	init_optab();
 	line_no = 1;
 	this->st.line = lines[0];
 	st.check_part();
@@ -1041,4 +1050,107 @@ int Assembler::get_equ_org_add(){
 	
 	//end of function
 	return V;
+	}
+bool Assembler::check_indirect(){
+
+	if(st.operand[0] == '@')
+		return true;
+	return false;
+}
+bool Assembler::check_immediate(){
+	if(st.operand[0] == '#')
+		return true;
+	return false;
+}
+
+bool Assembler::check_indexed(){
+	return st.operand.find(",x") >= 0 ?  true : false;
+}
+
+void Assembler::objectize(){
+	
+	string exp = st.operand;
+	int address = 0;
+	bool n,i,x,b,p,e;
+	
+	switch (st.formattype){
+		//format 2
+		case 2:
+		//each of r1 and r2 has a certain number
+		// a=0 , s =4 , we'll see 
+		break;
+		
+		//format 3
+		case 3:
+		
+		n=check_indirect();
+		i=check_immediate();
+		x=check_indexed();
+		b=0;
+		p=1;
+		e=0;
+		
+		// dis = TA - PC
+		address = LOCCTR - prev_lctr;
+		
+		address += (e<<1);
+		address += (p<<2);
+		address += (b<<3);
+		address += (x<<4);
+		address += (i<<5);
+		address += (n<<6);
+		
+		
+		
+		
+		
+		break;
+		
+		//format 4
+		case 4:
+		break;
+		
+		//directive >> (Word and Resb)
+		// check how to implement if word 1,2,3
+		
+		case 1:
+		break;
+		}
+	
+	obcode = address;
+	//print object code in listfile
+	
+	}
+
+void Assembler:: init_optab(){
+	
+	OPTAB.insert({"add" , stoi("18",0,16)});
+	OPTAB.insert({"addr" , stoi("90",0,16)});
+	OPTAB.insert({"comp" , stoi("28",0,16)});
+	OPTAB.insert({"compr" , stoi("a0",0,16)});
+	OPTAB.insert({"j" , stoi("3c",0,16)});
+	OPTAB.insert({"jeq" , stoi("30",0,16)});
+	OPTAB.insert({"jgt" , stoi("34",0,16)});
+	OPTAB.insert({"jlt" , stoi("38",0,16)});
+	OPTAB.insert({"lda" , stoi("00",0,16)});
+	OPTAB.insert({"ldb" , stoi("68",0,16)});
+	OPTAB.insert({"ldch" , stoi("50",0,16)});
+	OPTAB.insert({"ldl" , stoi("08",0,16)});
+	OPTAB.insert({"lds" , stoi("6c",0,16)});
+	OPTAB.insert({"ldt" , stoi("74",0,16)});
+	OPTAB.insert({"ldx" , stoi("04",0,16)});
+	OPTAB.insert({"rmo" , stoi("ac",0,16)});
+	OPTAB.insert({"sta" , stoi("0c",0,16)});
+	OPTAB.insert({"stb" , stoi("78",0,16)});
+	OPTAB.insert({"stch" , stoi("54",0,16)});
+	OPTAB.insert({"stl" , stoi("14",0,16)});
+	OPTAB.insert({"sts" , stoi("7c",0,16)});
+	OPTAB.insert({"stt" , stoi("84",0,16)});
+	OPTAB.insert({"stx" , stoi("10",0,16)});
+	OPTAB.insert({"sub" , stoi("1c",0,16)});
+	OPTAB.insert({"subr" , stoi("94",0,16)});
+	OPTAB.insert({"tix" , stoi("2c",0,16)});
+	OPTAB.insert({"tixr" , stoi("b8",0,16)});
+	
+	
 	}

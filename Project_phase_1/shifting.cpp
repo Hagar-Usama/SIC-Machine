@@ -1,8 +1,27 @@
-#include<iostream>
+#include <iostream>
+#include <iostream>
+#include <queue>
+#include <map>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <ctype.h>
+
 
 using namespace std;
 
 int main(){
+
+string s = "rmo stem ,x";
+int pos = s.find(",x");
+cout<<pos<<endl;
+ 
+//int count = std::count(token.begin(), token.end(), ' ');
+
+bool g = 1;
+int i = g<<3;
+//00001 , 01000
+printf("%x\n",i);
 
 int address = 22408;
 int x = 1;

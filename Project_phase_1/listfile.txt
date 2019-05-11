@@ -22,20 +22,24 @@
 17		1029		hhh		equ		2000		
 18		1029		www		equ		qw+2		
 			 ***** Error :  undefined symbol in operand
-19		3e8				sta		mem		
+19		3e8		qqq		equ		ddd+5		
+20		3e8		abc		equ		ad+10		
+			 ***** Error :  undefined symbol in operand
+21		3e8				sta		mem		
 			 ***** Error :  unrecognized operation code or invalid statement
-20		3e8					    sse	     ffj				
+22		3e8					    sse	     ffj				
 			 ***** Error :  illegal address for a register
-21		3e8				rmo		a,z		
-22		3e8				j		*		
-23		3e8								.sw	    equ	     av
-24		3eb		wn		word		-1,2,5,4		
+23		3e8				rmo		a,z		
+24		3e8				j		*		
+25		3e8								.sw	    equ	     av
+26		3eb		wn		word		-1,2,5,4		
 			 ***** Error :  missing end statement
-25		3f7								
+27		3f7								
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
+			abc			101f
 			ad			100f
 			bgn			1000
 			fff			101e
@@ -44,7 +48,8 @@
 			qw			1000
 			wn			3eb
 			ww			1012
+			www			1002
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- errors :8
+ errors :9
  *** INCOMPLETE ASSEMBLING ***

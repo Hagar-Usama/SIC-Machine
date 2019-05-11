@@ -16,6 +16,8 @@ gg	    addr	 a , x
    	    org	     ad
 hhh     equ      2000
 www     equ      qw+2
+qqq     equ      ddd+5
+abc     equ      ad+10
 	    sta	     mem
 	    sse	     ffj
 	    rmo	     a , z

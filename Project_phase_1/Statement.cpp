@@ -534,7 +534,22 @@ bool check_case_1(string exp){
 	string reg = ".+(\\+|-|\\*|/)\\w([0-9a-f]){1,4}"; 
 	regex re(reg);
  		if(regex_match(exp , re)){
-			cout<<"yes , cace_1"<<endl;	
+			cout<<"yes , case_1"<<endl;	
+			return true;		
+			}
+ return false;		 
+}
+
+bool check_case_11(string exp){
+	
+	/**
+	 * check if operand : label only
+	 * */
+	 
+	string reg = "\\s*(\\b([a-z]){1}\\w{0,7})\\s*"; 
+	regex re(reg);
+ 		if(regex_match(exp , re)){
+			
 			return true;		
 			}
  return false;		 

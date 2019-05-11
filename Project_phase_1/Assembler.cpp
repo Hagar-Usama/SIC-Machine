@@ -208,27 +208,38 @@ bool Assembler::have_error(){
 	
 	
 	//if undefined label << symbol
+	
+	
 	if(st.operation.compare("org") == 0 || st.operation.compare("equ") == 0 ){
 		int type = check_exp_type(st.operand);
 		string exp = st.operand;
-		
-		//if contains a label 
-		if(type == 1 || type == 2 ){
-		
-			//get the label and search for it in symtab
-			int ch = extract_label(exp);
-			//if not exist
-			if(ch == -1) {
-				cout<<"ch is equal to -2"<<endl;
-				print_error(9);
-				//notify error
-				return true;
-			}	
+		int found;
+		if(type ==2){
+			//label only
+			trim_(exp);
+			found = find_key(SYMTAB , exp);
+		}else if(type == 3){
+			//address
+			found = 1;
+		}else{
+			//label + op + address
+			string label_com = extract(exp , "^\\b([a-z]\\w([a-z0-9]){0,3})");
+				cout<<"\b";
+				cout<<"label_com in check error "<<label_com<<endl;
+			found = find_key(SYMTAB , label_com);
 		}
 		
-		//if(check_error9()) return true;
+		if( found == -1){
+			print_error(9);
+			errors++;
+			return true;
+			}				
 		
-	}
+				
+			
+		//if(check_error9()) return true;
+	}	
+	
 	
 	
 	if(st.formattype == 2){
@@ -246,6 +257,7 @@ bool Assembler::have_error(){
 	
 	return false;
 	}
+
 
 bool Assembler::check_warning(){
 	print_error(0);
@@ -607,6 +619,7 @@ void Assembler::pass1_1(){
 void Assembler::pass1_2(){
 	read_next();
 	int L , V;
+	string exp = st.operand;
 	
 	while((st.operation.compare("end") != 0) ){
 	
@@ -654,32 +667,69 @@ void Assembler::pass1_2(){
 				
 			}else if(st.operation.compare("equ") == 0){
 				
-				cout<<"check_type: "<< check_exp_type("label+10")<<"<<"<<endl;
-				cout<<"check_case_1: "<< check_case_1("label+10")<<"<<"<<endl;
-				eval_exp(st.operand);
-				
 				
 				int typ = check_exp_type(st.operand);
-				if(typ !=-1){
-					
-					if(typ == 1 || typ ==2){
-							string exp = st.operand;
+				
+				if(typ ==2){
+					exp = st.operand;
 					
 					//get the address of the label:	
-					V= extract_label(exp);
+						V= extract_label(exp);
 					//cout<<"V is " <<V<<endl;
-					printf("V is %x",V);
+						printf("V is %x",V);
 					//cout<<"exp is " <<exp<<endl;
 						
 						
-						}else if(typ ==3){
-							V = stoi(st.operand,0,16);
+				}else if(typ ==3){
+						V = stoi(st.operand,0,16);
 							
+				}else{
+								
+							//then it must be type 1:
+							//label + op + address
+							
+							exp = st.operand;
+							string label_com = extract(exp , "^\\b([a-z]\\w([a-z0-9]){0,3})");
+							string op = extract(exp,"(\\+|-|\\*|/)");
+							
+							trim_(exp);
+
+							//check if label is found 
+							int label_add = find_key(SYMTAB , label_com);
+							if(label_add == -1){
+								//then operand isn't defined
+								print_error(9);
+								errors++;
+								
+							}else{
+								//else calc the operand	
+								switch(op[0]){
+								case '+':
+								V= label_add + stoi(exp ,0,16);
+								break;
+								
+								case '-':
+								V= label_add - stoi(exp ,0,16);
+								break;
+								
+								case '*':
+								V= label_add * stoi(exp ,0,16);
+								break;
+								
+								case '/':
+								V= label_add / stoi(exp ,0,16);
+								break;
+								
+								default:
+								V=0;
+								}
+									
 							}
-					
+							
+						}
 					
 					SYMTAB.insert({st.label , V});
-					}
+					
 				
 				//V = check_complexity(); // check complexity of operand and returns the address
 				//if(V !=-1){SYMTAB.insert({st.label , V});}
@@ -962,16 +1012,21 @@ int Assembler::extract_label(string &exp){
 		//extract(exp,"@");
 		
 		label = extract(exp,"^\\s*(\\b([a-z]){1}\\w([a-z0-9]){0,7})");
+		if(label.size() == 0){
+			//if label is empty, then try with operator
+			label = extract(exp,"^\\s*(\\b([a-z]){1}\\w([a-z0-9]){0,7})\\s*\\+");
+			
+			}
 		
 		trim_(label);
 		
 		exp = label;
 		
-		cout<<"label in extract label " <<label<<endl;
+		cout<<"****label in extract_label >>" <<label<<"*****"<<endl;
 		if(label.size() >0){
 			return find_key(SYMTAB,label);
 			}
-		return -2;
+		return -1;
 		
 	
 	}

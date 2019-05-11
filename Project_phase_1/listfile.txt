@@ -21,20 +21,22 @@
 16		1029				org		ad		
 17		100f		hhh		equ		2000		
 18		100f		www		equ		qw+2		
+			 ***** Error :  duplicate label defition
+19		100f		www		equ		qmm+2		
 			 ***** Error :  undefined symbol in operand
-19		100f		qqq		equ		ddd+5		
-20		100f		abc		equ		ad+10		
+20		100f		qqq		equ		ddd+5		
+21		100f		abc		equ		ad+10		
 			 ***** Error :  undefined symbol in operand
-21		100f				sta		mem		
+22		100f				sta		mem		
 			 ***** Error :  unrecognized operation code or invalid statement
-22		100f					    sse	     ffj				
+23		100f					    sse	     ffj				
 			 ***** Error :  illegal address for a register
-23		100f				rmo		a,z		
-24		100f				j		*		
-25		100f								.sw	    equ	     av
-26		1012		wn		word		-1,2,5,4		
+24		100f				rmo		a,z		
+25		100f				j		*		
+26		100f								.sw	    equ	     av
+27		1012		wn		word		-1,2,5,4		
 			 ***** Error :  missing end statement
-27		101e								
+28		101e								
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
@@ -51,5 +53,5 @@
 			www			1002
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- errors :9
+ errors :10
  *** INCOMPLETE ASSEMBLING ***

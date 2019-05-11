@@ -640,10 +640,6 @@ void Assembler::pass1_2(){
 				}
 				
 					
-			
-			//prev_lctr = LOCCTR;
-			
-			
 			L = get_length();
 			LOCCTR += L;
 				
@@ -659,79 +655,20 @@ void Assembler::pass1_2(){
 		else{
 			
 			if(st.operation.compare("org") == 0){
-				//prev_lctr = LOCCTR;
 				
-				eval_exp(st.operand);
+				//eval_exp(st.operand);
 				
 				//LOCCTR = stoi(st.operand);
 				//LOCCTR = check_symbol();
+				
 				LOCCTR = get_equ_org_add();
 				cout<<"locctr in org ="<<LOCCTR<<endl;
+				
 				//LOCCTR = 1000;
 				
 			}else if(st.operation.compare("equ") == 0){
 				
-				// try to make all this code a single function
-				int typ = check_exp_type(st.operand);
-				
-				if(typ ==2){
-					exp = st.operand;
-					
-					//get the address of the label:	
-						V= extract_label(exp);
-					//cout<<"V is " <<V<<endl;
-						printf("V is %x",V);
-					//cout<<"exp is " <<exp<<endl;
-						
-						
-				}else if(typ ==3){
-						V = stoi(st.operand,0,16);
-							
-				}else{
-								
-							//then it must be type 1:
-							//label + op + address
-							
-							exp = st.operand;
-							string label_com = extract(exp , "^\\b([a-z]\\w([a-z0-9]){0,3})");
-							string op = extract(exp,"(\\+|-|\\*|/)");
-							
-							trim_(exp);
-
-							//check if label is found 
-							int label_add = find_key(SYMTAB , label_com);
-							if(label_add == -1){
-								//then operand isn't defined
-								print_error(9);
-								errors++;
-								
-							}else{
-								//else calc the operand	
-								switch(op[0]){
-								case '+':
-								V= label_add + stoi(exp ,0,16);
-								break;
-								
-								case '-':
-								V= label_add - stoi(exp ,0,16);
-								break;
-								
-								case '*':
-								V= label_add * stoi(exp ,0,16);
-								break;
-								
-								case '/':
-								V= label_add / stoi(exp ,0,16);
-								break;
-								
-								default:
-								V=0;
-								}
-									
-							}
-							
-						}
-					
+					V= get_equ_org_add();
 					SYMTAB.insert({st.label , V});
 					
 				
@@ -751,7 +688,7 @@ void Assembler::pass1_2(){
 				else if(st.operation.compare("resw") == 0) L = 3*stoi(st.operand);
 				else if(st.operation.compare("resb") == 0) L = stoi(st.operand);
 				
-				//prev_lctr = LOCCTR;
+				
 				LOCCTR += L;
 
 				
@@ -765,7 +702,7 @@ void Assembler::pass1_2(){
 			
 			
 	}else{
-			 //prev_lctr = LOCCTR;
+			 
 		}//end of else have_error
 			
 		

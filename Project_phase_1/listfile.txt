@@ -19,22 +19,22 @@
 			 ***** Warning : Not implemented (ignored)
 15		1029					    nobase	 gg				
 16		1029				org		ad		
-17		1029		hhh		equ		2000		
-18		1029		www		equ		qw+2		
+17		100f		hhh		equ		2000		
+18		100f		www		equ		qw+2		
 			 ***** Error :  undefined symbol in operand
-19		3e8		qqq		equ		ddd+5		
-20		3e8		abc		equ		ad+10		
+19		100f		qqq		equ		ddd+5		
+20		100f		abc		equ		ad+10		
 			 ***** Error :  undefined symbol in operand
-21		3e8				sta		mem		
+21		100f				sta		mem		
 			 ***** Error :  unrecognized operation code or invalid statement
-22		3e8					    sse	     ffj				
+22		100f					    sse	     ffj				
 			 ***** Error :  illegal address for a register
-23		3e8				rmo		a,z		
-24		3e8				j		*		
-25		3e8								.sw	    equ	     av
-26		3eb		wn		word		-1,2,5,4		
+23		100f				rmo		a,z		
+24		100f				j		*		
+25		100f								.sw	    equ	     av
+26		1012		wn		word		-1,2,5,4		
 			 ***** Error :  missing end statement
-27		3f7								
+27		101e								
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
@@ -46,7 +46,7 @@
 			gg			1027
 			hhh			2000
 			qw			1000
-			wn			3eb
+			wn			1012
 			ww			1012
 			www			1002
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*

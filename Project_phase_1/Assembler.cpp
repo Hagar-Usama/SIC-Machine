@@ -41,6 +41,7 @@ class Assembler {
 	int calc_storage();
 	void read_next();
 	int get_length();
+	int get_equ_org_add();
 	int calc_operand(const char op , string label , int address);
 	int check_complexity();
 	int extract_label(string &exp);
@@ -624,11 +625,12 @@ void Assembler::pass1_2(){
 	while((st.operation.compare("end") != 0) ){
 	
 			if(line_no >= lines.size() + 1) break;
-	if(st.check_comment()){ st.comment = st.line;
-	}else {
+			if(st.check_comment()){ st.comment = st.line;
+			}else {
 		
-	
+	prev_lctr = LOCCTR;
 	if(!have_error()){
+		
 			
 			//if instruction
 		if(st.formattype > 1 && st.formattype < 5){
@@ -639,7 +641,7 @@ void Assembler::pass1_2(){
 				
 					
 			
-			prev_lctr = LOCCTR;
+			//prev_lctr = LOCCTR;
 			
 			
 			L = get_length();
@@ -657,17 +659,19 @@ void Assembler::pass1_2(){
 		else{
 			
 			if(st.operation.compare("org") == 0){
-				prev_lctr = LOCCTR;
+				//prev_lctr = LOCCTR;
 				
 				eval_exp(st.operand);
 				
 				//LOCCTR = stoi(st.operand);
 				//LOCCTR = check_symbol();
-				LOCCTR = 1000;
+				LOCCTR = get_equ_org_add();
+				cout<<"locctr in org ="<<LOCCTR<<endl;
+				//LOCCTR = 1000;
 				
 			}else if(st.operation.compare("equ") == 0){
 				
-				
+				// try to make all this code a single function
 				int typ = check_exp_type(st.operand);
 				
 				if(typ ==2){
@@ -735,7 +739,7 @@ void Assembler::pass1_2(){
 				//if(V !=-1){SYMTAB.insert({st.label , V});}
 				//else { /*return error 9*/}
 					
-				
+			//end of equ if	
 			}else{
 				
 				if(st.labeled){SYMTAB.insert({st.label , LOCCTR}); }
@@ -747,7 +751,7 @@ void Assembler::pass1_2(){
 				else if(st.operation.compare("resw") == 0) L = 3*stoi(st.operand);
 				else if(st.operation.compare("resb") == 0) L = stoi(st.operand);
 				
-				prev_lctr = LOCCTR;
+				//prev_lctr = LOCCTR;
 				LOCCTR += L;
 
 				
@@ -761,7 +765,7 @@ void Assembler::pass1_2(){
 			
 			
 	}else{
-			 prev_lctr = LOCCTR;
+			 //prev_lctr = LOCCTR;
 		}//end of else have_error
 			
 		
@@ -1031,3 +1035,73 @@ int Assembler::extract_label(string &exp){
 	
 	}
 	
+int Assembler::get_equ_org_add(){
+	
+	int typ = check_exp_type(st.operand);
+	string exp;
+	int V = 0;			
+				if(typ ==2){
+					exp = st.operand;
+					
+					//get the address of the label:	
+						V= extract_label(exp);
+					//cout<<"V is " <<V<<endl;
+						printf("V is %x",V);
+					//cout<<"exp is " <<exp<<endl;
+						
+						
+				}else if(typ ==3){
+						V = stoi(st.operand,0,16);
+							
+				}else{
+								
+							//then it must be type 1:
+							//label + op + address
+							
+							exp = st.operand;
+							string label_com = extract(exp , "^\\b([a-z]\\w([a-z0-9]){0,3})");
+							string op = extract(exp,"(\\+|-|\\*|/)");
+							
+							trim_(exp);
+
+							//check if label is found 
+							int label_add = find_key(SYMTAB , label_com);
+							if(label_add == -1){
+								//then operand isn't defined
+								print_error(9);
+								errors++;
+								
+							}else{
+								//else calc the operand	
+								//eval
+								
+								switch(op[0]){
+								case '+':
+								V= label_add + stoi(exp ,0,16);
+								break;
+								
+								case '-':
+								V= label_add - stoi(exp ,0,16);
+								break;
+								
+								case '*':
+								V= label_add * stoi(exp ,0,16);
+								break;
+								
+								case '/':
+								V= label_add / stoi(exp ,0,16);
+								break;
+								
+								default:
+								V=0;
+								}
+									
+							}
+							
+						}
+					
+	
+	
+	//end of function
+	return V;
+	}

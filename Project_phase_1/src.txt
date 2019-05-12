@@ -5,7 +5,11 @@ ad	    resb	 3
 .hjgjhj jhgjhjjh
 av	    byte	 x'gafdf'
 ww	    word	 -1,2,5,4
-fff     lda      #10
+fff     lda      #6
+aaa     lda      @6
+bbb     lda      qw
+ccc     lda      #qw
+ddd     lda      @qw
 bgn	    add	     #5
         +rmo     a ,x
 	    sub	     #3

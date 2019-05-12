@@ -1,0 +1,65 @@
+1		.23456789012345678901234567890123456789
+2		1000		bgn		start		1000		;fcmnt
+3		1000		qw		resw		5		
+4		100f		ad		resb		3		
+5		100f								.hjgjhj jhgjhjjh
+			 ***** Error :  not a hexadecimal string
+6		1012		av		byte		x'gafdf'		
+7		1012		ww		word		-1,2,5,4		
+8		101e		fff		lda		#6		
+9		1021		aaa		lda		@6		
+10		1024		bbb		lda		qw		
+11		1027		ccc		lda		#qw		
+12		102a		ddd		lda		@qw		
+			 ***** Error :  duplicate label defition
+13		102d		bgn		add		#5		
+			 ***** Error :  can't be format 4 instruction
+14		102d				+rmo		a,x		
+15		102d				sub		#3		
+16		1030				add		#22		
+			 ***** Error :  undefined symbol in operand
+17		1033				add		wn,x		
+18		1033		gg		addr		a,x		
+			 ***** Warning : Not implemented (ignored)
+19		1035					    nobase	 gg				
+20		1035				org		ad		
+21		100f		hhh		equ		2000		
+22		100f		www		equ		qw+2		
+			 ***** Error :  duplicate label defition
+23		100f		www		equ		qmm+2		
+24		100f		qqq		equ		ddd+5		
+25		100f		abc		equ		ad+10		
+			 ***** Error :  undefined symbol in operand
+26		100f				sta		mem		
+			 ***** Error :  unrecognized operation code or invalid statement
+27		100f					    sse	     ffj				
+			 ***** Error :  illegal address for a register
+28		100f				rmo		a,z		
+29		100f				j		*		
+30		100f								.sw	    equ	     av
+31		1012		wn		word		-1,2,5,4		
+			 ***** Error :  missing end statement
+32		101e								
+
+
+			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
+			SYMBOL			ADDRESS
+			aaa			1021
+			abc			101f
+			ad			100f
+			bbb			1024
+			bgn			1000
+			ccc			1027
+			ddd			102a
+			fff			101e
+			gg			1033
+			hhh			2000
+			qqq			102f
+			qw			1000
+			wn			1012
+			ww			1012
+			www			1002
+			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
+
+ errors :9
+ *** INCOMPLETE ASSEMBLING ***

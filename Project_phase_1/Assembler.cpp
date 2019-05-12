@@ -31,6 +31,7 @@ class Assembler {
 	Statement st;
 	map<string,int> SYMTAB;
 	map<string,int> OPTAB;
+	
 	unsigned int errors;
 	Assembler();
 	void object_file();
@@ -46,6 +47,7 @@ class Assembler {
 	void read_next();
 	int get_length();
 	int get_equ_org_add();
+	int check_operand_format3();
 	int calc_operand(const char op , string label , int address);
 	int check_complexity();
 	int extract_label(string &exp);
@@ -234,8 +236,10 @@ bool Assembler::have_error(){
 		}else{
 			//label + op + address
 			string label_com = extract(exp , "^\\b([a-z]\\w([a-z0-9]){0,3})");
-				cout<<"\b";
-				cout<<"label_com in check error "<<label_com<<endl;
+				
+				//cout<<"\b";
+				//cout<<"label_com in check error "<<label_com<<endl;
+			
 			found = find_key(SYMTAB , label_com);
 		}
 		
@@ -643,6 +647,7 @@ void Assembler::pass1_2(){
 			
 			//if instruction
 		if(st.formattype > 1 && st.formattype < 5){
+			
 			if(st.labeled){
 				
 				SYMTAB.insert({st.label , LOCCTR});
@@ -651,15 +656,10 @@ void Assembler::pass1_2(){
 					
 			L = get_length();
 			LOCCTR += L;
-				
-			//if there is a literal in operand field then insert into LITTAB
-				
 			
-				
-				
-				
+			objectize();	
+			//if there is a literal in operand field then insert into LITTAB				
 		}
-		
 		// if directive
 		else{
 			
@@ -671,7 +671,8 @@ void Assembler::pass1_2(){
 				//LOCCTR = check_symbol();
 				
 				LOCCTR = get_equ_org_add();
-				cout<<"locctr in org ="<<LOCCTR<<endl;
+				
+				//cout<<"locctr in org ="<<LOCCTR<<endl;
 				
 				//LOCCTR = 1000;
 				
@@ -687,7 +688,7 @@ void Assembler::pass1_2(){
 					
 			//end of equ if	
 			}else{
-				
+				// if directive
 				if(st.labeled){SYMTAB.insert({st.label , LOCCTR}); }
 				
 				if(st.operation.compare("word") == 0){L=3*calc_storage();} 
@@ -704,7 +705,7 @@ void Assembler::pass1_2(){
 			}
 			
 			
-		} 
+		} //else <directive>
 		
 		
 		
@@ -881,7 +882,7 @@ int Assembler::eval_exp(string exp){
 	 string oper;
 	 int address = 0;
 	 trim_(exp);
-	 int lab_add = 0;
+	 //int lab_add = 0;
 	 
 	 switch (type){
 		 case 1:
@@ -889,7 +890,7 @@ int Assembler::eval_exp(string exp){
 		label = extract(exp,"^\\s*(\\b([a-z]){1}\\w{0,7})");
 		
 		trim_(label);
-		
+		int lab_add;
 		//address of the label
 		lab_add = find_key(SYMTAB,label);
 		
@@ -972,7 +973,8 @@ int Assembler::extract_label(string &exp){
 		
 		exp = label;
 		
-		cout<<"****label in extract_label >>" <<label<<"*****"<<endl;
+		//cout<<"****label in extract_label >>" <<label<<"*****"<<endl;
+		
 		if(label.size() >0){
 			return find_key(SYMTAB,label);
 			}
@@ -992,7 +994,7 @@ int Assembler::get_equ_org_add(){
 					//get the address of the label:	
 						V= extract_label(exp);
 					//cout<<"V is " <<V<<endl;
-						printf("V is %x",V);
+						//printf("V is %x",V);
 					//cout<<"exp is " <<exp<<endl;
 						
 						
@@ -1064,65 +1066,167 @@ bool Assembler::check_immediate(){
 }
 
 bool Assembler::check_indexed(){
-	return st.operand.find(",x") >= 0 ?  true : false;
+	if(st.operand.find(",x") !=-1) return true;
+	return false;
+	//return st.operand.find(",x") >= 0 ?  true : false;
 }
 
+int Assembler::check_operand_format3(){
+	/**
+	 * if #label return 1
+	 * if @label return 2
+	 * if label  return 3
+	 * if #10    return 4
+	 * if @10    return 5
+	 * else      return -1
+	 * 
+	 **/
+	
+	if(st.operand[0] == '#' && !isdigit(st.operand[1])) return 1;
+	if(st.operand[0] == '@' && !isdigit(st.operand[1])) return 2;
+	if(isalpha(st.operand[0])) return 3;
+	if(st.operand[0] == '#' && isdigit(st.operand[1])) return 4;
+	if(st.operand[0] == '@' && isdigit(st.operand[1])) return 5;
+	if(isdigit(st.operand[0])) return 6;
+	 
+	return -1;	
+	}
+	
 void Assembler::objectize(){
 	
 	string exp = st.operand;
+	string abs_label;
+	
 	int address = 0;
+	
+	int opcode;
+	
 	bool n,i,x,b,p,e;
 	
-	switch (st.formattype){
-		//format 2
-		case 2:
+	if( st.formattype == 2){
 		//each of r1 and r2 has a certain number
-		// a=0 , s =4 , we'll see 
-		break;
+		// a=0 , s =4 , we'll see
 		
-		//format 3
-		case 3:
-		
-		n=check_indirect();
-		i=check_immediate();
-		x=check_indexed();
+	}else if(st.formattype == 3){
+		//n=check_indirect();
+		//i=check_immediate();
+		x= check_indexed();
 		b=0;
 		p=1;
 		e=0;
 		
 		// dis = TA - PC
-		address = LOCCTR - prev_lctr;
+		// address of Label - current LOCCTR (if label)
+		//dis = the immediate (if immediate)
+		//we need a function that differeniate
+		int ll_type = check_operand_format3();
 		
-		address += (e<<1);
-		address += (p<<2);
-		address += (b<<3);
-		address += (x<<4);
-		address += (i<<5);
-		address += (n<<6);
+		switch(ll_type){
+			case 1 : //#label
+			n=0;
+			i=1;
+			
+			abs_label = exp;
+			abs_label[0] = ' ';
+			trim_(abs_label);
+			//cout<<"exp in case 1 :"<<abs_label<<endl;
+			address = LOCCTR - find_key(SYMTAB,abs_label);
+			break;
+			
+			case 2: //@label
+			n=1;
+			i=0;
+			
+			abs_label = exp;
+			abs_label[0] = ' ';
+			trim_(abs_label);
+			//cout<<"exp in case 2 :"<<abs_label<<endl;
+			address = LOCCTR - find_key(SYMTAB,abs_label);
+			break;
+			
+			case 3: //label
+			n=1;
+			i=1;
+			//cout<<"exp in case 3 :"<<exp<<endl;
+			address = LOCCTR - find_key(SYMTAB,exp);
+			break;
+			
+			case 4: //#10
+			n=0;
+			i=1;
+			p=0;
+			
+			abs_label = exp;
+			abs_label[0] = ' ';
+			trim_(abs_label);
+			
+			address = stoi(abs_label , 0, 16);
+			break;
+			
+			case 5: //@10
+			n=1;
+			i=1;
+			p=0;
+			
+			abs_label = exp;
+			abs_label[0] = ' ';
+			trim_(abs_label);
+			
+			address = stoi(abs_label , 0, 16);
+			break;
+			
+			default:
+			break;
+			}
+
+		printf("line_no :%d\n",line_no);
+		cout<<st.operation<<endl;
+		
+		//printf("line_no :%d\n",line_no);
+		printf("address_part1: %x ",address);
+
+		//address = LOCCTR - prev_lctr;
+		
+		address += (e<<12);
+		address += (p<<13);
+		address += (b<<14);
+		address += (x<<15);
+		address += (i<<16);
+		address += (n<<17);
+		
+		cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
+		cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
 		
 		
+		//printf("address_part2: %x\n",address);
+		
+		opcode = find_key(OPTAB , st.operation);
+		opcode = opcode>>2;
+		
+		address += opcode<<18;
+		//printf("address_part3: %x\n",address);
+		
+	
+		printf("\taddress is **%x**\n",address);
 		
 		
-		
-		break;
-		
-		//format 4
-		case 4:
-		break;
-		
+	}else if(st.formattype == 4){
+	}else if(st.formattype == 1){
 		//directive >> (Word and Resb)
 		// check how to implement if word 1,2,3
 		
-		case 1:
-		break;
 		}
 	
-	obcode = address;
+	
+			
+		obcode = address;
 	//print object code in listfile
 	
 	}
 
 void Assembler:: init_optab(){
+	
+	cout<<"optab initialized"<<endl;
 	
 	OPTAB.insert({"add" , stoi("18",0,16)});
 	OPTAB.insert({"addr" , stoi("90",0,16)});

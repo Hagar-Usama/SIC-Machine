@@ -526,15 +526,17 @@ bool check_case_1(string exp){
 	 * check if operand : label + op + address
 	 * */
 	 
-	cout<<"check case_1"<<endl;
+	//cout<<"check case_1"<<endl;
+	
 	//exp has no white spaces
 	trim_(exp);
-	cout<<"Exp in check_case_1 :  "<<"*"<<exp<<"*"<<endl;
+	
+	//cout<<"Exp in check_case_1 :  "<<"*"<<exp<<"*"<<endl;
 	
 	string reg = ".+(\\+|-|\\*|/)\\w([0-9a-f]){1,4}"; 
 	regex re(reg);
  		if(regex_match(exp , re)){
-			cout<<"yes , case_1"<<endl;	
+			//cout<<"yes , case_1"<<endl;	
 			return true;		
 			}
  return false;		 

@@ -1108,8 +1108,6 @@ void Assembler::objectize(){
 		// a=0 , s =4 , we'll see
 		
 	}else if(st.formattype == 3){
-		//n=check_indirect();
-		//i=check_immediate();
 		x= check_indexed();
 		b=0;
 		p=1;
@@ -1129,7 +1127,7 @@ void Assembler::objectize(){
 			abs_label = exp;
 			abs_label[0] = ' ';
 			trim_(abs_label);
-			//cout<<"exp in case 1 :"<<abs_label<<endl;
+
 			address = LOCCTR - find_key(SYMTAB,abs_label);
 			break;
 			
@@ -1140,14 +1138,14 @@ void Assembler::objectize(){
 			abs_label = exp;
 			abs_label[0] = ' ';
 			trim_(abs_label);
-			//cout<<"exp in case 2 :"<<abs_label<<endl;
+			
 			address = LOCCTR - find_key(SYMTAB,abs_label);
 			break;
 			
 			case 3: //label
 			n=1;
 			i=1;
-			//cout<<"exp in case 3 :"<<exp<<endl;
+			
 			address = LOCCTR - find_key(SYMTAB,exp);
 			break;
 			
@@ -1182,10 +1180,9 @@ void Assembler::objectize(){
 		printf("line_no :%d\n",line_no);
 		cout<<st.operation<<endl;
 		
-		//printf("line_no :%d\n",line_no);
+		
 		printf("address_part1: %x ",address);
 
-		//address = LOCCTR - prev_lctr;
 		
 		address += (e<<12);
 		address += (p<<13);
@@ -1197,20 +1194,79 @@ void Assembler::objectize(){
 		cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
 		cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
 		
-		
-		//printf("address_part2: %x\n",address);
-		
 		opcode = find_key(OPTAB , st.operation);
 		opcode = opcode>>2;
 		
 		address += opcode<<18;
-		//printf("address_part3: %x\n",address);
 		
-	
 		printf("\taddress is **%x**\n",address);
 		
 		
 	}else if(st.formattype == 4){
+		p=0;
+		b=0;
+		x= check_indexed();
+		e=1;
+		
+		switch(check_operand_format3()){
+		case 1 : //#label
+			n=0;
+			i=1;
+			
+			abs_label = exp;
+			abs_label[0] = ' ';
+			trim_(abs_label);
+
+			address = find_key(SYMTAB,abs_label);
+			break;
+			
+			case 2: //@label
+			n=1;
+			i=0;
+			
+			abs_label = exp;
+			abs_label[0] = ' ';
+			trim_(abs_label);
+			
+			address = find_key(SYMTAB,abs_label);
+			break;
+			
+			case 3: //label
+			n=1;
+			i=1;
+			
+			address = find_key(SYMTAB,exp);
+			break;
+			
+			case 4: //#10
+			n=0;
+			i=1;
+			p=0;
+			
+			abs_label = exp;
+			abs_label[0] = ' ';
+			trim_(abs_label);
+			
+			address = stoi(abs_label , 0, 16);
+			break;
+			
+			case 5: //@10
+			n=1;
+			i=1;
+			p=0;
+			
+			abs_label = exp;
+			abs_label[0] = ' ';
+			trim_(abs_label);
+			
+			address = stoi(abs_label , 0, 16);
+			break;
+			
+			default:
+			break;
+			}
+
+		
 	}else if(st.formattype == 1){
 		//directive >> (Word and Resb)
 		// check how to implement if word 1,2,3

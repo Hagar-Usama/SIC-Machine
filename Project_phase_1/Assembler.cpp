@@ -1253,18 +1253,36 @@ void Assembler::objectize(){
 		//directive >> (Word and Resb)
 		// check how to implement if word 1,2,3
 		if(st.operation.compare("byte") == 0){
+			vector<int> bcode;
+			
 			if(st.operand[0] == 'c'){
-				for(int i=2; i<st.operand.size() - 2;i++){
-					address = address<<4;
-					address+= st.operand[i];
-				}
 				
-				printf("\t object code of byte **%x**\n",address);
+				for(unsigned int i=2; i<st.operand.size() -1;i++){
+					
+					printf("char in ascii : %x\n",st.operand[i]);
+					bcode.push_back(st.operand[i]);
+					
+					
+					printf("address : %x\n",address);
+					}
 				
-				}
-			
-			
+				cout<<"object code of string"<<endl;
+				
+				for(unsigned int j=0; j<bcode.size() ; j++){
+					
+					printf("%x",bcode[j]);
+					}
+				
+				cout<<endl;
+				
+				
 			}
+			
+			
+			}if(st.operand[0] == 'x'){
+				
+				
+				}
 		
 		}
 	

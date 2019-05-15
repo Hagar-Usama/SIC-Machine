@@ -4,7 +4,7 @@ qw	    resw	 5
 ad	    resb	 3
 .hjgjhj jhgjhjjh
 av	    byte	 x'gafdf'
-str	    byte	 c'gafdf'
+str	    byte	 c'bgafdf'
 ww	    word	 -1,2,5,4
 fff     lda      #6
 aaa     lda      @6

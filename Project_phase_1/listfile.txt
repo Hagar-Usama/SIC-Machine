@@ -5,26 +5,26 @@
 5		100f								.hjgjhj jhgjhjjh
 			 ***** Error :  not a hexadecimal string
 6		1012		av		byte		x'gafdf'		
-7		1012		str		byte		c'gafdf'		
-8		1017		ww		word		-1,2,5,4		
-9		1023		fff		lda		#6		
-10		1026		aaa		lda		@6		
-11		1029		bbb		lda		qw		
-12		102c		ccc		lda		#qw		
-13		102f		ddd		lda		@qw		
+7		1012		str		byte		c'bgafdf'		
+8		1018		ww		word		-1,2,5,4		
+9		1024		fff		lda		#6		
+10		1027		aaa		lda		@6		
+11		102a		bbb		lda		qw		
+12		102d		ccc		lda		#qw		
+13		1030		ddd		lda		@qw		
 			 ***** Error :  duplicate label defition
-14		1032		bgn		add		#5		
+14		1033		bgn		add		#5		
 			 ***** Error :  can't be format 4 instruction
-15		1032				+rmo		a,x		
-16		1032				+j		ddd		
-17		1036				sub		#3		
-18		1039				add		#22		
+15		1033				+rmo		a,x		
+16		1033				+j		ddd		
+17		1037				sub		#3		
+18		103a				add		#22		
 			 ***** Error :  undefined symbol in operand
-19		103c				add		wn,x		
-20		103c		gg		addr		a,x		
+19		103d				add		wn,x		
+20		103d		gg		addr		a,x		
 			 ***** Warning : Not implemented (ignored)
-21		103e					    nobase	 gg				
-22		103e				org		ad		
+21		103f					    nobase	 gg				
+22		103f				org		ad		
 23		100f		hhh		equ		2000		
 24		100f		www		equ		qw+2		
 			 ***** Error :  duplicate label defition
@@ -45,21 +45,21 @@
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
-			aaa			1026
+			aaa			1027
 			abc			101f
 			ad			100f
-			bbb			1029
+			bbb			102a
 			bgn			1000
-			ccc			102c
-			ddd			102f
-			fff			1023
-			gg			103c
+			ccc			102d
+			ddd			1030
+			fff			1024
+			gg			103d
 			hhh			2000
-			qqq			1034
+			qqq			1035
 			qw			1000
 			str			1012
 			wn			1012
-			ww			1017
+			ww			1018
 			www			1002
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 

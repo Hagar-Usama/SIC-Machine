@@ -5,61 +5,63 @@
 5		100f								.hjgjhj jhgjhjjh
 			 ***** Error :  not a hexadecimal string
 6		1012		av		byte		x'gafdf'		
-7		1012		ww		word		-1,2,5,4		
-8		101e		fff		lda		#6		
-9		1021		aaa		lda		@6		
-10		1024		bbb		lda		qw		
-11		1027		ccc		lda		#qw		
-12		102a		ddd		lda		@qw		
+7		1012		str		byte		c'gafdf'		
+8		1017		ww		word		-1,2,5,4		
+9		1023		fff		lda		#6		
+10		1026		aaa		lda		@6		
+11		1029		bbb		lda		qw		
+12		102c		ccc		lda		#qw		
+13		102f		ddd		lda		@qw		
 			 ***** Error :  duplicate label defition
-13		102d		bgn		add		#5		
+14		1032		bgn		add		#5		
 			 ***** Error :  can't be format 4 instruction
-14		102d				+rmo		a,x		
-15		102d				sub		#3		
-16		1030				add		#22		
+15		1032				+rmo		a,x		
+16		1032				+j		ddd		
+17		1036				sub		#3		
+18		1039				add		#22		
 			 ***** Error :  undefined symbol in operand
-17		1033				add		wn,x		
-18		1033		gg		addr		a,x		
+19		103c				add		wn,x		
+20		103c		gg		addr		a,x		
 			 ***** Warning : Not implemented (ignored)
-19		1035					    nobase	 gg				
-20		1035				org		ad		
-21		100f		hhh		equ		2000		
-22		100f		www		equ		qw+2		
+21		103e					    nobase	 gg				
+22		103e				org		ad		
+23		100f		hhh		equ		2000		
+24		100f		www		equ		qw+2		
 			 ***** Error :  duplicate label defition
-23		100f		www		equ		qmm+2		
-24		100f		qqq		equ		ddd+5		
-25		100f		abc		equ		ad+10		
+25		100f		www		equ		qmm+2		
+26		100f		qqq		equ		ddd+5		
+27		100f		abc		equ		ad+10		
 			 ***** Error :  undefined symbol in operand
-26		100f				sta		mem		
+28		100f				sta		mem		
 			 ***** Error :  unrecognized operation code or invalid statement
-27		100f					    sse	     ffj				
+29		100f					    sse	     ffj				
 			 ***** Error :  illegal address for a register
-28		100f				rmo		a,z		
-29		100f				j		*		
-30		100f								.sw	    equ	     av
-31		1012		wn		word		-1,2,5,4		
-			 ***** Error :  missing end statement
-32		101e								
+30		100f				rmo		a,z		
+31		100f				j		*		
+32		100f								.sw	    equ	     av
+33		1012		wn		word		-1,2,5,4		
+34		101e				end				
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
-			aaa			1021
+			aaa			1026
 			abc			101f
 			ad			100f
-			bbb			1024
+			bbb			1029
 			bgn			1000
-			ccc			1027
-			ddd			102a
-			fff			101e
-			gg			1033
+			ccc			102c
+			ddd			102f
+			fff			1023
+			gg			103c
 			hhh			2000
-			qqq			102f
+			qqq			1034
 			qw			1000
+			str			1012
 			wn			1012
-			ww			1012
+			ww			1017
 			www			1002
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- errors :9
+ errors :8
  *** INCOMPLETE ASSEMBLING ***

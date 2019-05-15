@@ -16,6 +16,7 @@ vector<string> lines;
  * make a fun : eval_exp <takes an operand and partition it to 3 parts:
  *  label , op and address and eval it
  * 
+ * mind end core dump!!
  * reconsider general expression evaluation
  **/
  
@@ -31,6 +32,7 @@ class Assembler {
 	Statement st;
 	map<string,int> SYMTAB;
 	map<string,int> OPTAB;
+	map<string,int> REGTAB;
 	
 	unsigned int errors;
 	Assembler();
@@ -39,6 +41,7 @@ class Assembler {
 	void pass1_1();
 	void pass1_2();
 	void init_optab();
+	void init_regtab();
 	void print_statement_part();
 	void write_ifile(string str);
 	void write_ifile(int num , int mode=1);
@@ -77,6 +80,7 @@ class Assembler {
 	
 Assembler::Assembler(){
 	init_optab();
+	init_regtab();
 	line_no = 1;
 	this->st.line = lines[0];
 	st.check_part();
@@ -657,7 +661,9 @@ void Assembler::pass1_2(){
 			L = get_length();
 			LOCCTR += L;
 			
+			//get object code if instruction
 			objectize();	
+			
 			//if there is a literal in operand field then insert into LITTAB				
 		}
 		// if directive
@@ -702,7 +708,7 @@ void Assembler::pass1_2(){
 				LOCCTR += L;
 
 				
-			}
+			} objectize();
 			
 			
 		} //else <directive>
@@ -718,13 +724,19 @@ void Assembler::pass1_2(){
 		
 	}		
 		write_line();
-		read_next();
+		read_next();		
+		
 		}//end of while
+		
+		
+		
 	prev_lctr = LOCCTR;
 	if(st.operation.compare("end") == 0){
+		if(st.labeled) {print_error(5); errors++;	 }
 		
-		write_line();}
-	else{print_error(13);errors++; write_line();}	
+		write_line();
+		
+	}else{print_error(13);errors++; /*write_line();*/}	
 	
 	print_map();
 	
@@ -736,7 +748,7 @@ void Assembler::pass1_2(){
 			
 			write_ifile("\n *** SUCCESSFUL ASSEMBLING ***\n");
 			
-			}
+		}
 	
 		
 	
@@ -861,95 +873,6 @@ void Assembler::write_ifile(int num , int mode){
 	
 	}
 
-int Assembler::eval_exp(string exp){
-	
-	/**
-	 * exp can be in ... cases :
-	 * label + op +  address
-	 * label only
-	 * address only
-	 * 
-	 * check_exp_type >> should validate *
-	 *  
-	 **/
-	 
-	 int type = check_exp_type(exp);
-	 cout<<"type is : " <<type <<endl;
-	 
-	 
-	 string label= "";
-	 char op;
-	 string oper;
-	 int address = 0;
-	 trim_(exp);
-	 //int lab_add = 0;
-	 
-	 switch (type){
-		 case 1:
-		
-		label = extract(exp,"^\\s*(\\b([a-z]){1}\\w{0,7})");
-		
-		trim_(label);
-		int lab_add;
-		//address of the label
-		lab_add = find_key(SYMTAB,label);
-		
-		trim_(exp);
-		cout<<label<<endl;
-		
-		//operation
-		
-		oper = exp;
-		op = oper[0];
-		cout<<op<<endl;
-		
-		extract(exp , "(\\+|-|\\*|/)");
-		cout<<exp<<endl;
-		
-		//address as a number
-		address = stoi(exp ,0,16);
-		cout<<address<<endl;
-		printf("address in hex is: %x\n",address);
-		
-		cout<<"*"<<op<<endl;
-		
-		 break;
-		
-		case 2:
-		 //label only
-		 //extract(exp , ",x");
-		//extract(exp,"\\+");
-		//extract(exp,"#");
-		//extract(exp,"@");
-		 
-		 label = exp;
-		 
-		 cout<<"Label Only : "<<label<<endl;
-		 //address of the label
-		lab_add = find_key(SYMTAB,label);
-		
-		
-		 break;
-		 
-		case 3:
-		 // address only
-		
-		//extract(exp , ",x");
-		//extract(exp,"\\+");
-		//extract(exp,"#");
-		//extract(exp,"@");
-		//address = stoi(exp,0,16);
-		printf("address in hex is: %x\n",address);
-		 
-		 break;
-		  
-		 }
-		 
-		
-		
-		
-return 0;
-	}
 
 int Assembler::extract_label(string &exp){
 	
@@ -1066,7 +989,8 @@ bool Assembler::check_immediate(){
 }
 
 bool Assembler::check_indexed(){
-	if(st.operand.find(",x") !=-1) return true;
+	int fnd = st.operand.find(",x");
+	if( fnd!=-1) return true;
 	return false;
 	//return st.operand.find(",x") >= 0 ?  true : false;
 }
@@ -1105,8 +1029,23 @@ void Assembler::objectize(){
 	
 	if( st.formattype == 2){
 		//each of r1 and r2 has a certain number
-		// a=0 , s =4 , we'll see
 		
+		/**
+		 * this one is super simple
+		 * all we have to calc is : operation and registers values
+		 * **/
+		// string operand1 = st.operand.substr(0,1);
+		 int op1 , op2;
+		 //address = 
+		 op2 = find_key(REGTAB , st.operand.substr(2,1));
+		address += op2;
+		
+		 op1 = find_key(REGTAB , st.operand.substr(0,1));		 
+		 address += (op1<<4);
+		 
+		 address += (find_key(OPTAB , st.operation)<<8);
+		 printf("address_part3: %x \n",address);
+		 
 	}else if(st.formattype == 3){
 		x= check_indexed();
 		b=0;
@@ -1118,6 +1057,18 @@ void Assembler::objectize(){
 		//dis = the immediate (if immediate)
 		//we need a function that differeniate
 		int ll_type = check_operand_format3();
+		/**
+		 * a function is needed to replace this big
+		 * switch this function needs no parameters
+		 * 
+		 * int get_type(){
+		 * return the type
+		 * 
+		 * 
+		 * }
+		 * 
+		 * 
+		 * **/
 		
 		switch(ll_type){
 			case 1 : //#label
@@ -1203,10 +1154,13 @@ void Assembler::objectize(){
 		
 		
 	}else if(st.formattype == 4){
+		//relative addressing no allowed
+		
 		p=0;
 		b=0;
 		x= check_indexed();
 		e=1;
+		string operat;
 		
 		switch(check_operand_format3()){
 		case 1 : //#label
@@ -1266,10 +1220,51 @@ void Assembler::objectize(){
 			break;
 			}
 
+		//now label is got
+		printf("line_no :%d\n",line_no);
+		cout<<st.operation<<endl;
+		
+		
+		printf("address_part1: %x ",address);
+
+		
+		address += (e<<20);
+		address += (p<<21);
+		address += (b<<22);
+		address += (x<<23);
+		address += (i<<24);
+		address += (n<<25);
+		
+		cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
+		cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
+		
+		operat = st.operation;
+		operat[0] = ' ';
+		trim_(operat);
+		
+		opcode = find_key(OPTAB , operat);
+		opcode = opcode>>2;
+		
+		address += opcode<<26;
+		
+		printf("\taddress is **%x**\n",address);
 		
 	}else if(st.formattype == 1){
 		//directive >> (Word and Resb)
 		// check how to implement if word 1,2,3
+		if(st.operation.compare("byte") == 0){
+			if(st.operand[0] == 'c'){
+				for(int i=2; i<st.operand.size() - 2;i++){
+					address = address<<4;
+					address+= st.operand[i];
+				}
+				
+				printf("\t object code of byte **%x**\n",address);
+				
+				}
+			
+			
+			}
 		
 		}
 	
@@ -1280,9 +1275,22 @@ void Assembler::objectize(){
 	
 	}
 
+
+void Assembler:: init_regtab(){
+	
+	REGTAB.insert({"a" , 0});
+	REGTAB.insert({"x" , 1});
+	REGTAB.insert({"l" , 2});
+	REGTAB.insert({"b" , 3});
+	REGTAB.insert({"s" , 4});
+	REGTAB.insert({"t" , 5});
+	REGTAB.insert({"f" , 6});
+	
+}
 void Assembler:: init_optab(){
 	
-	cout<<"optab initialized"<<endl;
+	//cout<<"optab initialized"<<endl;
+	//initializing optab
 	
 	OPTAB.insert({"add" , stoi("18",0,16)});
 	OPTAB.insert({"addr" , stoi("90",0,16)});

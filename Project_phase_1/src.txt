@@ -4,6 +4,7 @@ qw	    resw	 5
 ad	    resb	 3
 .hjgjhj jhgjhjjh
 av	    byte	 x'gafdf'
+str	    byte	 c'gafdf'
 ww	    word	 -1,2,5,4
 fff     lda      #6
 aaa     lda      @6
@@ -12,6 +13,7 @@ ccc     lda      #qw
 ddd     lda      @qw
 bgn	    add	     #5
         +rmo     a ,x
+	+j	 ddd
 	    sub	     #3
         add      #22
 	    add	     wn , x
@@ -29,3 +31,4 @@ abc     equ      ad+10
 	    j	     *
 .sw	    equ	     av
 wn	    word	 -1,2,5,4
+	    end

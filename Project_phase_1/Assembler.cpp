@@ -254,8 +254,6 @@ bool Assembler::have_error(){
 			}				
 		
 				
-			
-		//if(check_error9()) return true;
 	}	
 	
 	
@@ -577,7 +575,7 @@ void Assembler::sub_pass1(){
 		LOCCTR = start_address;
 		if(st.labeled) SYMTAB.insert({st.label , LOCCTR});
 		
-		write_ifile(line_no , 2);
+		write_ifile(line_no , 10);
 		write_ifile("\t\t");
 		write_ifile(LOCCTR);
 		write_ifile("\t\t");
@@ -600,7 +598,7 @@ void Assembler::pass1_1(){
 			sub_pass1();
 			
 		}else{
-			write_ifile(line_no,2);
+			write_ifile(line_no , 10);
 			write_ifile("\t\t\t\t");
 			write_ifile(st.line);
 			write_ifile("\n");
@@ -613,14 +611,14 @@ void Assembler::pass1_1(){
 	}else{
 			if(st.formattype == 0){
 			
-				write_ifile(line_no,2);
+				write_ifile(line_no,10);
 				write_ifile("\t\t");
 				write_ifile(st.comment);
 				write_ifile("\n");
 			}else{
 				errors++;
 				write_ifile("\t\t\t ***** Error :  program must start with 'start' mnemonic\n");
-				write_ifile(line_no,2);
+				write_ifile(line_no,10);
 				write_ifile("\t\t");
 				write_ifile(st.line);
 				write_ifile("\n");
@@ -664,34 +662,23 @@ void Assembler::pass1_2(){
 			//get object code if instruction
 				
 			
-			//if there is a literal in operand field then insert into LITTAB				
+			/**if there is a literal in operand field then insert into LITTAB**/
+						
 		}
 		// if directive
 		else{
 			
 			if(st.operation.compare("org") == 0){
-				
-				//eval_exp(st.operand);
-				
-				//LOCCTR = stoi(st.operand);
-				//LOCCTR = check_symbol();
+			
 				
 				LOCCTR = get_equ_org_add();
 				
-				//cout<<"locctr in org ="<<LOCCTR<<endl;
-				
-				//LOCCTR = 1000;
 				
 			}else if(st.operation.compare("equ") == 0){
 				
 					V= get_equ_org_add();
 					SYMTAB.insert({st.label , V});
-					
-				
-				//V = check_complexity(); // check complexity of operand and returns the address
-				//if(V !=-1){SYMTAB.insert({st.label , V});}
-				//else { /*return error 9*/}
-					
+						
 			//end of equ if	
 			}else{
 				// if directive
@@ -716,17 +703,21 @@ void Assembler::pass1_2(){
 		} //else <directive>
 		
 		
-		
-		objectize();	
+		write_line();
+		objectize();
+		read_next();	
+			
 			
 	}else{
+		write_line();
+		read_next();	
 			 
 		}//end of else have_error
 			
 		
 	}		
-		write_line();
-		read_next();		
+		//write_line();
+		//read_next();		
 		
 		}//end of while
 		
@@ -758,7 +749,7 @@ void Assembler::pass1_2(){
 
 void Assembler::write_line(){
 	
-		write_ifile(line_no ,2);
+		write_ifile(line_no ,10);
 		write_ifile("\t\t");
 		write_ifile(prev_lctr);
 		write_ifile("\t\t");
@@ -862,8 +853,29 @@ void Assembler::write_ifile(int num , int mode){
 		exit(1);
 		}
 		else{
-			if(mode == 1){fprintf (fp, "%x", num );}
-			else {fprintf (fp, "%d", num );}	
+			switch(mode){
+				case 1:
+				fprintf (fp, "%x", num );
+				break;
+				case 2:
+				fprintf (fp, "%.2x", num );
+				break;
+				case 4:
+				fprintf (fp, "%.4x", num );
+				break;
+				case 6:
+				fprintf (fp, "%.6x", num );
+				break;
+				case 10:
+				fprintf (fp, "%d", num );
+				break;
+				
+				default:
+				fprintf (fp, "%d", num );
+				break;
+				
+				
+				}
 			}
 		
 		
@@ -1047,7 +1059,11 @@ void Assembler::objectize(){
 		 
 		 address += (find_key(OPTAB , st.operation)<<8);
 		 printf("address_part3: %x \n",address);
-		 
+		
+		
+		 //backspace
+		 write_ifile("\b");
+		 write_ifile(address,4);
 		 write_b("ob.txt" , address);
 		 write_a("ob.txt" , "\n");
 		 
@@ -1157,9 +1173,15 @@ void Assembler::objectize(){
 		
 		printf("\taddress is **%x**\n",address);
 		
+		//backspace
+		write_ifile("\b");
+		write_ifile(address,6);
 		write_b("ob.txt" , address);
-		 write_a("ob.txt" , "\n");
+		write_a("ob.txt" , "\n");
 		 
+		 //should be 3 bytes --> 6 digits
+		 write_ifile(address , 1);
+		
 	}else if(st.formattype == 4){
 		//relative addressing no allowed
 		
@@ -1256,8 +1278,12 @@ void Assembler::objectize(){
 		
 		printf("\taddress is **%x**\n",address);
 		
+		//backspace
+		write_ifile("\b");
+		write_ifile(address , 8);
+		
 		write_b("ob.txt" , address);
-		 write_a("ob.txt" , "\n");
+		write_a("ob.txt" , "\n");
 		 
 	}else if(st.formattype == 1){
 		//directive >> (Word and Resb)
@@ -1275,8 +1301,11 @@ void Assembler::objectize(){
 					printf("char in ascii : %x\n",st.operand[i]);
 					bcode.push_back(st.operand[i]);
 					
-					
 					printf("address : %x\n",address);
+					
+					//should = length*2 -- never mind here
+					write_ifile(address,1);
+					
 					}
 				
 				cout<<"object code of string"<<endl;
@@ -1284,6 +1313,11 @@ void Assembler::objectize(){
 				for(unsigned int j=0; j<bcode.size() ; j++){
 					
 					printf("%x",bcode[j]);
+					
+					//of length 2
+					//backspace
+					write_ifile("\b");
+					write_ifile(bcode[j] , 2);
 					
 					write_b("ob.txt" , bcode[j]);
 		 
@@ -1303,6 +1337,12 @@ void Assembler::objectize(){
 				trim_(xb);
 				
 				cout<<"byte x is : "<<xb<<endl;
+				
+				//length should be even -- it's ok 
+				//backspace
+				write_ifile("\b");
+				write_ifile(xb);
+				
 				write_a("ob.txt" , xb);
 				write_a("ob.txt" , "\n");
 				}
@@ -1311,10 +1351,17 @@ void Assembler::objectize(){
 			
 			int l = calc_storage();
 			cout<<"storage is : "<<l<<endl;
+			int numw;
+			//backspace
+			write_ifile("\b");
 			if(l == 1){
-				cout<<stoi(st.operand , 0 ,16);
+				numw = stoi(st.operand,0,16);
+				if(numw < 0){ numw -= 4278190080; /*ff000000*/}
+				printf("%.6x\n",numw);
+				
+				write_ifile(numw , 6);
 			}else{
-				int numw;
+				
 				
 				std::string delimiter = ",";
 				string s = st.operand;
@@ -1323,12 +1370,19 @@ void Assembler::objectize(){
 				while ((pos = s.find(delimiter)) != std::string::npos) {
 					token = s.substr(0, pos);
 					numw = stoi(token,0,16);
+					
+					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 					printf("%.6x\n",numw);
-					s.erase(0, pos + delimiter.length());
+					write_ifile(numw , 6);
+					write_ifile("\n");
+					
+						s.erase(0, pos + delimiter.length());
 				}
 				numw = stoi(s,0,16);
+					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 					printf("%.6x\n",numw);
-				
+					write_ifile(numw , 6);
+					write_ifile("\n");
 				
 				}
 			
@@ -1354,6 +1408,7 @@ void Assembler:: init_regtab(){
 	REGTAB.insert({"f" , 6});
 	
 }
+
 void Assembler:: init_optab(){
 	
 	//cout<<"optab initialized"<<endl;

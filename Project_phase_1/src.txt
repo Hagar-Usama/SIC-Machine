@@ -1,34 +1,17 @@
 .23456789012345678901234567890123456789
 bgn     start    1000              ;fcmnt
-qw	    resw	 5
-ad	    resb	 3
-.hjgjhj jhgjhjjh
-av	    byte	 x'gafdf'
-str	    byte	 c'bgafdf'
-ww	    word	 11,2,5,4
-fff     lda      #6
-aaa     lda      @6
-bbb     lda      qw
-ccc     lda      #qw
-ddd     lda      @qw
-bgn	    add	     #5
-        +rmo     a ,x
-	+j	 ddd
-	    sub	     #3
+qw	resw	 5
+ww	word	 -1,2,5,4
+fff     lda      #10
+        rmo     a ,x
+	sub	 #3
         add      #22
-	    add	     wn , x
-gg	    addr	 a , x
-	    nobase	 gg
-   	    org	     ad
-hhh     equ      2000
-www     equ      qw+2
-www     equ      qmm+2
-qqq     equ      ddd+5
-abc     equ      ad+10
-	    sta	     mem
-	    sse	     ffj
-	    rmo	     a , z
-	    j	     *
-.sw	    equ	     av
-wn	    word	 2,7
-	    end
+	add	 ww , x
+gg	addr	 a , x
+	org	 1000
+	rmo	 a , x
+	j	 *
+sw	equ	 qw
+wn	word	 -1,2,5,4
+	end
+

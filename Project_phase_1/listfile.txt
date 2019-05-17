@@ -1,67 +1,38 @@
 1		.23456789012345678901234567890123456789
 2		1000		bgn		start		1000		;fcmnt
 3		1000		qw		resw		5		
-4		100f		ad		resb		3		
-5		100f								.hjgjhj jhgjhjjh
-			 ***** Error :  not a hexadecimal string
-6		1012		av		byte		x'gafdf'		
-7		1012		str		byte		c'bgafdf'		
-8		1018		ww		word		11,2,5,4		
-9		1024		fff		lda		#6		
-10		1027		aaa		lda		@6		
-11		102a		bbb		lda		qw		
-12		102d		ccc		lda		#qw		
-13		1030		ddd		lda		@qw		
-			 ***** Error :  duplicate label defition
-14		1033		bgn		add		#5		
-			 ***** Error :  can't be format 4 instruction
-15		1033				+rmo		a,x		
-16		1033				+j		ddd		
-17		1037				sub		#3		
-18		103a				add		#22		
-			 ***** Error :  undefined symbol in operand
-19		103d				add		wn,x		
-20		103d		gg		addr		a,x		
-			 ***** Warning : Not implemented (ignored)
-21		103f					    nobase	 gg				
-22		103f				org		ad		
-23		100f		hhh		equ		2000		
-24		100f		www		equ		qw+2		
-			 ***** Error :  duplicate label defition
-25		100f		www		equ		qmm+2		
-26		100f		qqq		equ		ddd+5		
-27		100f		abc		equ		ad+10		
-			 ***** Error :  undefined symbol in operand
-28		100f				sta		mem		
-			 ***** Error :  unrecognized operation code or invalid statement
-29		100f					    sse	     ffj				
-			 ***** Error :  illegal address for a register
-30		100f				rmo		a,z		
-31		100f				j		*		
-32		100f								.sw	    equ	     av
-33		1012		wn		word		2,7		
-34		1018				end				
+4		100f		ww		word		-1,2,5,4		
+ffffff
+000002
+000005
+000004
+5		101b		fff		lda		#10		
+010010100106		101e				rmo		a,x		
+ac017		1020				sub		#3		
+1d00031d00038		1023				add		#22		
+1900221900229		1026				add		ww,x		
+1bb02a1bb02a10		1029		gg		addr		a,x		
+900111		102b				org		1000		
+12		1000				rmo		a,x		
+ac0113		1002				j		*		
+1862000186200014		1005		sw		equ		qw		
+15		1005		wn		word		-1,2,5,4		
+ffffff
+000002
+000005
+000004
+16		1011				end				
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
-			aaa			1027
-			abc			101f
-			ad			100f
-			bbb			102a
 			bgn			1000
-			ccc			102d
-			ddd			1030
-			fff			1024
-			gg			103d
-			hhh			2000
-			qqq			1035
+			fff			101b
+			gg			1029
 			qw			1000
-			str			1012
-			wn			1012
-			ww			1018
-			www			1002
+			sw			1000
+			wn			1005
+			ww			100f
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- errors :8
- *** INCOMPLETE ASSEMBLING ***
+ *** SUCCESSFUL ASSEMBLING ***

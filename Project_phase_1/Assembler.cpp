@@ -1354,13 +1354,16 @@ void Assembler::objectize(){
 				string s = st.operand;
 				size_t pos = 0;
 				std::string token;
+				bool first =true;
 				while ((pos = s.find(delimiter)) != std::string::npos) {
 					token = s.substr(0, pos);
 					numw = stoi(token,0,10);
 					
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 					printf("%.6x\n",numw);
+					if(!first){write_ifile("\t\t\t\t\t\t\t\t\t\t"); }
 					write_ifile(numw , 6);
+					first = false;
 					write_ifile("\n");
 					
 						s.erase(0, pos + delimiter.length());
@@ -1368,6 +1371,8 @@ void Assembler::objectize(){
 					numw = stoi(s,0,10);
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 					printf("%.6x\n",numw);
+					
+					write_ifile("\t\t\t\t\t\t\t\t\t\t");
 					write_ifile(numw , 6);
 					write_ifile("\n");
 				

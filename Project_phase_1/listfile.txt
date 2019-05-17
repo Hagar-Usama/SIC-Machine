@@ -1,35 +1,36 @@
 1		.23456789012345678901234567890123456789
 2		1000		bgn		start		1000		;fcmnt
 3		1000		qw		resw		5		
-4		100f		ww		word		-1,2,5,4		ffffff
-000002
-000005
-000004
+4		100f		ww		word		-1,2,5		ffffff
+										000002
+										000005
 
-5		101b		fff		lda		#10		010010
-6		101e		ew		word		10		00000a
-7		1021				rmo		a,x		ac01
-8		1023				sub		#3		1d0003
-9		1026				add		#22		190022
-10		1029				add		ww,x		1bb02d
-11		102c		gg		addr		a,x		9001
-12		102e				org		1000		
-13		1000				rmo		a,x		ac01
-14		1002				j		*		1ef2000
-15		1005		sw		equ		qw		
-16		1005		wn		word		2,10		000002
-00000a
+5		1018		fff		lda		#10		010010
+6		101b		ew		word		10		00000a
+7		101e				rmo		a,x		ac01
+8		1020				sub		#3		1d0003
+9		1023		wg		word		-5		fffffb
+10		1026				add		#22		190022
+11		1029				add		ww,x		1bb02d
+12		102c		gg		addr		a,x		9001
+13		102e				org		1000		
+14		1000				rmo		a,x		ac01
+15		1002				j		*		14f2000
+16		1005		sw		equ		qw		
+17		1005		wn		word		2,10		000002
+										00000a
 
-17		100b				end				
+18		100b				end				
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
 			bgn			1000
-			ew			101e
-			fff			101b
+			ew			101b
+			fff			1018
 			gg			102c
 			qw			1000
 			sw			1000
+			wg			1023
 			wn			1005
 			ww			100f
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*

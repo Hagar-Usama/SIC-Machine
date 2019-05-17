@@ -1,11 +1,12 @@
 .23456789012345678901234567890123456789
 bgn     start    1000              ;fcmnt
 qw	resw	 5
-ww	word	 -1,2,5,4
+ww	word	 -1,2,5
 fff     lda      #10
 ew	word	 10
         rmo     a ,x
 	sub	 #3
+wg	word	 -5
         add      #22
 	add	 ww , x
 gg	addr	 a , x

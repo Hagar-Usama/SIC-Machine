@@ -6,7 +6,7 @@
 			 ***** Error :  not a hexadecimal string
 6		1012		av		byte		x'gafdf'		
 7		1012		str		byte		c'bgafdf'		
-8		1018		ww		word		-1,2,5,4		
+8		1018		ww		word		11,2,5,4		
 9		1024		fff		lda		#6		
 10		1027		aaa		lda		@6		
 11		102a		bbb		lda		qw		
@@ -39,8 +39,8 @@
 30		100f				rmo		a,z		
 31		100f				j		*		
 32		100f								.sw	    equ	     av
-33		1012		wn		word		-1,2,5,4		
-34		101e				end				
+33		1012		wn		word		2,7		
+34		1018				end				
 
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*

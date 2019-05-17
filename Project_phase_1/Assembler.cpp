@@ -662,7 +662,7 @@ void Assembler::pass1_2(){
 			LOCCTR += L;
 			
 			//get object code if instruction
-			objectize();	
+				
 			
 			//if there is a literal in operand field then insert into LITTAB				
 		}
@@ -708,14 +708,16 @@ void Assembler::pass1_2(){
 				LOCCTR += L;
 
 				
-			} objectize();
+			} 
+			
+	
 			
 			
 		} //else <directive>
 		
 		
 		
-			
+		objectize();	
 			
 	}else{
 			 
@@ -1046,6 +1048,9 @@ void Assembler::objectize(){
 		 address += (find_key(OPTAB , st.operation)<<8);
 		 printf("address_part3: %x \n",address);
 		 
+		 write_b("ob.txt" , address);
+		 write_a("ob.txt" , "\n");
+		 
 	}else if(st.formattype == 3){
 		x= check_indexed();
 		b=0;
@@ -1152,7 +1157,9 @@ void Assembler::objectize(){
 		
 		printf("\taddress is **%x**\n",address);
 		
-		
+		write_b("ob.txt" , address);
+		 write_a("ob.txt" , "\n");
+		 
 	}else if(st.formattype == 4){
 		//relative addressing no allowed
 		
@@ -1249,9 +1256,15 @@ void Assembler::objectize(){
 		
 		printf("\taddress is **%x**\n",address);
 		
+		write_b("ob.txt" , address);
+		 write_a("ob.txt" , "\n");
+		 
 	}else if(st.formattype == 1){
 		//directive >> (Word and Resb)
 		// check how to implement if word 1,2,3
+		if(!(st.operation.compare("org"))||!(st.operation.compare("resw"))||!(st.operation.compare("resb"))){
+			write_a("ob.txt" , "*\n");
+			}
 		if(st.operation.compare("byte") == 0){
 			vector<int> bcode;
 			
@@ -1271,8 +1284,11 @@ void Assembler::objectize(){
 				for(unsigned int j=0; j<bcode.size() ; j++){
 					
 					printf("%x",bcode[j]);
+					
+					write_b("ob.txt" , bcode[j]);
+		 
 					}
-				
+				write_a("ob.txt" , "\n");
 				cout<<endl;
 				
 				
@@ -1280,10 +1296,43 @@ void Assembler::objectize(){
 			
 			
 			}if(st.operand[0] == 'x'){
+				string xb = st.operand;
+				xb[0] = ' ';
+				xb[1] = ' ';
+				xb[xb.size()-1] = ' ';
+				trim_(xb);
+				
+				cout<<"byte x is : "<<xb<<endl;
+				write_a("ob.txt" , xb);
+				write_a("ob.txt" , "\n");
+				}
+		
+		}if(st.operation.compare("word") == 0){
+			
+			int l = calc_storage();
+			cout<<"storage is : "<<l<<endl;
+			if(l == 1){
+				cout<<stoi(st.operand , 0 ,16);
+			}else{
+				int numw;
+				
+				std::string delimiter = ",";
+				string s = st.operand;
+				size_t pos = 0;
+				std::string token;
+				while ((pos = s.find(delimiter)) != std::string::npos) {
+					token = s.substr(0, pos);
+					numw = stoi(token,0,16);
+					printf("%.6x\n",numw);
+					s.erase(0, pos + delimiter.length());
+				}
+				numw = stoi(s,0,16);
+					printf("%.6x\n",numw);
 				
 				
 				}
-		
+			
+			
 		}
 	
 	

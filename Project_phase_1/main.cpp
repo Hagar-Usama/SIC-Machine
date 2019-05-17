@@ -15,6 +15,8 @@ using namespace std;
 
 string split(string &line ,int length);
 
+void write_a(string filename , string str);
+void write_b(string filename , int hex);
 void write_dic(string filename , string str);
 void lower_it(string &str);
 void read_file(string filename);
@@ -30,14 +32,7 @@ int find_key(map<string,int> mp , string label);
 
 
 int main(){
-	
-	/*
-	string ex11 = "lab+1000";
-
-	cout<<check_case_1(ex11)<<endl;
-	cout<<check_exp_type(ex11)<<endl;
-	*/
-	
+		
 	
 	write_dic("listfile.txt" , "");
 	read_file("src.txt");
@@ -157,18 +152,39 @@ void write_dic(string filename , string str){
 	}
 
 
-////////////////////////////////////////////////////////////////////////	
-/*
-string split(string &line ,int length){
+void write_a(string filename , string str){
+
+	  FILE *fp;
 	
-	string token = line.substr(0,length);
-	line = line.substr(length , line.capacity());
-	
-	
-	return token;	
-}
-*/
-////////////////////////////////////////////////////////////////////////
+		fp = fopen(filename.c_str(),"a");
+		if(fp == NULL) {
+		perror("Error");
+		exit(1);
+		}
+		else{
+			
+				fprintf (fp, "%s", str.c_str() );
+			}
+		
+  fclose(fp);
+
+	}
 
 
-////////////////////////////////////////////////////////////////////////
+void write_b(string filename , int num){
+
+	  FILE *fp;
+	
+		fp = fopen(filename.c_str(),"a");
+		if(fp == NULL) {
+		perror("Error");
+		exit(1);
+		}
+		else{
+			
+				fprintf (fp, "%x", num );
+			}
+		
+  fclose(fp);
+
+	}

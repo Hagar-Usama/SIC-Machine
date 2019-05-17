@@ -761,7 +761,7 @@ void Assembler::write_line(){
 		write_ifile(st.operand);
 		write_ifile("\t\t");
 		write_ifile(st.comment);
-		write_ifile("\n");
+		//write_ifile("\n");
 	
 	
 	}
@@ -1061,8 +1061,6 @@ void Assembler::objectize(){
 		 printf("address_part3: %x \n",address);
 		
 		
-		 //backspace
-		 write_ifile("\b");
 		 write_ifile(address,4);
 		 write_b("ob.txt" , address);
 		 write_a("ob.txt" , "\n");
@@ -1173,14 +1171,11 @@ void Assembler::objectize(){
 		
 		printf("\taddress is **%x**\n",address);
 		
-		//backspace
-		write_ifile("\b");
+
 		write_ifile(address,6);
 		write_b("ob.txt" , address);
 		write_a("ob.txt" , "\n");
 		 
-		 //should be 3 bytes --> 6 digits
-		 write_ifile(address , 1);
 		
 	}else if(st.formattype == 4){
 		//relative addressing no allowed
@@ -1278,8 +1273,6 @@ void Assembler::objectize(){
 		
 		printf("\taddress is **%x**\n",address);
 		
-		//backspace
-		write_ifile("\b");
 		write_ifile(address , 8);
 		
 		write_b("ob.txt" , address);
@@ -1315,8 +1308,6 @@ void Assembler::objectize(){
 					printf("%x",bcode[j]);
 					
 					//of length 2
-					//backspace
-					write_ifile("\b");
 					write_ifile(bcode[j] , 2);
 					
 					write_b("ob.txt" , bcode[j]);
@@ -1339,8 +1330,6 @@ void Assembler::objectize(){
 				cout<<"byte x is : "<<xb<<endl;
 				
 				//length should be even -- it's ok 
-				//backspace
-				write_ifile("\b");
 				write_ifile(xb);
 				
 				write_a("ob.txt" , xb);
@@ -1352,10 +1341,8 @@ void Assembler::objectize(){
 			int l = calc_storage();
 			cout<<"storage is : "<<l<<endl;
 			int numw;
-			//backspace
-			write_ifile("\b");
 			if(l == 1){
-				numw = stoi(st.operand,0,16);
+				numw = stoi(st.operand,0,10);
 				if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 				printf("%.6x\n",numw);
 				
@@ -1369,7 +1356,7 @@ void Assembler::objectize(){
 				std::string token;
 				while ((pos = s.find(delimiter)) != std::string::npos) {
 					token = s.substr(0, pos);
-					numw = stoi(token,0,16);
+					numw = stoi(token,0,10);
 					
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 					printf("%.6x\n",numw);
@@ -1378,7 +1365,7 @@ void Assembler::objectize(){
 					
 						s.erase(0, pos + delimiter.length());
 				}
-				numw = stoi(s,0,16);
+					numw = stoi(s,0,10);
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 					printf("%.6x\n",numw);
 					write_ifile(numw , 6);
@@ -1389,7 +1376,7 @@ void Assembler::objectize(){
 			
 		}
 	
-	
+	write_ifile("\n");
 			
 		obcode = address;
 	//print object code in listfile

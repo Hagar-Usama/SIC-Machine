@@ -3,6 +3,7 @@ bgn     start    1000              ;fcmnt
 qw	resw	 5
 ww	word	 -1,2,5,4
 fff     lda      #10
+ew	word	 10
         rmo     a ,x
 	sub	 #3
         add      #22
@@ -12,6 +13,6 @@ gg	addr	 a , x
 	rmo	 a , x
 	j	 *
 sw	equ	 qw
-wn	word	 -1,2,5,4
+wn	word	 2,10
 	end
 

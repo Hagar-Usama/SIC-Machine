@@ -16,7 +16,7 @@ using namespace std;
 string split(string &line ,int length);
 
 void write_a(string filename , string str);
-void write_b(string filename , int hex);
+void write_b(string filename , int hex , int mode=10);
 void write_dic(string filename , string str);
 void lower_it(string &str);
 void read_file(string filename);
@@ -35,6 +35,8 @@ int main(){
 		
 	
 	write_dic("listfile.txt" , "");
+	write_dic("ob.txt" , "");
+	write_dic("objectfile.txt" , "");
 	read_file("src.txt");
 	
 	cout<<" *.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*" <<endl;
@@ -53,7 +55,7 @@ int main(){
 		else if(buffer.compare("2") == 0){assembler.mode = true;}
 		
 		assembler.pass1_1();	
-	
+		assembler.print_header();
 
 return 0;	
 }
@@ -171,7 +173,7 @@ void write_a(string filename , string str){
 	}
 
 
-void write_b(string filename , int num){
+void write_b(string filename , int num , int mode){
 
 	  FILE *fp;
 	
@@ -182,7 +184,20 @@ void write_b(string filename , int num){
 		}
 		else{
 			
+			switch(mode){
+				case 2:
+				fprintf (fp, "%.2x", num );
+				break;
+				
+				case 6:
+				fprintf (fp, "%.6x", num );
+				break;
+				
+				default:
 				fprintf (fp, "%x", num );
+				break;
+				}
+				
 			}
 		
   fclose(fp);

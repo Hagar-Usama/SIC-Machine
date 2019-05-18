@@ -25,6 +25,7 @@ class Assembler {
 	public:
 	int LOCCTR;
 	int prev_lctr;
+	int prog_len;
 	int obcode; //object code per line
 	unsigned int line_no;
 	bool mode;
@@ -33,7 +34,7 @@ class Assembler {
 	map<string,int> SYMTAB;
 	map<string,int> OPTAB;
 	map<string,int> REGTAB;
-	
+	short int st_indx;
 	unsigned int errors;
 	Assembler();
 	void object_file();
@@ -46,6 +47,7 @@ class Assembler {
 	void write_ifile(string str);
 	void write_ifile(int num , int mode=1);
 	void write_line();
+	void print_header();
 	int calc_storage();
 	void read_next();
 	int get_length();
@@ -573,6 +575,8 @@ void Assembler::sub_pass1(){
 			
 		start_address = stoi(st.operand, 0, 16);
 		LOCCTR = start_address;
+		st_indx = line_no-1;
+		
 		if(st.labeled) SYMTAB.insert({st.label , LOCCTR});
 		
 		write_ifile(line_no , 10);
@@ -721,7 +725,7 @@ void Assembler::pass1_2(){
 		
 		}//end of while
 		
-		
+	prog_len = prev_lctr - start_address;	
 		
 	prev_lctr = LOCCTR;
 	if(st.operation.compare("end") == 0){
@@ -762,7 +766,6 @@ void Assembler::write_line(){
 		write_ifile("\t\t");
 		write_ifile(st.comment);
 		//write_ifile("\n");
-	
 	
 	}
 int Assembler::calc_storage(){
@@ -1435,4 +1438,22 @@ void Assembler:: init_optab(){
 	OPTAB.insert({"tixr" , stoi("b8",0,16)});
 	
 	
+	}
+void Assembler::print_header(){
+	int temp = line_no;
+	line_no = st_indx;
+	read_next();
+	//print H
+	write_a("objectfile.txt" , "H");
+	string prg_name = st.label;
+	while(prg_name.size() <6){prg_name.push_back(' ');}
+	//print program name
+	write_a("objectfile.txt" , prg_name);
+	//print starting address
+	write_b("objectfile.txt" , stoi(st.operand,0,16),6);
+	//print program length
+	write_b("objectfile.txt" , prog_len,6);
+	write_a("objectfile.txt" , "\n");
+	
+	line_no = temp;
 	}

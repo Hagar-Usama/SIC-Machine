@@ -15,7 +15,7 @@
 12		102c		gg		addr		a,x		9001
 13		102e				org		1000		
 14		1000				rmo		a,x		ac01
-15		1002				j		*		14f2000
+15		1002				j		*		10f2000
 16		1005		sw		equ		qw		
 17		1005		wn		word		2,10		000002
 										00000a
@@ -35,4 +35,5 @@
 			ww			100f
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- *** SUCCESSFUL ASSEMBLING ***
+ errors :562f
+ *** INCOMPLETE ASSEMBLING ***

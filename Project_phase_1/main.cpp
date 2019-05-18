@@ -56,6 +56,7 @@ int main(){
 		
 		assembler.pass1_1();	
 		assembler.print_header();
+		assembler.print_end();
 
 return 0;	
 }

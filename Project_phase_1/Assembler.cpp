@@ -48,6 +48,7 @@ class Assembler {
 	void write_ifile(int num , int mode=1);
 	void write_line();
 	void print_header();
+	void print_end();
 	int calc_storage();
 	void read_next();
 	int get_length();
@@ -1454,6 +1455,18 @@ void Assembler::print_header(){
 	//print program length
 	write_b("objectfile.txt" , prog_len,6);
 	write_a("objectfile.txt" , "\n");
+	
+	line_no = temp;
+	}
+	
+void Assembler::print_end(){
+	int temp = line_no;
+	line_no = st_indx;
+	read_next();
+	//print E
+	write_a("objectfile.txt" , "E");
+	string prg_name = st.label;
+	write_b("objectfile.txt" , start_address , 6);
 	
 	line_no = temp;
 	}

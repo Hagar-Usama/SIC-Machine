@@ -1,5 +1,7 @@
 //#include "Instruction.cpp"
 vector<string> lines;
+vector<string> obcd;
+vector<int> stad;
 
 
 /*******
@@ -19,7 +21,7 @@ vector<string> lines;
  * mind end core dump!!
  * reconsider general expression evaluation
  **/
- 
+ void split_obcd();
 
 class Assembler {
 	public:
@@ -41,6 +43,8 @@ class Assembler {
 	
 	void pass1_1();
 	void pass1_2();
+	void pass2();
+	void run();
 	void init_optab();
 	void init_regtab();
 	void print_statement_part();
@@ -48,6 +52,7 @@ class Assembler {
 	void write_ifile(int num , int mode=1);
 	void write_line();
 	void print_header();
+	void print_record();
 	void print_end();
 	int calc_storage();
 	void read_next();
@@ -82,6 +87,7 @@ class Assembler {
 	};
 	
 Assembler::Assembler(){
+	errors = 0;
 	init_optab();
 	init_regtab();
 	line_no = 1;
@@ -740,7 +746,7 @@ void Assembler::pass1_2(){
 	
 	if(errors){ 
 		write_ifile("\n errors :");
-		write_ifile(errors , 2);
+		write_ifile(errors , 10);
 		write_ifile("\n *** INCOMPLETE ASSEMBLING ***\n");
 		}else{
 			
@@ -932,15 +938,15 @@ int Assembler::get_equ_org_add(){
 				if(typ ==2){
 					exp = st.operand;
 					
-					//get the address of the label:	
+						
 						V= extract_label(exp);
-					//cout<<"V is " <<V<<endl;
-						//printf("V is %x",V);
-					//cout<<"exp is " <<exp<<endl;
 						
 						
 				}else if(typ ==3){
-						V = stoi(st.operand,0,16);
+						if(st.operation.compare("org") == 0){
+							V = stoi(st.operand,0,10);
+							}else{ V = stoi(st.operand,0,16);}
+						
 							
 				}else{
 								
@@ -1039,6 +1045,7 @@ void Assembler::objectize(){
 	string exp = st.operand;
 	string abs_label;
 	
+	
 	int address = 0;
 	
 	int opcode;
@@ -1067,7 +1074,7 @@ void Assembler::objectize(){
 		
 		 write_ifile(address,4);
 		 write_b("ob.txt" , address);
-		 write_a("ob.txt" , "\n");
+		 //write_a("ob.txt" , "\n");
 		 
 	}else if(st.formattype == 3){
 		x= check_indexed();
@@ -1132,7 +1139,7 @@ void Assembler::objectize(){
 			abs_label[0] = ' ';
 			trim_(abs_label);
 			
-			address = stoi(abs_label , 0, 16);
+			address = stoi(abs_label , 0, 10);
 			break;
 			
 			case 5: //@10
@@ -1144,7 +1151,7 @@ void Assembler::objectize(){
 			abs_label[0] = ' ';
 			trim_(abs_label);
 			
-			address = stoi(abs_label , 0, 16);
+			address = stoi(abs_label , 0, 10);
 			break;
 			
 			default:
@@ -1177,10 +1184,9 @@ void Assembler::objectize(){
 		
 
 		write_ifile(address,6);
-		write_b("ob.txt" , address);
-		write_a("ob.txt" , "\n");
+		write_b("ob.txt" , address,6);
+		//write_a("ob.txt" , "\n");
 		 
-		
 	}else if(st.formattype == 4){
 		//relative addressing no allowed
 		
@@ -1229,7 +1235,7 @@ void Assembler::objectize(){
 			abs_label[0] = ' ';
 			trim_(abs_label);
 			
-			address = stoi(abs_label , 0, 16);
+			address = stoi(abs_label , 0, 10);
 			break;
 			
 			case 5: //@10
@@ -1241,7 +1247,7 @@ void Assembler::objectize(){
 			abs_label[0] = ' ';
 			trim_(abs_label);
 			
-			address = stoi(abs_label , 0, 16);
+			address = stoi(abs_label , 0, 10);
 			break;
 			
 			default:
@@ -1279,21 +1285,31 @@ void Assembler::objectize(){
 		
 		write_ifile(address , 8);
 		
-		write_b("ob.txt" , address);
-		write_a("ob.txt" , "\n");
-		 
+		write_b("ob.txt" , address,8);
+		//write_a("ob.txt" , "\n");
+		
 	}else if(st.formattype == 1){
 		//directive >> (Word and Resb)
 		// check how to implement if word 1,2,3
+		
 		if(!(st.operation.compare("org"))||!(st.operation.compare("resw"))||!(st.operation.compare("resb"))){
-			write_a("ob.txt" , "*\n");
+			int lctr;
+				write_a("ob.txt" , " ");
+				if(!(st.operation.compare("org"))){
+						lctr = get_equ_org_add();
+					}else{ lctr = LOCCTR; }
+				
+				stad.push_back(lctr);
+			
 			}
+			
 		if(st.operation.compare("byte") == 0){
+			
 			vector<int> bcode;
 			
 			if(st.operand[0] == 'c'){
 				
-				for(unsigned int i=2; i<st.operand.size() -1;i++){
+				for(unsigned int i=2; i<st.operand.size()-1 ;i++){
 					
 					printf("char in ascii : %x\n",st.operand[i]);
 					bcode.push_back(st.operand[i]);
@@ -1301,23 +1317,24 @@ void Assembler::objectize(){
 					printf("address : %x\n",address);
 					
 					//should = length*2 -- never mind here
-					write_ifile(address,1);
+					//write_ifile(address,1);
 					
 					}
 				
 				cout<<"object code of string"<<endl;
-				
+								
 				for(unsigned int j=0; j<bcode.size() ; j++){
 					
 					printf("%x",bcode[j]);
 					
 					//of length 2
-					write_ifile(bcode[j] , 2);
 					
+					write_ifile(bcode[j] , 1);
 					write_b("ob.txt" , bcode[j]);
 		 
 					}
-				write_a("ob.txt" , "\n");
+				
+				//write_a("ob.txt" , "\n");
 				cout<<endl;
 				
 				
@@ -1335,9 +1352,8 @@ void Assembler::objectize(){
 				
 				//length should be even -- it's ok 
 				write_ifile(xb);
-				
 				write_a("ob.txt" , xb);
-				write_a("ob.txt" , "\n");
+				//write_a("ob.txt" , "\n");
 				}
 		
 		}if(st.operation.compare("word") == 0){
@@ -1350,6 +1366,8 @@ void Assembler::objectize(){
 				if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 				printf("%.6x\n",numw);
 				
+				write_b("ob.txt" , numw,6);
+				//write_a("ob.txt" , "\n");
 				write_ifile(numw , 6);
 			}else{
 				
@@ -1367,6 +1385,9 @@ void Assembler::objectize(){
 					printf("%.6x\n",numw);
 					if(!first){write_ifile("\t\t\t\t\t\t\t\t\t\t"); }
 					write_ifile(numw , 6);
+					write_b("ob.txt" , numw,6);
+					//write_a("ob.txt" , "\n");
+					
 					first = false;
 					write_ifile("\n");
 					
@@ -1376,6 +1397,8 @@ void Assembler::objectize(){
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
 					printf("%.6x\n",numw);
 					
+					write_b("ob.txt" , numw,6);
+					//write_a("ob.txt" , "\n");
 					write_ifile("\t\t\t\t\t\t\t\t\t\t");
 					write_ifile(numw , 6);
 					write_ifile("\n");
@@ -1452,8 +1475,8 @@ void Assembler::print_header(){
 	write_a("objectfile.txt" , prg_name);
 	//print starting address
 	write_b("objectfile.txt" , stoi(st.operand,0,16),6);
-	//print program length
-	write_b("objectfile.txt" , prog_len,6);
+	//print object code length which is zero
+	write_b("objectfile.txt" , 0,6);
 	write_a("objectfile.txt" , "\n");
 	
 	line_no = temp;
@@ -1469,4 +1492,50 @@ void Assembler::print_end(){
 	write_b("objectfile.txt" , start_address , 6);
 	
 	line_no = temp;
+	}
+
+void Assembler::print_record(){
+	
+	for(unsigned int i=0; i<obcd.size(); i++){
+		write_a("objectfile.txt" , "T");
+		write_b("objectfile.txt" , stad[i],6);
+		write_b("objectfile.txt" , obcd[i].size(),2);
+		write_a("objectfile.txt" , obcd[i]);
+		write_a("objectfile.txt" , "\n");
+		
+		}
+	
+	}
+void Assembler::pass2(){
+	print_header();
+	split_obcd();
+	print_record();
+	print_end();
+	
+	}
+
+
+void Assembler::run(){
+	
+	pass1_1();
+	pass2();
+	}
+
+void split_obcd(){
+	get_ob("ob.txt");	
+	ltrim(obcd[0]);
+	
+	string s = obcd[0];
+	//cout<<"s = "<<s<<endl;
+	std::string delimiter = " ";
+
+	size_t pos = 0;
+	string token;
+	while ((pos = s.find(delimiter)) != std::string::npos) {
+		token = s.substr(0, pos);
+		obcd.push_back(token);
+		s.erase(0, pos + delimiter.length());
+	}
+	obcd.push_back(s);
+	obcd.erase(obcd.begin());
 	}

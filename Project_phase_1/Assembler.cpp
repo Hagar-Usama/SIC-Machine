@@ -1111,7 +1111,7 @@ void Assembler::objectize(){
 			abs_label[0] = ' ';
 			trim_(abs_label);
 
-			address = LOCCTR - find_key(SYMTAB,abs_label);
+			address = find_key(SYMTAB,abs_label)- LOCCTR -4294963200; /** fffff000 **/;
 			break;
 			
 			case 2: //@label
@@ -1122,14 +1122,14 @@ void Assembler::objectize(){
 			abs_label[0] = ' ';
 			trim_(abs_label);
 			
-			address = LOCCTR - find_key(SYMTAB,abs_label);
+			address = find_key(SYMTAB,abs_label)- LOCCTR -4294963200; /** fffff000 **/
 			break;
 			
 			case 3: //label
 			n=1;
 			i=1;
 			
-			address = LOCCTR - find_key(SYMTAB,exp);
+			address = find_key(SYMTAB,exp)- LOCCTR -4294963200; /** fffff000 **/
 			break;
 			
 			case 4: //#10

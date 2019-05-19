@@ -15,12 +15,10 @@ vector<int> stad;
  * check spaces in list file
  * org and equ check // done
  * 
- * make a fun : eval_exp <takes an operand and partition it to 3 parts:
- *  label , op and address and eval it
  * 
- * mind end core dump!!
  * reconsider general expression evaluation
  **/
+ 
  void split_obcd();
 
 class Assembler {
@@ -1071,7 +1069,7 @@ void Assembler::objectize(){
 		 address += (op1<<4);
 		 
 		 address += (find_key(OPTAB , st.operation)<<8);
-		 printf("address_part3: %x \n",address);
+		 //printf("address_part3: %x \n",address);
 		
 		
 		 write_ifile(address,4);
@@ -1167,11 +1165,11 @@ void Assembler::objectize(){
 			break;
 			}
 
-		printf("line_no :%d\n",line_no);
-		cout<<st.operation<<endl;
+		//printf("line_no :%d\n",line_no);
+		//cout<<st.operation<<endl;
 		
 		
-		printf("address_part1: %x ",address);
+		//printf("address_part1: %x ",address);
 
 		
 		address += (e<<12);
@@ -1181,15 +1179,15 @@ void Assembler::objectize(){
 		address += (i<<16);
 		address += (n<<17);
 		
-		cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
-		cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
+		//cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
+		//cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
 		
 		opcode = find_key(OPTAB , st.operation);
 		opcode = opcode>>2;
 		
 		address += opcode<<18;
 		
-		printf("\taddress is **%x**\n",address);
+		//printf("\taddress is **%x**\n",address);
 		
 
 		write_ifile(address,6);
@@ -1264,11 +1262,11 @@ void Assembler::objectize(){
 			}
 
 		//now label is got
-		printf("line_no :%d\n",line_no);
-		cout<<st.operation<<endl;
+		//printf("line_no :%d\n",line_no);
+		//cout<<st.operation<<endl;
 		
 		
-		printf("address_part1: %x ",address);
+		//printf("address_part1: %x ",address);
 
 		
 		address += (e<<20);
@@ -1278,8 +1276,8 @@ void Assembler::objectize(){
 		address += (i<<24);
 		address += (n<<25);
 		
-		cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
-		cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
+		//cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
+		//cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
 		
 		operat = st.operation;
 		operat[0] = ' ';
@@ -1290,7 +1288,7 @@ void Assembler::objectize(){
 		
 		address += opcode<<26;
 		
-		printf("\taddress is **%x**\n",address);
+		//printf("\taddress is **%x**\n",address);
 		
 		write_ifile(address , 8);
 		
@@ -1320,21 +1318,21 @@ void Assembler::objectize(){
 				
 				for(unsigned int i=2; i<st.operand.size()-1 ;i++){
 					
-					printf("char in ascii : %x\n",st.operand[i]);
+					//printf("char in ascii : %x\n",st.operand[i]);
 					bcode.push_back(st.operand[i]);
 					
-					printf("address : %x\n",address);
+					//printf("address : %x\n",address);
 					
 					//should = length*2 -- never mind here
 					//write_ifile(address,1);
 					
 					}
 				
-				cout<<"object code of string"<<endl;
+				//cout<<"object code of string"<<endl;
 								
 				for(unsigned int j=0; j<bcode.size() ; j++){
 					
-					printf("%x",bcode[j]);
+					//printf("%x",bcode[j]);
 					
 					//of length 2
 					
@@ -1357,7 +1355,7 @@ void Assembler::objectize(){
 				xb[xb.size()-1] = ' ';
 				trim_(xb);
 				
-				cout<<"byte x is : "<<xb<<endl;
+				//cout<<"byte x is : "<<xb<<endl;
 				
 				//length should be even -- it's ok 
 				write_ifile(xb);
@@ -1368,12 +1366,12 @@ void Assembler::objectize(){
 		}if(st.operation.compare("word") == 0){
 			
 			int l = calc_storage();
-			cout<<"storage is : "<<l<<endl;
+			//cout<<"storage is : "<<l<<endl;
 			int numw;
 			if(l == 1){
 				numw = stoi(st.operand,0,10);
 				if(numw < 0){ numw -= 4278190080; /*ff000000*/}
-				printf("%.6x\n",numw);
+				//printf("%.6x\n",numw);
 				
 				write_b("ob.txt" , numw,6);
 				//write_a("ob.txt" , "\n");
@@ -1391,7 +1389,8 @@ void Assembler::objectize(){
 					numw = stoi(token,0,10);
 					
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
-					printf("%.6x\n",numw);
+					//printf("%.6x\n",numw);
+					
 					if(!first){write_ifile("\t\t\t\t\t\t\t\t\t\t"); }
 					write_ifile(numw , 6);
 					write_b("ob.txt" , numw,6);
@@ -1404,7 +1403,7 @@ void Assembler::objectize(){
 				}
 					numw = stoi(s,0,10);
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
-					printf("%.6x\n",numw);
+					//printf("%.6x\n",numw);
 					
 					write_b("ob.txt" , numw,6);
 					//write_a("ob.txt" , "\n");

@@ -12,7 +12,7 @@
  * To Do :
  * 	1) print all object codes (done)
  * 	2) read object codes into vector obcd (done)
- *  3) print_record
+ *  3) print_record (done)
  * 	4) simple addressing --> make it for format3 and format4
  * 
  * 
@@ -56,19 +56,6 @@ int main(){
 	else if(buffer.compare("2") == 0){assembler.mode = true;}
 
 	assembler.run();
-	
-	
-	
-		
-	for(unsigned int i=0; i<obcd.size() ; i++){
-		cout<<obcd[i]<<endl;
-		
-		}
-		
-	for(unsigned int i=0; i<stad.size() ; i++){
-		cout<<stad[i]<<endl;
-		
-		}
 
 return 0;	
 }

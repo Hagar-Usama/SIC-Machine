@@ -1026,6 +1026,7 @@ int Assembler::check_operand_format3(){
 	 * if label  return 3
 	 * if #10    return 4
 	 * if @10    return 5
+	 * if *		 return 7
 	 * else      return -1
 	 * 
 	 **/
@@ -1036,6 +1037,7 @@ int Assembler::check_operand_format3(){
 	if(st.operand[0] == '#' && isdigit(st.operand[1])) return 4;
 	if(st.operand[0] == '@' && isdigit(st.operand[1])) return 5;
 	if(isdigit(st.operand[0])) return 6;
+	if(st.operand.compare("*")==0) return 7;
 	 
 	return -1;	
 	}
@@ -1153,6 +1155,13 @@ void Assembler::objectize(){
 			
 			address = stoi(abs_label , 0, 10);
 			break;
+			
+			case 7:
+			n=1;
+			i=1;
+			p=1;
+			e=0;
+			address = prev_lctr -LOCCTR - 4294963200; /** fffff000 **/
 			
 			default:
 			break;
@@ -1499,7 +1508,7 @@ void Assembler::print_record(){
 	for(unsigned int i=0; i<obcd.size(); i++){
 		write_a("objectfile.txt" , "T");
 		write_b("objectfile.txt" , stad[i],6);
-		write_b("objectfile.txt" , obcd[i].size(),2);
+		write_b("objectfile.txt" , obcd[i].size()/2,2);
 		write_a("objectfile.txt" , obcd[i]);
 		write_a("objectfile.txt" , "\n");
 		

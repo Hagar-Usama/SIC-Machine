@@ -17,7 +17,7 @@
 14		1033		gg		addr		a,x		9001
 15		1035				org		1000		
 16		3e8				rmo		a,x		ac01
-17		3ea				j		*		1a62000
+17		3ea				j		*		3f2ffd
 18		3ed		sw		equ		qw		
 19		3ed		wn		word		2,10		000002
 										00000a

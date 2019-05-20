@@ -1,0 +1,22 @@
+.23456789012345678901234567890123456789
+bgn     start    1000
+qw	resw	 5
+ww	word	 -1,2,5
+fff     lda      #10
+ew	word	 10
+        rmo     a ,x
+md	byte	c'Hell'
+ll	resw	 1
+abc	sta	 fff
+	sub	 #3
+wg	word	 -5
+        add      #22
+	add	 ww
+gg	addr	 a , x
+	org	 1000
+	rmo	 a , x
+	j	 *
+sw	equ	 qw
+wn	word	 2,10
+	end
+

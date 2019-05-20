@@ -1,6 +1,7 @@
 .23456789012345678901234567890123456789
 bgn     start    1000
 qw	resw	 5
+bh	resw	 2
 ww	word	 -1,2,5
 fff     lda      #10
 ew	word	 10

@@ -1,9 +1,0 @@
-.23456789012345678901234567890123456789
-gghhhj
-bgn       start   1000
-         lda    #10
-pr       word    -1
-         add     @pr
-         +rmo    a,x
-         j       *
-         end

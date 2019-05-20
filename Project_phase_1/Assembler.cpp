@@ -115,7 +115,6 @@ bool Assembler::check_fixed(){
 	unsigned int count;
 	extract(temp , "\\t","%");
 	
-	//cout<<"temp replace tabs by %**"<<temp<<endl;
 	
 	// we can count tabs '\t' directly
 	tab = std::count(temp.begin(), temp.end(), '%');
@@ -127,14 +126,11 @@ bool Assembler::check_fixed(){
 			temp.push_back(' ');
 			}
 		
-		//cout<<"**"<<"temp"<<temp<<"**"<<endl;
-		//cout<<"**"<<temp.size()<<"**"<<endl;
-		
 		//label
 		token = split(temp,8,0);
 		count = std::count(token.begin(), token.end(), ' ');
 		
-		//cout<<"# of spaces "<<count<<endl;
+	
 		if(count > 8){
 		 if (token[0] == ' '){ errors++; print_error(1); return true;}	
 		}
@@ -157,7 +153,7 @@ void Assembler::print_map(){
 	for(map<string, int >::const_iterator it = SYMTAB.begin();
     it != SYMTAB.end(); ++it)
 {
-    //std::cout << it->first << " " << it->second<< "\n";
+    
     write_ifile("\t\t\t");
     write_ifile(it->first);
     write_ifile("\t\t\t");
@@ -247,9 +243,6 @@ bool Assembler::have_error(){
 		}else{
 			//label + op + address
 			string label_com = extract(exp , "^\\b([a-z]\\w([a-z0-9]){0,3})");
-				
-				//cout<<"\b";
-				//cout<<"label_com in check error "<<label_com<<endl;
 			
 			found = find_key(SYMTAB , label_com);
 		}
@@ -397,7 +390,6 @@ bool Assembler::check_error10(){
 		}
 	 
 		st.error = 10;
-		//cout<<"entered error 10"<<endl;
 		print_error(10);
 		errors++;
 	return true;
@@ -551,8 +543,7 @@ int Assembler::check_complexity(){
 	part = extract(str,re," "); //operation
 	if(part.size()){
 
-		//trim_(part);
-		
+			
 		op = part.c_str(); //get operation // now op points to part (what we need)
 		opp = *op;
 		
@@ -830,7 +821,6 @@ void Assembler::write_ifile(string str){
 	
   FILE *fp;
 	
-		//fp = fopen(filename.c_str(),"a");
 		fp = fopen("listfile.txt","a");
 		if(fp == NULL) {
 		perror("Error");
@@ -839,7 +829,7 @@ void Assembler::write_ifile(string str){
 		else{
 			 // adding random spaces
 				fprintf (fp, "%s", str.c_str() );
-				//fprintf (fp, "      ");
+				
 			}
 		
 		
@@ -854,7 +844,6 @@ void Assembler::write_ifile(int num , int mode){
 	
 	FILE *fp;
 	
-		//fp = fopen(filename.c_str(),"a");
 		fp = fopen("listfile.txt","a");
 		if(fp == NULL) {
 		perror("Error");
@@ -918,7 +907,6 @@ int Assembler::extract_label(string &exp){
 		
 		exp = label;
 		
-		//cout<<"****label in extract_label >>" <<label<<"*****"<<endl;
 		
 		if(label.size() >0){
 			return find_key(SYMTAB,label);
@@ -1165,12 +1153,6 @@ void Assembler::objectize(){
 			break;
 			}
 
-		//printf("line_no :%d\n",line_no);
-		//cout<<st.operation<<endl;
-		
-		
-		//printf("address_part1: %x ",address);
-
 		
 		address += (e<<12);
 		address += (p<<13);
@@ -1179,15 +1161,11 @@ void Assembler::objectize(){
 		address += (i<<16);
 		address += (n<<17);
 		
-		//cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
-		//cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
 		
 		opcode = find_key(OPTAB , st.operation);
 		opcode = opcode>>2;
 		
 		address += opcode<<18;
-		
-		//printf("\taddress is **%x**\n",address);
 		
 
 		write_ifile(address,6);
@@ -1262,12 +1240,7 @@ void Assembler::objectize(){
 			}
 
 		//now label is got
-		//printf("line_no :%d\n",line_no);
-		//cout<<st.operation<<endl;
 		
-		
-		//printf("address_part1: %x ",address);
-
 		
 		address += (e<<20);
 		address += (p<<21);
@@ -1276,8 +1249,6 @@ void Assembler::objectize(){
 		address += (i<<24);
 		address += (n<<25);
 		
-		//cout<<"\nn\ti\tx\tb\tp\te\n"<<endl;
-		//cout<<n<<"\t"<<i<<"\t"<<x<<"\t"<<b<<"\t"<<p<<"\t"<<e<<endl;
 		
 		operat = st.operation;
 		operat[0] = ' ';
@@ -1288,7 +1259,6 @@ void Assembler::objectize(){
 		
 		address += opcode<<26;
 		
-		//printf("\taddress is **%x**\n",address);
 		
 		write_ifile(address , 8);
 		
@@ -1318,32 +1288,19 @@ void Assembler::objectize(){
 				
 				for(unsigned int i=2; i<st.operand.size()-1 ;i++){
 					
-					//printf("char in ascii : %x\n",st.operand[i]);
+					
 					bcode.push_back(st.operand[i]);
 					
-					//printf("address : %x\n",address);
-					
-					//should = length*2 -- never mind here
-					//write_ifile(address,1);
-					
+										
 					}
 				
-				//cout<<"object code of string"<<endl;
-								
+												
 				for(unsigned int j=0; j<bcode.size() ; j++){
-					
-					//printf("%x",bcode[j]);
-					
-					//of length 2
 					
 					write_ifile(bcode[j] , 1);
 					write_b("ob.txt" , bcode[j]);
 		 
 					}
-				
-				//write_a("ob.txt" , "\n");
-				cout<<endl;
-				
 				
 			}
 			
@@ -1355,8 +1312,6 @@ void Assembler::objectize(){
 				xb[xb.size()-1] = ' ';
 				trim_(xb);
 				
-				//cout<<"byte x is : "<<xb<<endl;
-				
 				//length should be even -- it's ok 
 				write_ifile(xb);
 				write_a("ob.txt" , xb);
@@ -1366,12 +1321,11 @@ void Assembler::objectize(){
 		}if(st.operation.compare("word") == 0){
 			
 			int l = calc_storage();
-			//cout<<"storage is : "<<l<<endl;
+			
 			int numw;
 			if(l == 1){
 				numw = stoi(st.operand,0,10);
 				if(numw < 0){ numw -= 4278190080; /*ff000000*/}
-				//printf("%.6x\n",numw);
 				
 				write_b("ob.txt" , numw,6);
 				//write_a("ob.txt" , "\n");
@@ -1389,7 +1343,6 @@ void Assembler::objectize(){
 					numw = stoi(token,0,10);
 					
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
-					//printf("%.6x\n",numw);
 					
 					if(!first){write_ifile("\t\t\t\t\t\t\t\t\t\t"); }
 					write_ifile(numw , 6);
@@ -1403,7 +1356,6 @@ void Assembler::objectize(){
 				}
 					numw = stoi(s,0,10);
 					if(numw < 0){ numw -= 4278190080; /*ff000000*/}
-					//printf("%.6x\n",numw);
 					
 					write_b("ob.txt" , numw,6);
 					//write_a("ob.txt" , "\n");
@@ -1534,7 +1486,7 @@ void split_obcd(){
 	ltrim(obcd[0]);
 	
 	string s = obcd[0];
-	//cout<<"s = "<<s<<endl;
+	
 	std::string delimiter = " ";
 
 	size_t pos = 0;

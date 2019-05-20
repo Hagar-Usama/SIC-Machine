@@ -1,44 +1,46 @@
 1		.23456789012345678901234567890123456789
 2		1000		bgn		start		1000		
 3		1000		qw		resw		5		
-4		100f		ww		word		-1,2,5		ffffff
+4		100f		bh		resw		2		
+5		1015		ww		word		-1,2,5		ffffff
 										000002
 										000005
 
-5		1018		fff		lda		#10		01000a
-6		101b		ew		word		10		00000a
-7		101e				rmo		a,x		ac01
-8		1020		md		byte		c'Hell'		48656c6c
-9		1024		ll		resw		1		
-10		1027		abc		sta		fff		0f2fee
-11		102a				sub		#3		1d0003
-12		102d		wg		word		-5		fffffb
-13		1030				add		#22		190016
-14		1033				add		ww		1b2fd9
-15		1036		gg		addr		a,x		9001
-16		1038				org		1000		
-17		3e8				rmo		a,x		ac01
-18		3ea				j		*		3f2ffd
-19		3ed		sw		equ		qw		
-20		3ed		wn		word		2,10		000002
+6		101e		fff		lda		#10		01000a
+7		1021		ew		word		10		00000a
+8		1024				rmo		a,x		ac01
+9		1026		md		byte		c'Hell'		48656c6c
+10		102a		ll		resw		1		
+11		102d		abc		sta		fff		0f2fee
+12		1030				sub		#3		1d0003
+13		1033		wg		word		-5		fffffb
+14		1036				add		#22		190016
+15		1039				add		ww		1b2fd9
+16		103c		gg		addr		a,x		9001
+17		103e				org		1000		
+18		3e8				rmo		a,x		ac01
+19		3ea				j		*		3f2ffd
+20		3ed		sw		equ		qw		
+21		3ed		wn		word		2,10		000002
 										00000a
 
-21		3f3				end				
+22		3f3				end				
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
-			abc			1027
+			abc			102d
 			bgn			1000
-			ew			101b
-			fff			1018
-			gg			1036
-			ll			1024
-			md			1020
+			bh			100f
+			ew			1021
+			fff			101e
+			gg			103c
+			ll			102a
+			md			1026
 			qw			1000
 			sw			1000
-			wg			102d
+			wg			1033
 			wn			3ed
-			ww			100f
+			ww			1015
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
  *** SUCCESSFUL ASSEMBLING ***

@@ -12,6 +12,7 @@ vector<int> stad;
  * 
  * try to make these changes available in GUI version
  * 
+ * try wrapping this file to avoid cheating 
  * 
  * Replace STOI whith another function that handle any format //done
  * Mind ORG  //done

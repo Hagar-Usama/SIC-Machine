@@ -6,6 +6,13 @@ vector<int> stad;
 
 /*******
  * 
+ * try to manange variable +/- operator 
+ * 
+ * try to seperate pass1 and pass2
+ * 
+ * try to make these changes available in GUI version
+ * 
+ * 
  * Replace STOI whith another function that handle any format //done
  * Mind ORG  //done
  * check error if label is a register //done 
@@ -721,7 +728,8 @@ void Assembler::pass1_2(){
 		
 		}//end of while
 		
-	prog_len = prev_lctr - start_address;	
+	//prog_len = prev_lctr - start_address;	
+	prog_len = LOCCTR - start_address;	
 		
 	prev_lctr = LOCCTR;
 	if(st.operation.compare("end") == 0){
@@ -1434,9 +1442,10 @@ void Assembler::print_header(){
 	//print program name
 	write_a("objectfile.txt" , prg_name);
 	//print starting address
-	write_b("objectfile.txt" , stoi(st.operand,0,16),6);
-	//print object code length which is zero
-	write_b("objectfile.txt" , 0,6);
+        int ob_len = 2 ;
+        write_b("objectfile.txt" , stoi(st.operand,0,16),6);
+        //print object code length which proglen -1
+        write_b("objectfile.txt" , prog_len-1,6);
 	write_a("objectfile.txt" , "\n");
 	
 	line_no = temp;

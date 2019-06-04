@@ -1015,6 +1015,7 @@ bool Assembler::check_immediate(){
 
 bool Assembler::check_indexed(){
 	int fnd = st.operand.find(",x");
+	
 	if( fnd!=-1) return true;
 	return false;
 	//return st.operand.find(",x") >= 0 ?  true : false;
@@ -1081,6 +1082,7 @@ void Assembler::objectize(){
 		 
 	}else if(st.formattype == 3){
 		x= check_indexed();
+		//if(x) cout<<"indexed"<<endl;
 		b=0;
 		p=1;
 		e=0;
@@ -1191,6 +1193,7 @@ void Assembler::objectize(){
 		address += opcode<<18;
 		
 		//printf("\taddress is **%x**\n",address);
+		
 		
 
 		write_ifile(address,6);

@@ -104,7 +104,8 @@ I would say this, one more time:
 ![gui_obj][43]
 
 
-> See 👉  [video (phase 1)][45]
+Still Confused 😨?
+> See 👉  this [video (phase 1)][45]
 
 [40]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/err_detect.png
 [41]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/gui_src.png
@@ -123,6 +124,7 @@ I would say this, one more time:
 ---
 ## To-do List
 * [x] build a neat README
+* [ ] clarify GUI part
 * [ ] add makefile
 * [ ] test on Windows
 * [ ] apply OOP principles

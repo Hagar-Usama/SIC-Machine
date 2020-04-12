@@ -31,7 +31,7 @@ Simple SIC machine
 
 [12]: https://github.com/Hagar-Usama/SIC-Machine#launch
 
-[13]: https://github.com/Hagar-Usama/SIC-Machine#restrictions
+[13]: https://github.com/Hagar-Usama/SIC-Machine#-restrictions
 
 [14]: https://github.com/Hagar-Usama/SIC-Machine#screenshots
 
@@ -39,7 +39,7 @@ Simple SIC machine
 
 [16]: https://github.com/Hagar-Usama/SIC-Machine#to-do-list
 
-[17]: https://github.com/Hagar-Usama/SIC-Machine#bugs
+[17]: https://github.com/Hagar-Usama/SIC-Machine#bugs-
 
 [18]: https://github.com/Hagar-Usama/SIC-Machine#license
 

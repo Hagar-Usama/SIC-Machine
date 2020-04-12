@@ -95,15 +95,14 @@ I would say this, one more time:
 
 ## Screenshots
 
-![image2][40]
+![err_detect][40]
 
-![image3][41]
+![gui_src][41]
 
-![image8][42]
+![gui_list][42]
 
-![image11][43]
+![gui_obj][43]
 
-![image15][44]
 
 > See 👉  [video (phase 1)][45]
 

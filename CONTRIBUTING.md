@@ -10,7 +10,7 @@
     - Clone this repo to your local machine using [Repo Link][26]
 
 
-  [26]: https://github.com/Hagar-Usama/SIC-Machine 'SIC Machine'
+  [26]: https://github.com/Hagar-Usama/SIC-Machine/tree/contribute 'SIC Machine'
 
 - **option 3**
   - Even if you do not code, send me your idea. I will credit you. And if you are interested, I will help you make it **on your own!**

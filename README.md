@@ -107,11 +107,10 @@ I would say this, one more time:
 
 > See 👉  [video (phase 1)][45]
 
-[40]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/image2.png
-[41]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/image3.png
-[42]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/image8.png
-[43]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/image11.png
-[44]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/image15.png
+[40]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/err_detect.png
+[41]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/gui_src.png
+[42]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/gui_list.png
+[43]:https://github.com/Hagar-Usama/SIC-Machine/blob/master/images/gui_obj.png
 [45]:https://youtu.be/ETbdKmU6VZw
 
 
@@ -127,8 +126,8 @@ I would say this, one more time:
 * [x] build a neat README
 * [ ] add makefile
 * [ ] test on Windows
-* [ ] Apply OOP principles
-* [ ] Consider Design Patterns
+* [ ] apply OOP principles
+* [ ] consider Design Patterns
 
 
 ---

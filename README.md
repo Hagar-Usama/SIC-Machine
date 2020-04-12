@@ -25,23 +25,23 @@ Simple SIC machine
 * [License][18]
 
 
-[10]: https://github.com/Hagar-Usama/Dessinbly#introduction
+[10]: https://github.com/Hagar-Usama/SIC-Machine#introduction
 
-[11]: https://github.com/Hagar-Usama/Dessinbly#technologies
+[11]: https://github.com/Hagar-Usama/SIC-Machine#technologies
 
-[12]: https://github.com/Hagar-Usama/Dessinbly#launch
+[12]: https://github.com/Hagar-Usama/SIC-Machine#launch
 
-[13]: https://github.com/Hagar-Usama/Dessinbly#restrictions
+[13]: https://github.com/Hagar-Usama/SIC-Machine#restrictions
 
-[14]: https://github.com/Hagar-Usama/Dessinbly#screenshots
+[14]: https://github.com/Hagar-Usama/SIC-Machine#screenshots
 
-[15]: https://github.com/Hagar-Usama/Dessinbly#contributing
+[15]: https://github.com/Hagar-Usama/SIC-Machine#contributing
 
-[16]: https://github.com/Hagar-Usama/Dessinbly#to-do-list
+[16]: https://github.com/Hagar-Usama/SIC-Machine#to-do-list
 
-[17]: https://github.com/Hagar-Usama/Dessinbly#bugs
+[17]: https://github.com/Hagar-Usama/SIC-Machine#bugs
 
-[18]: https://github.com/Hagar-Usama/Dessinbly#license
+[18]: https://github.com/Hagar-Usama/SIC-Machine#license
 
 ---
 

@@ -1,44 +1,30 @@
-1		.23456789012345678901234567890123456789
-2		1000		bgn		start		1000		
-3		1000		qw		resw		5		
-4		100f		ww		word		-1,2,5		ffffff
-										000002
-										000005
-
-5		1018		fff		lda		#10		01000a
-6		101b		ew		word		10		00000a
-7		101e				rmo		a,x		ac01
-8		1020		md		byte		c'Hell'		48656c6c
-9		1024		ll		resw		1		
-10		1027		abc		sta		fff		0f2fee
-11		102a				sub		#3		1d0003
-12		102d		wg		word		-5		fffffb
-13		1030				add		#22		190016
-14		1033				add		ww		1b2fd9
-15		1036		gg		addr		a,x		9001
-16		1038				org		1000		
-17		3e8				rmo		a,x		ac01
-18		3ea				j		*		3f2ffd
-19		3ed		sw		equ		qw		
-20		3ed		wn		word		2,10		000002
-										00000a
-
-21		3f3				end				
+1		.23456789012345678901234567890123456
+2		1000				start		1000		
+3		1000		beta		word		25		000019
+4		1003		gamma		word		4		000004
+5		1006		alpha		resw		1		
+			 ***** Error :  undefined symbol in operand
+6		1009				ldb		#length		7		1009		length		resw		1		
+8		100c		arr		resw		2048		
+9		280c				ldx		beta		0717f1
+10		280f		delta		resw		1		
+11		2812				addr		t,x		9051
+12		2814				+sts		alpha		2131759110
+13		2818				org		arr		
+14		100c				sts		alpha,x		7f9ff0
+15		100f				lda		@beta		022fee
+16		1012				lda		arr		032ff7
+17		1015				end				
 
 			*.*.*.*.*SYMBOL TABLE*.*.*.*.*
 			SYMBOL			ADDRESS
-			abc			1027
-			bgn			1000
-			ew			101b
-			fff			1018
-			gg			1036
-			ll			1024
-			md			1020
-			qw			1000
-			sw			1000
-			wg			102d
-			wn			3ed
-			ww			100f
+			alpha			1006
+			arr			100c
+			beta			1000
+			delta			280f
+			gamma			1003
+			length			1009
 			*.*.*.*.*.*.*.*.*.*.*.*.*.*.*
 
- *** SUCCESSFUL ASSEMBLING ***
+ errors :1
+ *** INCOMPLETE ASSEMBLING ***

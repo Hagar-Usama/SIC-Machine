@@ -5,7 +5,7 @@ Simple SIC machine
 ![Linux-Passing][1] ![GUI-QT4][2] ![System-Programming][3] ![First-C++][4]
 ![plus-Regex][5]
 
-[1]: https://img.shields.io/:Linux-Passing-whiteGreen.svg?style=round-square
+[1]: https://img.shields.io/:Linux-Passed-whiteGreen.svg?style=round-square
 [2]: https://img.shields.io/:GUI-QT4-yellow.svg?style=round-square
 [3]: https://img.shields.io/:System-Programming-purple.svg?style=round-square
 [4]: https://img.shields.io/:First-C++-darkblue.svg?style=round-square
@@ -46,7 +46,7 @@ Simple SIC machine
 ---
 
 ## Introduction
-The best assembler ever 🌟 ! My first C++ program 🙈. Learn how assemblers work, how a piece of code be a bunch of binaries. This project is specifically implemented with more love 💙 and passion.
+The best assembler ever 🌟 ! My first C++ program 🙈. I just learnt how assemblers work, how a piece of code be a bunch of binaries. This project is specifically implemented with more love 💙 and passion.
 
 What is SIC? 🤔
 >SIC stands for _Simplified Instructional Computer_
